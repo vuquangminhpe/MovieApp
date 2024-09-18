@@ -1,4 +1,4 @@
-import http from 'utils/http'
+import http from '../utils/http'
 
 export default function TestApi() {
   const theData = http.get(`/account/21525545s`)
