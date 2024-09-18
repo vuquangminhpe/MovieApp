@@ -1,5 +1,11 @@
+import TestApi from 'Components'
+
 function App() {
-  return <div>sdfad</div>
+  return (
+    <div>
+      <TestApi />
+    </div>
+  )
 }
 
 export default App
