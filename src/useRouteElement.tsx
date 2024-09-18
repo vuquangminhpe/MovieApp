@@ -1,20 +1,4 @@
 // import { Navigate, Outlet, useRoutes } from 'react-router-dom'
-// import ProductList from './pages/ProductList'
-// import Login from './pages/Login'
-// import Register from './pages/Register'
-// import RegisterLayout from './layout/RegisterLayout/RegisterLayout'
-// import MainLayout from './layout/MainLayout'
-// import { useContext } from 'react'
-// import { AppContext } from './Contexts/app.context'
-// import path from './constants/path'
-// import ProductDetail from './pages/ProductDetail'
-// import Cart from './pages/Cart'
-// import CartLayout from './layout/CartLayout'
-// import UserLayout from './pages/User/Layouts/UserLayout'
-// import ChangePassword from './pages/User/ChangePassword'
-// import Profile from './pages/User/Profile'
-// import HistoryPurchase from './pages/User/HistoryPurchse'
-// import NotFound from './pages/NotFound'
 
 // function ProtectedRoute() {
 //   const { isAuthenticated } = useContext(AppContext)
@@ -35,14 +19,6 @@
 //           element: (
 //             <RegisterLayout>
 //               <Login />
-//             </RegisterLayout>
-//           )
-//         },
-//         {
-//           path: path.register,
-//           element: (
-//             <RegisterLayout>
-//               <Register />
 //             </RegisterLayout>
 //           )
 //         }
