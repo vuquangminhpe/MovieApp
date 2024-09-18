@@ -1,4 +1,4 @@
-import TestApi from 'Components'
+import TestApi from './Components'
 
 function App() {
   return (
