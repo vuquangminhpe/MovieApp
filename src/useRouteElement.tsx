@@ -1,5 +1,10 @@
 // import { Navigate, Outlet, useRoutes } from 'react-router-dom'
 
+import { useRoutes } from 'react-router-dom'
+import TestApi from './Components'
+import path from './constants/path'
+import MainLayout from './Layouts/MainLayout'
+
 // function ProtectedRoute() {
 //   const { isAuthenticated } = useContext(AppContext)
 //   return isAuthenticated ? <Outlet /> : <Navigate to='/login' />
@@ -89,3 +94,16 @@
 //   ])
 //   return routeElements
 // }
+export default function useRouteElement() {
+  const routeElements = useRoutes([
+    {
+      path: path.home,
+      element: (
+        <MainLayout>
+          <TestApi />
+        </MainLayout>
+      )
+    }
+  ])
+  return routeElements
+}

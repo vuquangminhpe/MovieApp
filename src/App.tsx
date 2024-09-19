@@ -1,11 +1,8 @@
-import TestApi from './Components'
+import useRouteElement from './useRouteElement'
 
 function App() {
-  return (
-    <div>
-      <TestApi />
-    </div>
-  )
+  const useRouterElement = useRouteElement()
+  return <div>{useRouterElement}</div>
 }
 
 export default App

@@ -11,10 +11,9 @@ function TestScrollLayzy() {
     <VisibilitySensor onChange={onChange}>
       {({ isVisible }: any) => (
         <div
-          className='h-[600px] bg-red-500 mt-[500px]'
+          className='h-[600px] bg-red-500 mt-[400px]'
           style={{ opacity: isVisible ? 1 : 0, transition: 'opacity 0.5s' }}
         >
-          {/* Nội dung của bạn ở đây */}
           {isVisible ? 'Phần tử này đã hiển thị!' : 'Phần tử này đang ẩn.'}
         </div>
       )}

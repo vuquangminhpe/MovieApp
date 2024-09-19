@@ -1,12 +1,22 @@
 import Slider from 'react-slick'
+
 function Responsive() {
   const settings = {
-    dots: true,
+    dots: true, // Vẫn bật dots nhưng sẽ tùy chỉnh lại
     infinite: false,
     speed: 500,
     slidesToShow: 4,
     slidesToScroll: 4,
     initialSlide: 0,
+    customPaging: () => <div>tét</div>,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    appendDots: (dots: any) => (
+      <div style={{ position: 'relative', bottom: '10px' }}>
+        {' '}
+        {/* Tùy chỉnh vùng chứa dots */}
+        <ul style={{ margin: '0px' }}> {dots} </ul>
+      </div>
+    ),
     responsive: [
       {
         breakpoint: 1024,
@@ -34,6 +44,7 @@ function Responsive() {
       }
     ]
   }
+
   return (
     <div className='slider-container'>
       <Slider {...settings}>
