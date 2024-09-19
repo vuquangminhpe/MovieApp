@@ -9,6 +9,10 @@ interface Props {
   content?: string
   placement?: Placement
   authentication?: boolean
+  onEvent?: keyof React.DOMAttributes<HTMLDivElement>
+  leaveEvent?: keyof React.DOMAttributes<HTMLDivElement>
+  show?: boolean
+  renderPropsShow?: boolean
 }
 export default function Popover({
   children,
@@ -16,7 +20,10 @@ export default function Popover({
   renderPopover,
   content,
   placement,
-  authentication = true
+  authentication = true,
+  onEvent = `onMouseEnter`,
+  leaveEvent = `onMouseLeave`,
+  show = false
 }: Props) {
   const arrowRef = useRef<HTMLElement>(null)
   const id = useId()
@@ -32,18 +39,18 @@ export default function Popover({
     placement: placement
   })
   const showPopover = () => {
-    setOpen(!open)
+    setOpen(true)
   }
-
+  const hidePopover = () => {
+    setOpen(false)
+  }
   return (
     <div>
       <div
         content={content}
         className={className}
         ref={reference}
-        onClick={() => {
-          showPopover()
-        }}
+        {...{ [onEvent]: showPopover, [leaveEvent]: hidePopover }}
       >
         {children}
         <FloatingPortal id={id}>
@@ -63,7 +70,22 @@ export default function Popover({
                 exit={{ opacity: 0, scale: 0 }}
                 transition={{ duration: 0.2 }}
               >
-                {authentication && <div>{renderPopover}</div>}
+                {authentication && (
+                  <div>
+                    {show && (
+                      <span
+                        ref={arrowRef}
+                        className='border-x-transparent border-t-transparent border-b-white border-[11px] absolute translate-y-[-95%] z-10'
+                        style={{
+                          position: 'absolute',
+                          left: middlewareData.arrow?.x,
+                          top: middlewareData.arrow?.y
+                        }}
+                      />
+                    )}
+                    {renderPopover}
+                  </div>
+                )}
                 {!authentication && <div></div>}
               </motion.div>
             )}
