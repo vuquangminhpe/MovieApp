@@ -9,7 +9,9 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        orange: '#ee4d2d'
+        orange: '#ee4d2d',
+        tmdbLightGreen: 'var(--tmdbLightGreen)',
+        tmdbLightBlue: 'var(--tmdbLightBlue)'
       }
     }
   },

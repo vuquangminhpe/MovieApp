@@ -2,6 +2,7 @@ import { arrow, offset, shift, useFloating, type Placement } from '@floating-ui/
 import React, { useRef, useState, useId } from 'react'
 import { FloatingPortal } from '@floating-ui/react-dom-interactions'
 import { AnimatePresence, motion } from 'framer-motion'
+
 interface Props {
   children: React.ReactNode
   renderPopover: React.ReactNode
@@ -13,7 +14,9 @@ interface Props {
   leaveEvent?: keyof React.DOMAttributes<HTMLDivElement>
   show?: boolean
   renderPropsShow?: boolean
+  fullWidth?: boolean
 }
+
 export default function Popover({
   children,
   className,
@@ -23,7 +26,8 @@ export default function Popover({
   authentication = true,
   onEvent = `onMouseEnter`,
   leaveEvent = `onMouseLeave`,
-  show = false
+  show = false,
+  fullWidth = false
 }: Props) {
   const arrowRef = useRef<HTMLElement>(null)
   const id = useId()
@@ -38,14 +42,12 @@ export default function Popover({
     ],
     placement: placement
   })
-  const showPopover = () => {
-    setOpen(true)
-  }
-  const hidePopover = () => {
-    setOpen(false)
-  }
+
+  const showPopover = () => setOpen(true)
+  const hidePopover = () => setOpen(false)
+
   return (
-    <div>
+    <div className={fullWidth ? 'w-full' : ''}>
       <div
         content={content}
         className={className}
@@ -58,11 +60,11 @@ export default function Popover({
             {open && (
               <motion.div
                 ref={floating}
+                className={`${fullWidth ? 'w-full' : 'w-max'} bg-white shadow-lg rounded-md`}
                 style={{
                   position: strategy,
                   top: y ?? 0,
                   left: x ?? 0,
-                  width: 'max-content',
                   transformOrigin: `${middlewareData.arrow?.x}px top`
                 }}
                 initial={{ opacity: 0, scale: 0 }}
@@ -71,22 +73,21 @@ export default function Popover({
                 transition={{ duration: 0.2 }}
               >
                 {authentication && (
-                  <div>
+                  <div className='relative w-full'>
                     {show && (
                       <span
                         ref={arrowRef}
-                        className='border-x-transparent border-t-transparent border-b-white border-[11px] absolute translate-y-[-95%] z-10'
+                        className='absolute w-0 h-0 border-x-8 border-x-transparent border-b-8 border-b-white -translate-y-full'
                         style={{
-                          position: 'absolute',
                           left: middlewareData.arrow?.x,
                           top: middlewareData.arrow?.y
                         }}
                       />
                     )}
-                    {renderPopover}
+                    <div className={`${fullWidth ? 'w-full' : ''}`}>{renderPopover}</div>
                   </div>
                 )}
-                {!authentication && <div></div>}
+                {!authentication && <div className='w-full'>{renderPopover}</div>}
               </motion.div>
             )}
           </AnimatePresence>
