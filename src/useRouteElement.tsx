@@ -1,9 +1,9 @@
 // import { Navigate, Outlet, useRoutes } from 'react-router-dom'
 
 import { useRoutes } from 'react-router-dom'
-import TestApi from './Components'
 import path from './constants/path'
 import MainLayout from './Layouts/MainLayout'
+import HomeMovies from './pages/HomeMovies'
 
 // function ProtectedRoute() {
 //   const { isAuthenticated } = useContext(AppContext)
@@ -100,7 +100,7 @@ export default function useRouteElement() {
       path: path.home,
       element: (
         <MainLayout>
-          <TestApi />
+          <HomeMovies />
         </MainLayout>
       )
     }
