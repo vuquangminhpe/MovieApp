@@ -40,7 +40,7 @@ export default function HomeMovies() {
       </div>
       <div className='container w-full'>
         {' '}
-        <MovieTrending />
+        <MovieTrending dataMoviesTrending={dataTrending} />
       </div>
     </div>
   )

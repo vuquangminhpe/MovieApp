@@ -15,7 +15,8 @@ export default function Header() {
   const dataRatedMovies = DataRated?.data.results
 
   return (
-    <div className='relative bg-blue-950 flex h-[100px] md:justify-between items-center w-full p-4'>
+    <div className='relative bg-blue-950 flex h-[100px] md:justify-between items-center w-full p-4 z-50'>
+      {' '}
       <div className='flex'>
         <Link to={path.home} className='mr-4 min-w-[154px]'>
           <img

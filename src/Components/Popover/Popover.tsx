@@ -47,7 +47,7 @@ export default function Popover({
   const hidePopover = () => setOpen(false)
 
   return (
-    <div className={fullWidth ? 'w-full' : ''}>
+    <div className={`${fullWidth ? 'w-full' : ''}`}>
       <div
         content={content}
         className={className}
@@ -60,7 +60,7 @@ export default function Popover({
             {open && (
               <motion.div
                 ref={floating}
-                className={`${fullWidth ? 'w-full' : 'w-max'} bg-white shadow-lg rounded-md`}
+                className={`${fullWidth ? 'w-full' : 'w-max'} bg-white shadow-lg rounded-md z-[60]`}
                 style={{
                   position: strategy,
                   top: y ?? 0,

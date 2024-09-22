@@ -1,4 +1,5 @@
 export interface Movie {
+  [x: string]: any
   backdrop: string
   genre_ids: []
   id: number
