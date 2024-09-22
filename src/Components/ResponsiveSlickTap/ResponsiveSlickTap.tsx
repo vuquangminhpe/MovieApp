@@ -1,22 +1,22 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import Slider from 'react-slick'
 
-function Responsive() {
+function ResponsiveSlickTap() {
   const settings = {
-    dots: true, // Vẫn bật dots nhưng sẽ tùy chỉnh lại
+    dots: true,
     infinite: false,
     speed: 500,
     slidesToShow: 4,
     slidesToScroll: 4,
     initialSlide: 0,
-    customPaging: () => <div>tét</div>,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     appendDots: (dots: any) => (
       <div style={{ position: 'relative', bottom: '10px' }}>
-        {' '}
-        {/* Tùy chỉnh vùng chứa dots */}
         <ul style={{ margin: '0px' }}> {dots} </ul>
       </div>
     ),
+    autoplay: true,
+    autoplaySpeed: 2000,
     responsive: [
       {
         breakpoint: 1024,
@@ -46,35 +46,35 @@ function Responsive() {
   }
 
   return (
-    <div className='slider-container'>
+    <div className='overflow-x-auto slider-container'>
       <Slider {...settings}>
         <div>
-          <h3>1</h3>
+          <img src='image1.jpg' alt='Slide 1' />
         </div>
         <div>
-          <h3>2</h3>
+          <img src='image2.jpg' alt='Slide 2' />
         </div>
         <div>
-          <h3>3</h3>
+          <img src='image3.jpg' alt='Slide 3' />
         </div>
         <div>
-          <h3>4</h3>
+          <img src='image4.jpg' alt='Slide 4' />
         </div>
         <div>
-          <h3>5</h3>
+          <img src='image5.jpg' alt='Slide 5' />
         </div>
         <div>
-          <h3>6</h3>
+          <img src='image6.jpg' alt='Slide 6' />
         </div>
         <div>
-          <h3>7</h3>
+          <img src='image7.jpg' alt='Slide 7' />
         </div>
         <div>
-          <h3>8</h3>
+          <img src='image8.jpg' alt='Slide 8' />
         </div>
       </Slider>
     </div>
   )
 }
 
-export default Responsive
+export default ResponsiveSlickTap

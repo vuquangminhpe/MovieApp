@@ -1,4 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useRef, useEffect, useState, useCallback } from 'react'
+
+const COLORS: string[] = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#FDCB6E', '#6C5CE7', '#55E6C1']
+const NUM_POINTS: number = 50
+const MAX_DISTANCE: number = 150
 
 interface Point {
   x: number
@@ -8,18 +13,22 @@ interface Point {
   color: string
 }
 
-const COLORS = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#FDCB6E', '#6C5CE7', '#55E6C1']
-const NUM_POINTS = 50
-const MAX_DISTANCE = 150
+interface MousePosition {
+  x: number
+  y: number
+}
 
-const MouseAnimate: React.FC = () => {
+interface MouseAnimateProps {
+  className?: string
+}
+
+const MouseAnimate: React.FC<MouseAnimateProps> = ({ className }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [points, setPoints] = useState<Point[]>([])
-  const mousePosRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 })
+  const mousePosRef = useRef<MousePosition>({ x: 0, y: 0 })
   const animationRef = useRef<number>()
 
-  const initializePoints = useCallback((width: number, height: number) => {
+  const initializePoints = useCallback((width: number, height: number): Point[] => {
     return Array.from({ length: NUM_POINTS }, () => ({
       x: Math.random() * width,
       y: Math.random() * height,
@@ -29,7 +38,7 @@ const MouseAnimate: React.FC = () => {
     }))
   }, [])
 
-  const updatePoints = useCallback((width: number, height: number, currentPoints: Point[]) => {
+  const updatePoints = useCallback((width: number, height: number, currentPoints: Point[]): Point[] => {
     return currentPoints.map((point) => {
       const newX = point.x + point.vx
       const newY = point.y + point.vy
@@ -71,7 +80,6 @@ const MouseAnimate: React.FC = () => {
         }
       })
 
-      // Connect to mouse position
       currentPoints.forEach((point) => {
         const dx = point.x - mousePosRef.current.x
         const dy = point.y - mousePosRef.current.y
@@ -110,8 +118,8 @@ const MouseAnimate: React.FC = () => {
     if (!canvas) return
 
     const handleResize = () => {
-      canvas.width = window.innerWidth
-      canvas.height = window.innerHeight
+      canvas.width = canvas.offsetWidth
+      canvas.height = canvas.offsetHeight
       setPoints(initializePoints(canvas.width, canvas.height))
     }
 
@@ -138,7 +146,20 @@ const MouseAnimate: React.FC = () => {
     }
   }, [animate, initializePoints])
 
-  return <canvas ref={canvasRef} style={{ background: '#000033', position: 'fixed', top: 0, left: 0 }} />
+  return (
+    <canvas
+      ref={canvasRef}
+      className={className}
+      style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        pointerEvents: 'none'
+      }}
+    />
+  )
 }
 
 export default MouseAnimate

@@ -1,7 +1,7 @@
 export default function Footer() {
   return (
     <div className=' bg-blue-950 w-full'>
-      <div className='flex px-[400px] py-[70px] '>
+      <div className='flex py-7 justify-center text-center items-center'>
         <div className='flex flex-col items-end'>
           <img
             className='size-28'
