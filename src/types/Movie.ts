@@ -1,4 +1,5 @@
 export interface Movie {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [x: string]: any
   backdrop: string
   genre_ids: []

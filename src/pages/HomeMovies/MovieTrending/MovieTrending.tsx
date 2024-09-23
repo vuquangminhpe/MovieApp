@@ -1,30 +1,33 @@
-import configBase from '../../../constants/config'
+import RenderMovies from '../../../Components/RenderMovies'
 import { Movie } from '../../../types/Movie'
+import CustomScrollContainer from '../../../Components/CustomScrollContainer'
+import { Link } from 'react-router-dom'
+import path from '../../../constants/path'
 
-interface Props {
+interface MovieTrendingProps {
   dataMoviesTrending: Movie[]
 }
 
-export default function MovieTrending({ dataMoviesTrending }: Props) {
-  console.log(dataMoviesTrending)
-
+const MovieTrending = ({ dataMoviesTrending }: MovieTrendingProps) => {
   return (
     <div className='pl-7 py-7 w-full'>
-      <div className='text-xl font-bold'>Trending</div>
-      <div className='overflow-x-auto flex w-full gap-1'>
-        <div className='flex overflow-x-auto gap-3'>
-          {dataMoviesTrending?.map((dataTrending: Movie) => {
-            return (
-              <div className='w-[150px]'>
-                <img
-                  className='w-full h-[225px] object-cover'
-                  src={`${configBase.imageBaseUrl}${dataTrending.backdrop_path}`}
-                />
-              </div>
-            )
-          })}{' '}
-        </div>
+      <div className='text-xl font-bold mb-4'>Trending</div>
+
+      <div className='relative' style={{ height: '350px' }}>
+        <CustomScrollContainer height={350} width='100%'>
+          <div className='flex gap-3 pr-4' style={{ width: 'max-content' }}>
+            {dataMoviesTrending?.map((dataTrending) => (
+              <Link to={path.home} className='max-w-full'>
+                <RenderMovies key={dataTrending.id} dataTrending={dataTrending} />
+                <div className='text-sm font-semibold max-w-[220px]'>{dataTrending.title}</div>
+                <div className='text-gray-300'>{dataTrending.release_date}</div>
+              </Link>
+            ))}
+          </div>
+        </CustomScrollContainer>
       </div>
     </div>
   )
 }
+
+export default MovieTrending

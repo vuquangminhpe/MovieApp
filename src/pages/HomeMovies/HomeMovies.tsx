@@ -6,7 +6,6 @@ import MouseAnimate from '../../Components/MouseAnimate'
 export default function HomeMovies() {
   const { data: dataRated } = useQuery({ queryKey: ['dataTrending'], queryFn: ListApi.DataRated })
   const dataTrending = dataRated?.data.results
-  console.log(dataTrending)
 
   return (
     <div className='flex flex-col'>
