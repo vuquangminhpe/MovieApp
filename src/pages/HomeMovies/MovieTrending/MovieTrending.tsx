@@ -1,11 +1,11 @@
 import RenderMovies from '../../../Components/RenderMovies'
-import { Movie } from '../../../types/Movie'
+import { Movie, MovieTrendings } from '../../../types/Movie'
 import CustomScrollContainer from '../../../Components/CustomScrollContainer'
 import { Link } from 'react-router-dom'
 import path from '../../../constants/path'
 
 interface MovieTrendingProps {
-  dataMoviesTrending: Movie[]
+  dataMoviesTrending?: MovieTrendings[]
 }
 
 const MovieTrending = ({ dataMoviesTrending }: MovieTrendingProps) => {
@@ -17,10 +17,14 @@ const MovieTrending = ({ dataMoviesTrending }: MovieTrendingProps) => {
         <CustomScrollContainer height={350} width='100%'>
           <div className='flex gap-3 pr-4' style={{ width: 'max-content' }}>
             {dataMoviesTrending?.map((dataTrending) => (
-              <Link to={path.home} className='max-w-full'>
+              <Link key={dataTrending.id} to={path.home} className='max-w-full'>
                 <RenderMovies key={dataTrending.id} dataTrending={dataTrending} />
-                <div className='text-sm font-semibold max-w-[220px]'>{dataTrending.title}</div>
-                <div className='text-gray-300'>{dataTrending.release_date}</div>
+                <div className='text-sm font-semibold max-w-[220px]'>
+                  {dataTrending.original_name || dataTrending.original_title}
+                </div>
+                <div className='text-gray-300'>
+                  {dataTrending.first_air_date || (dataTrending as Movie).release_date}
+                </div>
               </Link>
             ))}
           </div>

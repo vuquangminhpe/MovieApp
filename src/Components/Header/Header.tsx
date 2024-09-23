@@ -257,7 +257,7 @@ export default function Header() {
                 </div>
                 <div className='flex flex-col gap-3'>
                   {dataRatedMovies?.slice(0, 10).map((movies: Movie) => (
-                    <div className='flex border-b-gray-200 border-b-[1px]'>
+                    <div key={movies.id} className='flex border-b-gray-200 border-b-[1px]'>
                       <svg
                         xmlns='http://www.w3.org/2000/svg'
                         fill='none'

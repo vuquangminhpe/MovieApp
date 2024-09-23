@@ -2,11 +2,20 @@ import { useQuery } from '@tanstack/react-query'
 import MovieTrending from './MovieTrending'
 import { ListApi } from '../../Apis/ListApi'
 import MouseAnimate from '../../Components/MouseAnimate'
+import PopularMovie from './PopularMovie/LeaderBroad'
+import { useEffect, useState } from 'react'
 
 export default function HomeMovies() {
-  const { data: dataRated } = useQuery({ queryKey: ['dataTrending'], queryFn: ListApi.DataRated })
+  const [mouseHoverImages, setMouseHoverImages] = useState('')
+  const { data: dataRated } = useQuery({ queryKey: ['dataTrending', []], queryFn: ListApi.TrendingData })
   const dataTrending = dataRated?.data.results
-
+  const { data: dataPopular } = useQuery({ queryKey: ['popularList', []], queryFn: ListApi.PopularList })
+  const dataPopulars = dataPopular?.data.results
+  useEffect(() => {
+    setMouseHoverImages(
+      'https://media.themoviedb.org/t/p/w1920_and_h600_multi_faces_filter(duotone,00192f,00baff)/SqAZjEqqBAYvyu3KSrWq1d0QLB.jpg'
+    )
+  }, [mouseHoverImages])
   return (
     <div className='flex flex-col'>
       <div className='relative h-[350px] max-sm:h-[600px] overflow-hidden'>
@@ -40,6 +49,10 @@ export default function HomeMovies() {
       <div className='container w-full'>
         {' '}
         <MovieTrending dataMoviesTrending={dataTrending} />
+        <div className=' relative rounded-xl shadow-sm'>
+          <img src={mouseHoverImages} alt='' className='absolute w-full' />
+          <PopularMovie dataPopulars={dataPopulars} />
+        </div>
       </div>
     </div>
   )

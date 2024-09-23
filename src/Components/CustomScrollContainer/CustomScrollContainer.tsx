@@ -10,8 +10,8 @@ interface CustomScrollbarProps {
 const CustomScrollContainer = ({ children, height = 400, width = '100%' }: CustomScrollbarProps) => {
   const renderThumb = ({ style, ...props }: React.HTMLProps<HTMLDivElement>) => {
     const thumbStyle: React.CSSProperties = {
-      backgroundColor: 'rgba(255, 255, 255, 0.7)',
-      borderRadius: '4px',
+      backgroundColor: '#fff/90',
+      borderRadius: '100px',
       cursor: 'pointer'
     }
     return <div style={{ ...style, ...thumbStyle }} {...props} />

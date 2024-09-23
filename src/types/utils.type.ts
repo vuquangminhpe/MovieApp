@@ -1,9 +1,9 @@
 export interface ErrorResponse<Data> {
-  message: string
-  data?: Data
+  page: string
+  results?: Data
 }
 
 export interface SuccessResponse<Data> {
-  message: string
-  data: Data
+  page: string
+  results: Data
 }
