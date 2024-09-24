@@ -6,16 +6,14 @@ import PopularMovie from './PopularMovie/LeaderBroad'
 import { useEffect, useState } from 'react'
 
 export default function HomeMovies() {
-  const [mouseHoverImages, setMouseHoverImages] = useState('')
+  const [mouseHoverImages, setMouseHoverImages] = useState(
+    'https://media.themoviedb.org/t/p/w1920_and_h600_multi_faces_filter(duotone,00192f,00baff)/SqAZjEqqBAYvyu3KSrWq1d0QLB.jpg'
+  )
   const { data: dataRated } = useQuery({ queryKey: ['dataTrending', []], queryFn: ListApi.TrendingData })
   const dataTrending = dataRated?.data.results
   const { data: dataPopular } = useQuery({ queryKey: ['popularList', []], queryFn: ListApi.PopularList })
   const dataPopulars = dataPopular?.data.results
-  useEffect(() => {
-    setMouseHoverImages(
-      'https://media.themoviedb.org/t/p/w1920_and_h600_multi_faces_filter(duotone,00192f,00baff)/SqAZjEqqBAYvyu3KSrWq1d0QLB.jpg'
-    )
-  }, [mouseHoverImages])
+  useEffect(() => {}, [mouseHoverImages])
   return (
     <div className='flex flex-col'>
       <div className='relative h-[350px] max-sm:h-[600px] overflow-hidden'>
@@ -49,9 +47,9 @@ export default function HomeMovies() {
       <div className='container w-full'>
         {' '}
         <MovieTrending dataMoviesTrending={dataTrending} />
-        <div className=' relative rounded-xl shadow-sm'>
-          <img src={mouseHoverImages} alt='' className='absolute w-full' />
-          <PopularMovie dataPopulars={dataPopulars} />
+        <div className=' relative rounded-xl shadow-sm w-full'>
+          <img src={mouseHoverImages} alt='' className='absolute h-[400px] opacity-80 object-[22%] w-full' />
+          <PopularMovie setMouseHoverImages={setMouseHoverImages} dataPopulars={dataPopulars} />
         </div>
       </div>
     </div>
