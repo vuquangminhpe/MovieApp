@@ -4,6 +4,7 @@ import { ListApi } from '../../Apis/ListApi'
 import MouseAnimate from '../../Components/MouseAnimate'
 import PopularMovie from './PopularMovie/LeaderBroad'
 import { useEffect, useState } from 'react'
+import MovieTrailer from './MovieTrailer'
 
 export default function HomeMovies() {
   const [mouseHoverImages, setMouseHoverImages] = useState(
@@ -11,8 +12,12 @@ export default function HomeMovies() {
   )
   const { data: dataRated } = useQuery({ queryKey: ['dataTrending', []], queryFn: ListApi.TrendingData })
   const dataTrending = dataRated?.data.results
-  const { data: dataPopular } = useQuery({ queryKey: ['popularList', []], queryFn: ListApi.PopularList })
+  const { data: dataTrailer } = useQuery({ queryKey: ['dataTrailerLatest', []], queryFn: ListApi.UpcomingList })
+  const dataTrailerLatest = dataTrailer?.data.results
+  const { data: dataPopular } = useQuery({ queryKey: ['dataPopularList', []], queryFn: ListApi.PopularList })
   const dataPopulars = dataPopular?.data.results
+  console.log(dataPopulars)
+
   useEffect(() => {}, [mouseHoverImages])
   return (
     <div className='flex flex-col'>
@@ -49,8 +54,9 @@ export default function HomeMovies() {
         <MovieTrending dataMoviesTrending={dataTrending} />
         <div className=' relative rounded-xl shadow-sm w-full'>
           <img src={mouseHoverImages} alt='' className='absolute h-[400px] opacity-80 object-[22%] w-full' />
-          <PopularMovie setMouseHoverImages={setMouseHoverImages} dataPopulars={dataPopulars} />
+          <MovieTrailer setMouseHoverImages={setMouseHoverImages} dataPopulars={dataTrailerLatest} />
         </div>
+        <PopularMovie dataPopulars={dataPopulars} />
       </div>
     </div>
   )

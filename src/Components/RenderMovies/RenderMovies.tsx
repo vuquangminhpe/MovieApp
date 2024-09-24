@@ -1,8 +1,8 @@
 import configBase from '../../constants/config'
-import { MovieTrendings } from '../../types/Movie'
+import { Movie, MovieTrendings } from '../../types/Movie'
 
 interface RenderMoviesProps {
-  dataTrending: MovieTrendings
+  dataTrending: MovieTrendings | Movie
   colorLiker?: string
   isShow?: boolean
   configWidth_Height?: string
@@ -14,7 +14,7 @@ const RenderMovies = ({
   isShow = true,
   configWidth_Height = 'w-48 h-72'
 }: RenderMoviesProps) => {
-  const percentage = Math.round(dataTrending.vote_average * 10)
+  const percentage = Math.round((dataTrending as MovieTrendings).vote_average * 10)
 
   if (percentage <= 60 && percentage >= 30) {
     colorLiker = '#b9d13f'

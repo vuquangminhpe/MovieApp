@@ -13,7 +13,7 @@ export default function Footer() {
           </div>
         </div>
         <div className='p-4'>
-          <ul className='text-white items-start'>
+          <ul className='text-white text-start'>
             <li className='font-bold'>The Basics</li>
             <li>Giới thiệu về TMDB</li>
             <li>Contact Us</li>
@@ -23,7 +23,7 @@ export default function Footer() {
           </ul>
         </div>
         <div className='p-4'>
-          <ul className='text-white items-start'>
+          <ul className='text-white text-start'>
             <li className='font-bold'>Get Involved</li>
             <li>Contribution Bible</li>
             <li>Add New Movie</li>
@@ -31,7 +31,7 @@ export default function Footer() {
           </ul>
         </div>
         <div className='p-4'>
-          <ul className='text-white items-start'>
+          <ul className='text-white text-start'>
             <li className='font-bold'>Community</li>
             <li>Guidelines</li>
             <li>Discussions</li>
@@ -39,7 +39,7 @@ export default function Footer() {
           </ul>
         </div>
         <div className='p-4'>
-          <ul className='text-white items-start'>
+          <ul className='text-white text-start top-[100%]'>
             <li className='font-bold'>Legal</li>
             <li>Terms of Use</li>
             <li>API Terms of Use</li>
