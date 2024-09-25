@@ -4,6 +4,7 @@ import { useRoutes } from 'react-router-dom'
 import path from './constants/path'
 import MainLayout from './Layouts/MainLayout'
 import HomeMovies from './pages/HomeMovies'
+import MovieDetails from './pages/MovieDetails'
 
 // function ProtectedRoute() {
 //   const { isAuthenticated } = useContext(AppContext)
@@ -101,6 +102,14 @@ export default function useRouteElement() {
       element: (
         <MainLayout>
           <HomeMovies />
+        </MainLayout>
+      )
+    },
+    {
+      path: path.movieDetails,
+      element: (
+        <MainLayout>
+          <MovieDetails />
         </MainLayout>
       )
     }

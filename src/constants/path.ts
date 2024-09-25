@@ -1,4 +1,5 @@
 const path = {
-  home: '/'
+  home: '/',
+  movieDetails: ':movieId'
 }
 export default path

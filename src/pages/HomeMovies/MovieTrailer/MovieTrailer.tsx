@@ -38,8 +38,6 @@ export default function MovieTrailer({ dataPopulars, setMouseHoverImages }: Prop
   const dataMoviesVideos: videosDetails | undefined = dataYoutube?.data.results[0]
   useEffect(() => {
     if (isModalOpen && selectedVideos) {
-      console.log(selectedVideos)
-
       refetch()
     }
   }, [isModalOpen, selectedVideos, refetch])

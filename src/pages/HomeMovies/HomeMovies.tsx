@@ -16,9 +16,9 @@ export default function HomeMovies() {
   const dataTrailerLatest = dataTrailer?.data.results
   const { data: dataPopular } = useQuery({ queryKey: ['dataPopularList', []], queryFn: ListApi.PopularList })
   const dataPopulars = dataPopular?.data.results
-  console.log(dataPopulars)
 
   useEffect(() => {}, [mouseHoverImages])
+
   return (
     <div className='flex flex-col'>
       <div className='relative h-[350px] max-sm:h-[600px] overflow-hidden'>

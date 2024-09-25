@@ -1,5 +1,8 @@
+import { Link } from 'react-router-dom'
 import configBase from '../../constants/config'
 import { Movie, MovieTrendings } from '../../types/Movie'
+import path from '../../constants/path'
+import { generateNameId } from '../../utils/utils'
 
 interface RenderMoviesProps {
   dataTrending: MovieTrendings | Movie
@@ -31,11 +34,15 @@ const RenderMovies = ({
           <span className='text-gray-400 text-xl'>⋮</span>
         </div>
       </div>
-      <img
-        className='w-full h-full object-cover'
-        src={`${configBase.imageBaseUrl}${dataTrending.poster_path}`}
-        alt={dataTrending.original_name || dataTrending.original_title}
-      />
+      <Link
+        to={`${path.home}${generateNameId({ name: (dataTrending.original_name as string) || (dataTrending.original_title as string), id: dataTrending.id as number })}`}
+      >
+        <img
+          className='w-full h-full object-cover'
+          src={`${configBase.imageBaseUrl}${dataTrending.poster_path}`}
+          alt={dataTrending.original_name || dataTrending.original_title}
+        />
+      </Link>
       {isShow && (
         <div className='absolute bottom-0 left-0 bg-gradient-to-t from-black to-transparent p-4'>
           <div className='flex items-center justify-center'>

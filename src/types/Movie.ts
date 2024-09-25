@@ -3,9 +3,9 @@ export interface Movie {
   [x: string]: any
   backdrop?: string
   genre_ids?: []
-  id?: number
+  id: number
   original_language?: string
-  original_title?: string
+  original_title: string
   overview?: string
   popularity?: number
   poster_path?: string
@@ -18,9 +18,9 @@ export interface Movie {
 
 export interface MovieTrendings {
   backdrop_path?: string
-  id?: number
-  name?: string
-  original_name?: string
+  id: number
+  name: string
+  original_name: string
   original_title?: string
   overview?: string
   poster_path?: string
