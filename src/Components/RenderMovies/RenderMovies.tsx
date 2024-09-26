@@ -1,3 +1,4 @@
+import React from 'react'
 import { Link } from 'react-router-dom'
 import configBase from '../../constants/config'
 import { Movie, MovieTrendings } from '../../types/Movie'
@@ -18,6 +19,9 @@ const RenderMovies = ({
   configWidth_Height = 'w-48 h-72'
 }: RenderMoviesProps) => {
   const percentage = Math.round((dataTrending as MovieTrendings).vote_average * 10)
+  const radius = 18
+  const circumference = 2 * Math.PI * radius
+  const strokeDashoffset = circumference - (percentage / 100) * circumference
 
   if (percentage <= 60 && percentage >= 30) {
     colorLiker = '#b9d13f'
@@ -44,22 +48,36 @@ const RenderMovies = ({
         />
       </Link>
       {isShow && (
-        <div className='absolute bottom-0 left-0 bg-gradient-to-t from-black to-transparent p-4'>
-          <div className='flex items-center justify-center'>
-            <svg className='w-10 h-10' viewBox='0 0 36 36'>
-              <path
-                d='M18 2.0845
-                a 15.9155 15.9155 0 0 1 0 31.831
-                a 15.9155 15.9155 0 0 1 0 -31.831'
-                fill='none'
-                stroke={colorLiker}
-                strokeWidth='3'
-                strokeDasharray={`${percentage}, 100`}
-              />
-              <text x='18' y='20.35' className='percentage' textAnchor='middle' fill='white' fontSize='10'>
-                {percentage}%
-              </text>
-            </svg>
+        <div className='absolute bottom-2 left-2 w-12 h-12'>
+          <svg className='w-full h-full' viewBox='0 0 40 40'>
+            <circle
+              className='text-gray-700'
+              strokeWidth='3'
+              stroke='currentColor'
+              fill='transparent'
+              r={radius}
+              cx='20'
+              cy='20'
+            />
+            <circle
+              className='text-lime-400'
+              strokeWidth='3'
+              strokeLinecap='round'
+              stroke={colorLiker}
+              fill='transparent'
+              r={radius}
+              cx='20'
+              cy='20'
+              style={{
+                strokeDasharray: circumference,
+                strokeDashoffset: strokeDashoffset,
+                transform: 'rotate(-90deg)',
+                transformOrigin: '50% 50%'
+              }}
+            />
+          </svg>
+          <div className='absolute inset-0 flex items-center justify-center'>
+            <span className='text-xs font-bold text-white'>{percentage}%</span>
           </div>
         </div>
       )}

@@ -8,8 +8,8 @@ interface YouTubePlayerProps {
 
 const YouTubePlayer = ({ videoId, onError }: YouTubePlayerProps) => {
   const opts = {
-    height: '360',
-    width: '640',
+    height: '555',
+    width: '1280',
     playerVars: {
       autoplay: 1
     }
