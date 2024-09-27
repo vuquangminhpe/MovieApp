@@ -115,7 +115,7 @@ export default function MovieTrailer({ dataPopulars, setMouseHoverImages }: Prop
             ) : (
               <YouTubePlayer
                 key={dataMoviesVideos.key}
-                videoId={getYouTubeId(dataMoviesVideos.key) || ''}
+                videoId={getYouTubeId(dataMoviesVideos.key as string) || ''}
                 onError={handlePlayerError}
               />
             )}

@@ -10,6 +10,8 @@ import YouTubePlayer from '../../Components/YouTubePlayerProps'
 import { getYouTubeId } from '../../constants/regex'
 import { useEffect, useState } from 'react'
 import DynamicMovieBackdrop from '../../Components/DynamicMovieBackdrop'
+import RenderMovies from '../../Components/RenderMovies'
+import DetailsMovieApi from '../../Apis/DetailsMovieApi'
 interface MovieDetailData {
   colorLiker?: string
 }
@@ -21,15 +23,21 @@ export default function MovieDetails({ colorLiker = '#4CAF50' }: MovieDetailData
 
   const { data: dataMovieDetails } = useQuery({
     queryKey: ['movieDetail', id],
-    queryFn: () => ListApi.getMovieDetail(Number(id))
+    queryFn: () => DetailsMovieApi.getDetailsMovie(Number(id))
   })
   const { data: dataYoutube_MovieDetails, refetch } = useQuery({
-    queryKey: ['videosDetails_Moviedetails', id],
+    queryKey: ['videosDetails_MovieDetail', id],
     queryFn: () => ListApi.getVideosList(Number(id)),
     staleTime: 0
   })
+  const { data: dataCredits } = useQuery({
+    queryKey: ['credit_MovieDetail', id],
+    queryFn: () => DetailsMovieApi.getCreditMovie(Number(id))
+  })
+  const dataCredit = dataCredits?.data.cast
+  console.log(dataCredit)
+
   const dataMovieDetails_Videos: videosDetails | undefined = dataYoutube_MovieDetails?.data.results[0]
-  console.log('data', dataMovieDetails_Videos)
   useEffect(() => {
     if (isModalOpen) {
       refetch()
@@ -69,16 +77,16 @@ export default function MovieDetails({ colorLiker = '#4CAF50' }: MovieDetailData
                   className=' object-cover h-full rounded-xl shadow-sm'
                 />
               </div>
-              <div className='col-span-9 ml-6'>
+              <div className='col-span-9 ml-6 text-white'>
                 <div className='capitalize font-semibold text-2xl'>{dataMovie?.original_title}</div>
                 <div className='flex'>
-                  {dataMovie?.release_date}({dataMovie?.origin_country[0]}){':'}
+                  {dataMovie?.release_date}({dataMovie?.origin_country[0]})<div className='ml-1 text-white'>{'•'}</div>
                   {dataMovie?.genres.map((item) => (
                     <div className='flex'>
-                      <div className='cursor-pointer mx-1'>{item.name}</div>,
+                      <div className='cursor-pointer mx-1 '>{item.name}</div>,
                     </div>
                   ))}
-                  <div>{formatRuntime(dataMovie?.runtime as number)}</div>
+                  <div className='ml-2'> Time: {formatRuntime(dataMovie?.runtime as number)}</div>
                 </div>
                 <div className='w-24 h-20 flex mt-3 items-center text-center justify-center'>
                   <svg className='w-[70%] h-full hover:scale-150 transition-all cursor-pointer' viewBox='0 0 40 40'>
@@ -207,7 +215,10 @@ export default function MovieDetails({ colorLiker = '#4CAF50' }: MovieDetailData
                       </svg>
                     }
                   />
-                  <div onClick={() => setIsModalOpen(true)} className='cursor-pointer flex justify-center items-center'>
+                  <div
+                    onClick={() => setIsModalOpen(true)}
+                    className='hover:opacity-50 cursor-pointer flex justify-center items-center'
+                  >
                     <svg
                       xmlns='http://www.w3.org/2000/svg'
                       fill='none'
@@ -225,10 +236,20 @@ export default function MovieDetails({ colorLiker = '#4CAF50' }: MovieDetailData
                     <span className='capitalize text-white font-bold'>play trailer</span>
                   </div>
                 </div>
+                <div className='opacity-50 mt-6'>{dataMovie?.tagline}</div>
+                <div className=' mt-5'>
+                  <h2 className='capitalize text-white font-semibold'>overview</h2>
+                  <div className='text-wrap text-gray-300'>{dataMovie?.overview}</div>
+                </div>
               </div>
             </div>
           </div>{' '}
         </DynamicMovieBackdrop>
+      </div>
+      <div className='grid grid-cols-12 container'>
+        <div className='col-span-9'>
+          <div>Top Billed Cast</div>
+        </div>
       </div>
       {isModalOpen && (
         <div className='fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50'>

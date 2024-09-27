@@ -16,6 +16,7 @@ export default function HomeMovies() {
   const dataTrailerLatest = dataTrailer?.data.results
   const { data: dataPopular } = useQuery({ queryKey: ['dataPopularList', []], queryFn: ListApi.PopularList })
   const dataPopulars = dataPopular?.data.results
+  const { data: dataLatest } = useQuery({ queryKey: ['dataLatest'], queryFn: ListApi.getTVLatest })
 
   useEffect(() => {}, [mouseHoverImages])
 
@@ -28,7 +29,11 @@ export default function HomeMovies() {
 
         <img
           className='absolute inset-0 w-full h-full object-cover z-0'
-          src='https://media.themoviedb.org/t/p/w1920_and_h600_multi_faces_filter(duotone,00192f,00baff)/SqAZjEqqBAYvyu3KSrWq1d0QLB.jpg'
+          src={
+            dataLatest?.data.poster_path == null
+              ? dataLatest?.data.poster_path
+              : 'https://media.themoviedb.org/t/p/w1920_and_h600_multi_faces_filter(duotone,00192f,00baff)/SqAZjEqqBAYvyu3KSrWq1d0QLB.jpg'
+          }
           alt='Background'
         />
 
@@ -53,7 +58,11 @@ export default function HomeMovies() {
         {' '}
         <MovieTrending dataMoviesTrending={dataTrending} />
         <div className=' relative rounded-xl shadow-sm w-full'>
-          <img src={mouseHoverImages} alt='' className='absolute h-[400px] opacity-80 object-[22%] w-full' />
+          <img
+            src={mouseHoverImages}
+            alt=''
+            className='absolute h-[400px] opacity-80 object-center w-full object-cover'
+          />
           <MovieTrailer setMouseHoverImages={setMouseHoverImages} dataPopulars={dataTrailerLatest} />
         </div>
         <PopularMovie dataPopulars={dataPopulars} />

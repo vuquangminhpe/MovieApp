@@ -1,4 +1,4 @@
-import { Movie, movieDetail, MovieTrendings, videosDetails } from '../types/Movie'
+import { Movie, MovieTrendings, videosDetails } from '../types/Movie'
 import { SuccessResponse } from '../types/utils.type'
 import http from '../utils/http'
 
@@ -9,5 +9,5 @@ export const ListApi = {
   UpcomingList: () => http.get<SuccessResponse<MovieTrendings[]>>('movie/upcoming'),
   PopularList: () => http.get<SuccessResponse<Movie[]>>('movie/popular'),
   getVideosList: (movie_id: number) => http.get<SuccessResponse<videosDetails[]>>(`movie/${movie_id}/videos`),
-  getMovieDetail: (movie_id: number) => http.get<movieDetail>(`movie/${movie_id}`)
+  getTVLatest: () => http.get<Movie>('tv/latest')
 }

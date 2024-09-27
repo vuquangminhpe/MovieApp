@@ -7,4 +7,6 @@ export interface ErrorResponse<Data> {
 export interface SuccessResponse<Data> {
   page: string
   results: Data
+  cast?: Data
+  crew?: Data
 }
