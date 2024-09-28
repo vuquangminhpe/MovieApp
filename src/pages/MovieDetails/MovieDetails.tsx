@@ -4,14 +4,15 @@ import { getIdFromNameId } from '../../utils/utils'
 import { useQuery } from '@tanstack/react-query'
 import { ListApi } from '../../Apis/ListApi'
 import configBase from '../../constants/config'
-import { movieDetail, videosDetails } from '../../types/Movie'
+import { CastMember, movieDetail, videosDetails } from '../../types/Movie'
 import Popover from '../../Components/Popover/Popover'
 import YouTubePlayer from '../../Components/YouTubePlayerProps'
 import { getYouTubeId } from '../../constants/regex'
 import { useEffect, useState } from 'react'
 import DynamicMovieBackdrop from '../../Components/DynamicMovieBackdrop'
-import RenderMovies from '../../Components/RenderMovies'
 import DetailsMovieApi from '../../Apis/DetailsMovieApi'
+import RenderDetailsMovie from '../../Components/RenderMovies/RenderDetailsMovie'
+import CustomScrollContainer from '../../Components/CustomScrollContainer'
 interface MovieDetailData {
   colorLiker?: string
 }
@@ -20,6 +21,7 @@ export default function MovieDetails({ colorLiker = '#4CAF50' }: MovieDetailData
 
   const { movieId } = useParams()
   const id = getIdFromNameId(movieId as string)
+  console.log(id)
 
   const { data: dataMovieDetails } = useQuery({
     queryKey: ['movieDetail', id],
@@ -246,10 +248,28 @@ export default function MovieDetails({ colorLiker = '#4CAF50' }: MovieDetailData
           </div>{' '}
         </DynamicMovieBackdrop>
       </div>
-      <div className='grid grid-cols-12 container'>
-        <div className='col-span-9'>
-          <div>Top Billed Cast</div>
+      <div className='grid grid-cols-12 container w-full'>
+        <div className='col-span-9 w-full'>
+          <div className='w-full'>
+            <div className='mt-9 mb-3 ml-1 font-bold text-2xl'>Top Billed Cast</div>
+            <CustomScrollContainer height={400} width='100%'>
+              <div className='flex gap-3 pr-4' style={{ width: 'max-content' }}>
+                {dataCredit?.map((dataPerformerDetails: CastMember) => (
+                  <div className='max-w-full rounded-t-sm bg-white shadow-xl'>
+                    <RenderDetailsMovie key={dataPerformerDetails.id} dataMovieDetails={dataPerformerDetails} />
+                    <div className='p-2 text-black font-semibold'>
+                      {dataPerformerDetails.name || dataPerformerDetails.original_name}
+                    </div>
+                    <div className='p-2 text-gray-400'>{dataPerformerDetails.character}</div>
+                  </div>
+                ))}
+              </div>
+            </CustomScrollContainer>
+          </div>
+          <div className='capitalize py-5 font-bold'>full cast & crew</div>
+          <div className='border-b-[1px] border-gray-300'></div>
         </div>
+        <div className='col-span-3 inline-block text-black'></div>
       </div>
       {isModalOpen && (
         <div className='fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50'>

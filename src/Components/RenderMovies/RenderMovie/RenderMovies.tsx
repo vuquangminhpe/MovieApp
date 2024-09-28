@@ -1,8 +1,8 @@
 import { Link } from 'react-router-dom'
-import configBase from '../../constants/config'
-import { Movie, MovieTrendings } from '../../types/Movie'
-import path from '../../constants/path'
-import { generateNameId } from '../../utils/utils'
+import configBase from '../../../constants/config'
+import { Movie, MovieTrendings } from '../../../types/Movie'
+import path from '../../../constants/path'
+import { generateNameId } from '../../../utils/utils'
 
 interface RenderMoviesProps {
   dataTrending: MovieTrendings | Movie
@@ -42,7 +42,11 @@ const RenderMovies = ({
       >
         <img
           className='w-full h-full object-cover'
-          src={`${configBase.imageBaseUrl}${dataTrending.poster_path}`}
+          src={
+            dataTrending.poster_path == null
+              ? 'https://www.themoviedb.org/assets/2/v4/glyphicons/basic/glyphicons-basic-4-user-grey-d8fe957375e70239d6abdd549fd7568c89281b2179b5f4470e2e12895792dfa5.svg'
+              : `${configBase.imageBaseUrl}${dataTrending.poster_path}`
+          }
           alt={dataTrending.original_name || dataTrending.original_title}
         />
       </Link>

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export interface Movie {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [x: string]: any
@@ -97,7 +98,7 @@ export interface movieDetail {
   vote_count: number
 }
 
-interface CastMember {
+export interface CastMember {
   adult: boolean
   gender: number
   id: number
@@ -113,6 +114,21 @@ interface CastMember {
 }
 
 export interface MovieCast {
+  [x: string]: any
   id: number
   cast: CastMember[]
+}
+
+export interface BackdropImages {
+  aspect_ratio: number
+  height: number
+  iso_639_1: null | string
+  file_path: string
+  vote_average: number
+  vote_count: number
+  width: number
+}
+
+export interface DetailsImages {
+  backdrops: BackdropImages[]
 }

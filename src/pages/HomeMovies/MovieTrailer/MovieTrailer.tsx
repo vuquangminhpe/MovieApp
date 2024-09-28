@@ -6,9 +6,9 @@ import { MovieTrendings, videosDetails } from '../../../types/Movie'
 import { ListApi } from '../../../Apis/ListApi'
 import CustomScrollContainer from '../../../Components/CustomScrollContainer'
 import configBase from '../../../constants/config'
-import RenderMovies from '../../../Components/RenderMovies'
 import YouTubePlayer from '../../../Components/YouTubePlayerProps'
 import { getYouTubeId } from '../../../constants/regex'
+import RenderMovies from '../../../Components/RenderMovies/RenderMovie'
 
 interface PropsData {
   dataPopulars?: MovieTrendings[]

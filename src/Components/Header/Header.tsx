@@ -15,7 +15,7 @@ export default function Header() {
   const dataRatedMovies = DataRated?.data.results
 
   return (
-    <div className='relative bg-blue-950 flex h-[100px] md:justify-between items-center w-full p-4 z-50'>
+    <div className='relative bg-blue-950 flex h-[100px] md:justify-between items-center w-full p-4 z-50 min-w-full'>
       {' '}
       <div className='flex'>
         <Link to={path.home} className='mr-4 min-w-[154px]'>
@@ -32,7 +32,7 @@ export default function Header() {
           renderPopover={
             <div className='shadow-sm max-w-52 w-40  text-sm font-sans gap-1 border rounded-xl border-gray-300 bg-white text-black flex flex-col justify-center text-left items-center'>
               <Link to='' className='hover:bg-gray-200 p-2 rounded-xl  w-full'>
-                Popdivar
+                Popular
               </Link>
               <Link to='' className='hover:bg-gray-200 p-2  w-full'>
                 Now Playing

@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom'
 import { Movie } from '../../../../types/Movie'
 import CustomScrollContainer from '../../../../Components/CustomScrollContainer'
 import path from '../../../../constants/path'
-import RenderMovies from '../../../../Components/RenderMovies'
+import RenderMovies from '../../../../Components/RenderMovies/RenderMovie'
 
 interface MovieTrendingProps {
   dataPopulars?: Movie[]
