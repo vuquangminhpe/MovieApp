@@ -2,10 +2,10 @@ import { Link } from 'react-router-dom'
 import configBase from '../../../constants/config'
 import path from '../../../constants/path'
 import { generateNameId } from '../../../utils/utils'
-import { CastMember, MovieCast } from '../../../types/Movie'
+import { CastMember, MovieCast, videosDetails } from '../../../types/Movie'
 
 interface RenderMoviesProps {
-  dataMovieDetails: CastMember | MovieCast
+  dataMovieDetails: CastMember | MovieCast | videosDetails
   configWidth_Height?: string
 }
 

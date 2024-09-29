@@ -10,7 +10,7 @@ interface CustomScrollbarProps {
 const CustomScrollContainer = ({ children, height = 400, width = '100%' }: CustomScrollbarProps) => {
   const renderThumb = ({ style, ...props }: React.HTMLProps<HTMLDivElement>) => {
     const thumbStyle: React.CSSProperties = {
-      backgroundColor: '#fff/90',
+      backgroundColor: '#fff',
       borderRadius: '100px',
       cursor: 'pointer'
     }
@@ -25,7 +25,7 @@ const CustomScrollContainer = ({ children, height = 400, width = '100%' }: Custo
       bottom: '2px',
       top: '2px',
       borderRadius: '4px',
-      background: 'rgba(255, 255, 255, 0.3)'
+      background: '#fff'
     }
     return <div style={{ ...style, ...trackStyle }} {...props} />
   }
@@ -44,7 +44,7 @@ const CustomScrollContainer = ({ children, height = 400, width = '100%' }: Custo
           position: 'absolute',
           top: 0,
           right: 0,
-          width: '30%',
+          width: '20%',
           height: '100%',
           background:
             'linear-gradient(to left, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.5) 50%, transparent 100%)',

@@ -1,27 +1,27 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { useParams } from 'react-router-dom'
+import { NavLink, useParams } from 'react-router-dom'
 import { getIdFromNameId } from '../../utils/utils'
 import { useQuery } from '@tanstack/react-query'
 import { ListApi } from '../../Apis/ListApi'
 import configBase from '../../constants/config'
 import { CastMember, movieDetail, videosDetails } from '../../types/Movie'
-import Popover from '../../Components/Popover/Popover'
-import YouTubePlayer from '../../Components/YouTubePlayerProps'
+import Popover from '../../Components/Custom/Popover/Popover'
+import YouTubePlayer from '../../Components/Custom/YouTubePlayerProps'
 import { getYouTubeId } from '../../constants/regex'
-import { useEffect, useState } from 'react'
-import DynamicMovieBackdrop from '../../Components/DynamicMovieBackdrop'
+import { Children, useEffect, useState } from 'react'
+import DynamicMovieBackdrop from '../../Components/Custom/DynamicMovieBackdrop'
 import DetailsMovieApi from '../../Apis/DetailsMovieApi'
 import RenderDetailsMovie from '../../Components/RenderMovies/RenderDetailsMovie'
-import CustomScrollContainer from '../../Components/CustomScrollContainer'
+import CustomScrollContainer from '../../Components/Custom/CustomScrollContainer'
+import TabsSet from '@/Components/Custom/TabsEnable/TabsSet'
+import RenderMovies from '@/Components/RenderMovies/RenderMovie'
 interface MovieDetailData {
   colorLiker?: string
 }
 export default function MovieDetails({ colorLiker = '#4CAF50' }: MovieDetailData) {
   const [isModalOpen, setIsModalOpen] = useState(false)
-
   const { movieId } = useParams()
   const id = getIdFromNameId(movieId as string)
-  console.log(id)
 
   const { data: dataMovieDetails } = useQuery({
     queryKey: ['movieDetail', id],
@@ -40,6 +40,7 @@ export default function MovieDetails({ colorLiker = '#4CAF50' }: MovieDetailData
   console.log(dataCredit)
 
   const dataMovieDetails_Videos: videosDetails | undefined = dataYoutube_MovieDetails?.data.results[0]
+
   useEffect(() => {
     if (isModalOpen) {
       refetch()
@@ -50,6 +51,23 @@ export default function MovieDetails({ colorLiker = '#4CAF50' }: MovieDetailData
   const radius = 18
   const circumference = 2 * Math.PI * radius
   const strokeDashoffset = circumference - (percentage / 100) * circumference
+  const MapSet = [
+    {
+      id: 'Most_Poplar',
+      name: 'Most Poplar',
+      Children: (
+        <CustomScrollContainer height={400} width='100%'>
+          <div className='flex gap-3 pr-4' style={{ width: 'max-content' }}>
+            {dataYoutube_MovieDetails?.data.results?.map((dataPerformerDetails: videosDetails) => (
+              <div className='max-w-full rounded-t-sm bg-white shadow-xl'>
+                <RenderDetailsMovie key={dataPerformerDetails.id} dataMovieDetails={dataPerformerDetails} />
+              </div>
+            ))}
+          </div>
+        </CustomScrollContainer>
+      )
+    }
+  ]
 
   if (percentage < 70 && percentage >= 30) {
     colorLiker = '#b9d13f'
@@ -268,6 +286,9 @@ export default function MovieDetails({ colorLiker = '#4CAF50' }: MovieDetailData
           </div>
           <div className='capitalize py-5 font-bold'>full cast & crew</div>
           <div className='border-b-[1px] border-gray-300'></div>
+          <div className='mt-5 capitalize flex'>
+            <div className='font-semibold'>Media</div>
+          </div>
         </div>
         <div className='col-span-3 inline-block text-black'></div>
       </div>

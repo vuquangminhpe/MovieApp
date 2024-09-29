@@ -1,10 +1,11 @@
 import { Link } from 'react-router-dom'
-import path from '../../constants/path'
-import Popover from '../Popover/Popover'
-import icons from '../../Imgs/nonesp.webp'
+import path from '../../../constants/path'
+import Popover from '../../Custom/Popover/Popover'
+import icons from '../../../Imgs/nonesp.webp'
 import { useQuery } from '@tanstack/react-query'
-import { ListApi } from '../../Apis/ListApi'
-import { Movie } from '../../types/Movie'
+import { ListApi } from '../../../Apis/ListApi'
+import { Movie } from '../../../types/Movie'
+import ModeToggle from '../../ModeToggle'
 
 export default function Header() {
   const { data: DataRated } = useQuery({
@@ -282,6 +283,7 @@ export default function Header() {
             </div>
           }
         />
+        <ModeToggle />
       </div>
     </div>
   )

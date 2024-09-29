@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import MovieTrending from './MovieTrending'
 import { ListApi } from '../../Apis/ListApi'
-import MouseAnimate from '../../Components/MouseAnimate'
+import MouseAnimate from '../../Components/Custom/MouseAnimate'
 import PopularMovie from './PopularMovie/LeaderBroad'
 import { useEffect, useState } from 'react'
 import MovieTrailer from './MovieTrailer'
@@ -16,7 +16,6 @@ export default function HomeMovies() {
   const dataTrailerLatest = dataTrailer?.data.results
   const { data: dataPopular } = useQuery({ queryKey: ['dataPopularList', []], queryFn: ListApi.PopularList })
   const dataPopulars = dataPopular?.data.results
-  const { data: dataLatest } = useQuery({ queryKey: ['dataLatest'], queryFn: ListApi.getTVLatest })
 
   useEffect(() => {}, [mouseHoverImages])
 
@@ -30,9 +29,7 @@ export default function HomeMovies() {
         <img
           className='absolute inset-0 w-full h-full object-cover z-0'
           src={
-            dataLatest?.data.poster_path !== null
-              ? dataLatest?.data.poster_path
-              : 'https://media.themoviedb.org/t/p/w1920_and_h600_multi_faces_filter(duotone,00192f,00baff)/SqAZjEqqBAYvyu3KSrWq1d0QLB.jpg'
+            'https://media.themoviedb.org/t/p/w1920_and_h600_multi_faces_filter(duotone,00192f,00baff)/SqAZjEqqBAYvyu3KSrWq1d0QLB.jpg'
           }
           alt='Background'
         />

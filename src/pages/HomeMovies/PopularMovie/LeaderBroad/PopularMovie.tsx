@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { Movie } from '../../../../types/Movie'
-import CustomScrollContainer from '../../../../Components/CustomScrollContainer'
+import CustomScrollContainer from '../../../../Components/Custom/CustomScrollContainer'
 import path from '../../../../constants/path'
 import RenderMovies from '../../../../Components/RenderMovies/RenderMovie'
 
