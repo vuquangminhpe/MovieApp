@@ -131,4 +131,8 @@ export interface BackdropImages {
 
 export interface DetailsImages {
   backdrops: BackdropImages[]
+  logos: BackdropImages[]
+  posters: BackdropImages[]
+
+  id: number
 }

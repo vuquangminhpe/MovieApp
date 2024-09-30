@@ -9,13 +9,17 @@ interface RenderMoviesProps {
   colorLiker?: string
   isShow?: boolean
   configWidth_Height?: string
+  typeText?: string
+  CustomIMG?: string
 }
 
 const RenderMovies = ({
   dataTrending,
   colorLiker = '#4CAF50',
   isShow = true,
-  configWidth_Height = 'w-48 h-72'
+  configWidth_Height = 'w-48 h-72',
+  typeText = 'text-white',
+  CustomIMG = ''
 }: RenderMoviesProps) => {
   const percentage = Math.round((dataTrending as MovieTrendings).vote_average * 10)
   const radius = 18
@@ -41,7 +45,7 @@ const RenderMovies = ({
         to={`${path.home}${generateNameId({ name: (dataTrending.original_name as string) || (dataTrending.original_title as string), id: dataTrending.id as number })}`}
       >
         <img
-          className='w-full h-full object-cover'
+          className={`${CustomIMG} h-full w-full object-cover`}
           src={
             dataTrending.poster_path == null
               ? 'https://www.themoviedb.org/assets/2/v4/glyphicons/basic/glyphicons-basic-4-user-grey-d8fe957375e70239d6abdd549fd7568c89281b2179b5f4470e2e12895792dfa5.svg'
@@ -80,7 +84,7 @@ const RenderMovies = ({
             />
           </svg>
           <div className='absolute inset-0 flex items-center justify-center'>
-            <span className='text-xs font-bold text-white'>{percentage}%</span>
+            <span className={`text-xs font-bold ${typeText}`}>{percentage}%</span>
           </div>
         </div>
       )}

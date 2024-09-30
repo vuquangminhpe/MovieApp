@@ -13,9 +13,9 @@ interface TypeItem {
 export default function TabsSet({ ItemProps }: Props) {
   return (
     <Tabs defaultValue={ItemProps[0]?.id} className='w-full'>
-      <TabsList className='grid grid-cols-2 w-[400px]'>
+      <TabsList className='flex gap-3 w-[470px] ml-10'>
         {ItemProps.map((item) => (
-          <TabsTrigger key={item.id} value={item.id}>
+          <TabsTrigger className='ml-5 mr-2 text-black font-semibold text-sm' key={item.id} value={item.id}>
             {item.name}
           </TabsTrigger>
         ))}

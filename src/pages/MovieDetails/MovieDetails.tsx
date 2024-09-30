@@ -1,10 +1,19 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { getIdFromNameId } from '../../utils/utils'
 import { useQuery } from '@tanstack/react-query'
 import { ListApi } from '../../Apis/ListApi'
 import configBase from '../../constants/config'
-import { CastMember, MovieCast, movieDetail, videosDetails } from '../../types/Movie'
+import {
+  BackdropImages,
+  CastMember,
+  DetailsImages,
+  Movie,
+  MovieCast,
+  movieDetail,
+  MovieTrendings,
+  videosDetails
+} from '../../types/Movie'
 import Popover from '../../Components/Custom/Popover/Popover'
 import YouTubePlayer from '../../Components/Custom/YouTubePlayerProps'
 import { getYouTubeId } from '../../constants/regex'
@@ -14,25 +23,25 @@ import DetailsMovieApi from '../../Apis/DetailsMovieApi'
 import RenderDetailsMovie from '../../Components/RenderMovies/RenderDetailsMovie'
 import CustomScrollContainer from '../../Components/Custom/CustomScrollContainer'
 import TabsSet from '@/Components/Custom/TabsEnable/TabsSet'
-
+import MovieTrailer from '../HomeMovies/MovieTrailer'
+import RenderMovies from '@/Components/RenderMovies/RenderMovie'
 interface MovieDetailData {
   colorLiker?: string
 }
-interface ApiResponse<T> {
-  data: {
-    results: T[]
-  }
-}
 
-type AddDataRenderFunction = <T extends videosDetails | MovieCast | CastMember>(
-  dataRender: ApiResponse<T> | undefined,
-  typeDataRender?: new () => T
-) => JSX.Element
 export default function MovieDetails({ colorLiker = '#4CAF50' }: MovieDetailData) {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const { movieId } = useParams()
+  const [mouseHoverImages, setMouseHoverImages] = useState(
+    'https://media.themoviedb.org/t/p/w1920_and_h600_multi_faces_filter(duotone,00192f,00baff)/SqAZjEqqBAYvyu3KSrWq1d0QLB.jpg'
+  )
   const id = getIdFromNameId(movieId as string)
-
+  const { data: dataImages } = useQuery({
+    queryKey: ['IMGMovieDetail', id],
+    queryFn: () => DetailsMovieApi.getImages(Number(id))
+  })
+  const { data: dataTrailer } = useQuery({ queryKey: ['dataTrailerLatest', []], queryFn: ListApi.UpcomingList })
+  const dataTrailerLatest = dataTrailer?.data.results
   const { data: dataMovieDetails } = useQuery({
     queryKey: ['movieDetail', id],
     queryFn: () => DetailsMovieApi.getDetailsMovie(Number(id))
@@ -46,8 +55,24 @@ export default function MovieDetails({ colorLiker = '#4CAF50' }: MovieDetailData
     queryKey: ['credit_MovieDetail', id],
     queryFn: () => DetailsMovieApi.getCreditMovie(Number(id))
   })
+  const { data: dataRecommendationsDetails } = useQuery({
+    queryKey: ['Recommendations_MovieDetails', id],
+    queryFn: () => DetailsMovieApi.getRecommendations(Number(id))
+  })
+  const { data: dataKeywords } = useQuery({
+    queryKey: ['keyWords_MovieDetails', id],
+    queryFn: () => DetailsMovieApi.getKeywords(Number(id))
+  })
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const dataKeywordsDetails = dataKeywords?.data.keywords.map((ele: any) => ele.name)
+  console.log(dataKeywordsDetails)
+
   const dataCredit = dataCredits?.data.cast
-  console.log(dataCredit)
+  const dataRecommendations = dataRecommendationsDetails?.data.results
+  const dataRecommendations_filter = dataRecommendations?.filter(
+    (items: MovieTrendings) => items.backdrop_path !== null
+  )
+  console.log(dataRecommendations_filter)
 
   const dataMovieDetails_Videos: videosDetails | undefined = dataYoutube_MovieDetails?.data.results[0]
 
@@ -61,28 +86,44 @@ export default function MovieDetails({ colorLiker = '#4CAF50' }: MovieDetailData
   const radius = 18
   const circumference = 2 * Math.PI * radius
   const strokeDashoffset = circumference - (percentage / 100) * circumference
-  const addDataRender: AddDataRenderFunction = (dataRender) => {
+  const addDataRender = (dataRenders: DetailsImages[], isShow?: boolean) => {
+    isShow = false
     return (
       <CustomScrollContainer height={400} width='100%'>
         <div className='flex gap-3 pr-4' style={{ width: 'max-content' }}>
-          {dataRender?.data.results?.map((dataDetails) => (
-            <div key={dataDetails.id} className='max-w-full rounded-t-sm bg-white shadow-xl'>
-              <RenderDetailsMovie dataMovieDetails={dataDetails} />
+          {dataRenders?.slice(0, 8).map((dataDetails: DetailsImages) => (
+            <div
+              key={crypto.randomUUID()}
+              className='max-w-full hover:scale-125 transition-all hover:m-10 rounded-2xl bg-white shadow-xl'
+            >
+              <RenderDetailsMovie isShow={isShow} dataShowDetails={dataDetails} />
             </div>
           ))}
         </div>
       </CustomScrollContainer>
     )
   }
-  const dataMovieDetails_mp4: ApiResponse<videosDetails> | undefined = dataYoutube_MovieDetails
-
   const MapSet = [
+    {
+      id: 'videos',
+      name: 'Videos',
+      children: <MovieTrailer setMouseHoverImages={setMouseHoverImages} dataPopulars={dataTrailerLatest} />
+    },
     {
       id: 'Most_Poplar',
       name: 'Most Poplar',
-      children: addDataRender(dataMovieDetails_mp4)
+      children: addDataRender(dataImages?.data.backdrops)
     },
-    { id: 'Images', name: 'Images', children: addDataRender(dataMovieDetails_mp4) }
+    {
+      id: 'backdrops',
+      name: 'Backdrops',
+      children: addDataRender(dataImages?.data.logos)
+    },
+    {
+      id: 'posters',
+      name: 'Posters',
+      children: addDataRender(dataImages?.data.posters)
+    }
   ]
 
   if (percentage < 70 && percentage >= 30) {
@@ -118,7 +159,7 @@ export default function MovieDetails({ colorLiker = '#4CAF50' }: MovieDetailData
                 <div className='flex'>
                   {dataMovie?.release_date}({dataMovie?.origin_country[0]})<div className='ml-1 text-white'>{'•'}</div>
                   {dataMovie?.genres.map((item) => (
-                    <div className='flex'>
+                    <div key={item.id} className='flex'>
                       <div className='cursor-pointer mx-1 '>{item.name}</div>,
                     </div>
                   ))}
@@ -289,7 +330,7 @@ export default function MovieDetails({ colorLiker = '#4CAF50' }: MovieDetailData
             <CustomScrollContainer height={400} width='100%'>
               <div className='flex gap-3 pr-4' style={{ width: 'max-content' }}>
                 {dataCredit?.map((dataPerformerDetails: CastMember) => (
-                  <div className='max-w-full rounded-t-sm bg-white shadow-xl'>
+                  <div key={dataPerformerDetails.cast_id} className='max-w-full rounded-t-sm bg-white shadow-xl'>
                     <RenderDetailsMovie key={dataPerformerDetails.id} dataMovieDetails={dataPerformerDetails} />
                     <div className='p-2 text-black font-semibold'>
                       {dataPerformerDetails.name || dataPerformerDetails.original_name}
@@ -306,8 +347,75 @@ export default function MovieDetails({ colorLiker = '#4CAF50' }: MovieDetailData
             <div className='font-semibold'>Media</div>
             <TabsSet key={crypto.randomUUID()} ItemProps={MapSet} />
           </div>
+          <div className='border-b-[1px] border-gray-300 my-5'></div>
+          <div className='w-full h-[200px] bg-gray-400/50 rounded-xl shadow-sm text-start'>
+            <div className='p-10'>
+              <div className='text-white font-semibold capitalize mb-2 flex flex-col'>
+                <div>Part of the {dataMovieDetails?.data.belongs_to_collection?.name}</div>
+                <div>{dataMovieDetails?.data.tagline}</div>
+                <Link
+                  to={''}
+                  className='bg-black text-white p-2 mt-3 w-[200px] text-center items-center uppercase rounded-2xl text-sm font-bold'
+                >
+                  view the collection
+                </Link>
+              </div>
+            </div>
+          </div>
+          <div className='border-b-[1px] border-gray-300 my-5'></div>
+          <div className='text-xl font-bold text-black'>Recommendation</div>
+          <CustomScrollContainer height={330} width='100%'>
+            <div className='flex gap-3 pr-4' style={{ width: 'max-content' }}>
+              {dataRecommendations_filter?.map((dataPerformerDetails: MovieTrendings | Movie) => (
+                <div key={dataPerformerDetails.id} className='max-w-full rounded-t-sm bg-white shadow-xl '>
+                  <RenderMovies
+                    CustomIMG='object-top'
+                    typeText='text-teal-500'
+                    key={dataPerformerDetails.id}
+                    configWidth_Height='w-[400px] h-[270px]'
+                    dataTrending={dataPerformerDetails}
+                  />
+                  <div className='p-2 font-semibold'>
+                    {(dataPerformerDetails as Movie).title || dataPerformerDetails.original_name}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CustomScrollContainer>
         </div>
-        <div className='col-span-3 inline-block text-black'></div>
+        <div className='col-span-3 flex flex-col text-black p-6 ml-3'>
+          <div className='mt-6'>
+            <div className='capitalize font-semibold text-sm mb-1'>original title</div>
+            <div className='text-sm'>{dataMovie?.original_title}</div>
+          </div>
+          <div className='mt-6'>
+            <div className='capitalize font-semibold text-sm mb-1'>Status</div>
+            <div className='text-sm'>{dataMovie?.status}</div>
+          </div>
+          <div className='mt-6'>
+            <div className='capitalize font-semibold text-sm mb-1'>Original Language</div>
+            <div className='text-sm'>{dataMovie?.original_language}</div>
+          </div>
+          <div className='mt-6'>
+            <div className='capitalize font-semibold text-sm mb-1'>budget</div>
+            <div className='text-sm'>{dataMovie?.budget}</div>
+          </div>
+          <div className='mt-6'>
+            <div className='capitalize font-semibold text-sm mb-1'>revenue</div>
+
+            <div className='text-sm'>{dataMovie?.revenue}</div>
+          </div>
+          <div className='mt-10'>
+            <div>Keywords</div>
+            <div className='grid  lg:grid-cols-3 md:grid-cols-1 text-center'>
+              {dataKeywordsDetails?.map((item: string) => (
+                <Link to={''} className='bg-gray-300 text-sm mr-2 mb-2 text-black shadow-sm rounded-sm p-2'>
+                  {item}
+                </Link>
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
       {isModalOpen && (
         <div className='fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50'>
