@@ -1,23 +1,33 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { NavLink, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { getIdFromNameId } from '../../utils/utils'
 import { useQuery } from '@tanstack/react-query'
 import { ListApi } from '../../Apis/ListApi'
 import configBase from '../../constants/config'
-import { CastMember, movieDetail, videosDetails } from '../../types/Movie'
+import { CastMember, MovieCast, movieDetail, videosDetails } from '../../types/Movie'
 import Popover from '../../Components/Custom/Popover/Popover'
 import YouTubePlayer from '../../Components/Custom/YouTubePlayerProps'
 import { getYouTubeId } from '../../constants/regex'
-import { Children, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import DynamicMovieBackdrop from '../../Components/Custom/DynamicMovieBackdrop'
 import DetailsMovieApi from '../../Apis/DetailsMovieApi'
 import RenderDetailsMovie from '../../Components/RenderMovies/RenderDetailsMovie'
 import CustomScrollContainer from '../../Components/Custom/CustomScrollContainer'
 import TabsSet from '@/Components/Custom/TabsEnable/TabsSet'
-import RenderMovies from '@/Components/RenderMovies/RenderMovie'
+
 interface MovieDetailData {
   colorLiker?: string
 }
+interface ApiResponse<T> {
+  data: {
+    results: T[]
+  }
+}
+
+type AddDataRenderFunction = <T extends videosDetails | MovieCast | CastMember>(
+  dataRender: ApiResponse<T> | undefined,
+  typeDataRender?: new () => T
+) => JSX.Element
 export default function MovieDetails({ colorLiker = '#4CAF50' }: MovieDetailData) {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const { movieId } = useParams()
@@ -51,22 +61,28 @@ export default function MovieDetails({ colorLiker = '#4CAF50' }: MovieDetailData
   const radius = 18
   const circumference = 2 * Math.PI * radius
   const strokeDashoffset = circumference - (percentage / 100) * circumference
+  const addDataRender: AddDataRenderFunction = (dataRender) => {
+    return (
+      <CustomScrollContainer height={400} width='100%'>
+        <div className='flex gap-3 pr-4' style={{ width: 'max-content' }}>
+          {dataRender?.data.results?.map((dataDetails) => (
+            <div key={dataDetails.id} className='max-w-full rounded-t-sm bg-white shadow-xl'>
+              <RenderDetailsMovie dataMovieDetails={dataDetails} />
+            </div>
+          ))}
+        </div>
+      </CustomScrollContainer>
+    )
+  }
+  const dataMovieDetails_mp4: ApiResponse<videosDetails> | undefined = dataYoutube_MovieDetails
+
   const MapSet = [
     {
       id: 'Most_Poplar',
       name: 'Most Poplar',
-      Children: (
-        <CustomScrollContainer height={400} width='100%'>
-          <div className='flex gap-3 pr-4' style={{ width: 'max-content' }}>
-            {dataYoutube_MovieDetails?.data.results?.map((dataPerformerDetails: videosDetails) => (
-              <div className='max-w-full rounded-t-sm bg-white shadow-xl'>
-                <RenderDetailsMovie key={dataPerformerDetails.id} dataMovieDetails={dataPerformerDetails} />
-              </div>
-            ))}
-          </div>
-        </CustomScrollContainer>
-      )
-    }
+      children: addDataRender(dataMovieDetails_mp4)
+    },
+    { id: 'Images', name: 'Images', children: addDataRender(dataMovieDetails_mp4) }
   ]
 
   if (percentage < 70 && percentage >= 30) {
@@ -288,6 +304,7 @@ export default function MovieDetails({ colorLiker = '#4CAF50' }: MovieDetailData
           <div className='border-b-[1px] border-gray-300'></div>
           <div className='mt-5 capitalize flex'>
             <div className='font-semibold'>Media</div>
+            <TabsSet key={crypto.randomUUID()} ItemProps={MapSet} />
           </div>
         </div>
         <div className='col-span-3 inline-block text-black'></div>
