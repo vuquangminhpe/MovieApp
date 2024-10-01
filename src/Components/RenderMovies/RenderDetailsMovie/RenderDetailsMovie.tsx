@@ -1,7 +1,4 @@
-import { Link } from 'react-router-dom'
 import configBase from '../../../constants/config'
-import path from '../../../constants/path'
-import { generateNameId } from '../../../utils/utils'
 import { BackdropImages, CastMember, DetailsImages, MovieCast, videosDetails } from '../../../types/Movie'
 
 interface RenderMoviesProps {
@@ -26,9 +23,7 @@ const RenderDetailsMovie = ({
           <div className='absolute top-2 right-2 z-10'>
             <div className='w-6 h-6 flex items-center justify-center cursor-pointer'></div>
           </div>
-          <Link
-            to={`${path.home}${generateNameId({ name: (dataMovieDetails as CastMember as CastMember).name || ((dataMovieDetails as CastMember).original_name as string), id: (dataMovieDetails as CastMember).id as number })}`}
-          >
+          <div>
             <img
               className='w-full h-full object-cover rounded-t-xl shadow-sm'
               src={
@@ -37,7 +32,7 @@ const RenderDetailsMovie = ({
                   : `${configBase.imageBaseUrl}${(dataMovieDetails as CastMember).profile_path}`
               }
             />
-          </Link>
+          </div>
         </div>
       )}
       {!isShow && (

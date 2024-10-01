@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Link, useParams } from 'react-router-dom'
-import { getIdFromNameId } from '../../utils/utils'
+import { formatNumberToSocialStyle, generateNameId, getIdFromNameId } from '../../utils/utils'
 import { useQuery } from '@tanstack/react-query'
 import { ListApi } from '../../Apis/ListApi'
 import configBase from '../../constants/config'
@@ -25,6 +25,7 @@ import CustomScrollContainer from '../../Components/Custom/CustomScrollContainer
 import TabsSet from '@/Components/Custom/TabsEnable/TabsSet'
 import MovieTrailer from '../HomeMovies/MovieTrailer'
 import RenderMovies from '@/Components/RenderMovies/RenderMovie'
+import path from '@/constants/path'
 interface MovieDetailData {
   colorLiker?: string
 }
@@ -327,16 +328,20 @@ export default function MovieDetails({ colorLiker = '#4CAF50' }: MovieDetailData
         <div className='col-span-9 w-full'>
           <div className='w-full'>
             <div className='mt-9 mb-3 ml-1 font-bold text-2xl'>Top Billed Cast</div>
-            <CustomScrollContainer height={400} width='100%'>
+            <CustomScrollContainer height={470} width='100%'>
               <div className='flex gap-3 pr-4' style={{ width: 'max-content' }}>
                 {dataCredit?.map((dataPerformerDetails: CastMember) => (
-                  <div key={dataPerformerDetails.cast_id} className='max-w-full rounded-t-sm bg-white shadow-xl'>
+                  <Link
+                    to={`${path.person}/${generateNameId({ name: dataPerformerDetails.name as string, id: dataPerformerDetails.id })}`}
+                    key={dataPerformerDetails.cast_id}
+                    className='max-w-full rounded-t-sm bg-white shadow-xl'
+                  >
                     <RenderDetailsMovie key={dataPerformerDetails.id} dataMovieDetails={dataPerformerDetails} />
                     <div className='p-2 text-black font-semibold'>
                       {dataPerformerDetails.name || dataPerformerDetails.original_name}
                     </div>
-                    <div className='p-2 text-gray-400'>{dataPerformerDetails.character}</div>
-                  </div>
+                    <div className='p-2 text-gray-400  max-w-[150px]'>{dataPerformerDetails.character}</div>
+                  </Link>
                 ))}
               </div>
             </CustomScrollContainer>
@@ -348,8 +353,13 @@ export default function MovieDetails({ colorLiker = '#4CAF50' }: MovieDetailData
             <TabsSet key={crypto.randomUUID()} ItemProps={MapSet} />
           </div>
           <div className='border-b-[1px] border-gray-300 my-5'></div>
-          <div className='w-full h-[200px] bg-gray-400/50 rounded-xl shadow-sm text-start'>
-            <div className='p-10'>
+          <div className='relative w-full h-[200px] bg-gray-400/50 rounded-xl shadow-sm text-start'>
+            <img
+              className='absolute w-full h-[200px] z-0 rounded-xl object-cover'
+              src={`${configBase.imageBaseUrl}${dataMovieDetails?.data.belongs_to_collection?.poster_path}`}
+              alt=''
+            />
+            <div className='p-10 z-10 absolute'>
               <div className='text-white font-semibold capitalize mb-2 flex flex-col'>
                 <div>Part of the {dataMovieDetails?.data.belongs_to_collection?.name}</div>
                 <div>{dataMovieDetails?.data.tagline}</div>
@@ -398,21 +408,29 @@ export default function MovieDetails({ colorLiker = '#4CAF50' }: MovieDetailData
           </div>
           <div className='mt-6'>
             <div className='capitalize font-semibold text-sm mb-1'>budget</div>
-            <div className='text-sm'>{dataMovie?.budget}</div>
+            <div className='text-sm'>{formatNumberToSocialStyle(dataMovie?.budget as number)}</div>
           </div>
           <div className='mt-6'>
             <div className='capitalize font-semibold text-sm mb-1'>revenue</div>
 
-            <div className='text-sm'>{dataMovie?.revenue}</div>
+            <div className='text-sm'>{formatNumberToSocialStyle(dataMovie?.revenue as number)}</div>
           </div>
           <div className='mt-10'>
             <div>Keywords</div>
             <div className='grid  lg:grid-cols-3 md:grid-cols-1 text-center'>
               {dataKeywordsDetails?.map((item: string) => (
-                <Link to={''} className='bg-gray-300 text-sm mr-2 mb-2 text-black shadow-sm rounded-sm p-2'>
+                <Link to={''} className='bg-gray-300 text-sm mr-2 mb-2 text-black shadow-sm rounded-sm p-2 truncate'>
                   {item}
                 </Link>
               ))}
+            </div>
+          </div>
+          <div className='border-b-[1px] border-gray-300 my-5'></div>
+          <div>
+            <div className='text-xl font-semibold capitalize'>content score</div>
+            <div className='mt-2 block'>
+              <div className='rounded-t-sm text-white w-full p-2 font-semibold bg-black'>100</div>
+              <div className='rounded-b-sm bg-gray-300 text-sm p-2'>Yes! Looking good!</div>
             </div>
           </div>
         </div>

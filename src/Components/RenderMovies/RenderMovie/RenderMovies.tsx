@@ -42,7 +42,7 @@ const RenderMovies = ({
         </div>
       </div>
       <Link
-        to={`${path.home}${generateNameId({ name: (dataTrending.original_name as string) || (dataTrending.original_title as string), id: dataTrending.id as number })}`}
+        to={`${path.movie}/${generateNameId({ name: (dataTrending.original_name as string) || (dataTrending.original_title as string), id: dataTrending.id as number })}`}
       >
         <img
           className={`${CustomIMG} h-full w-full object-cover`}
