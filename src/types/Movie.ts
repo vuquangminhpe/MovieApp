@@ -18,6 +18,7 @@ export interface Movie {
 }
 
 export interface MovieTrendings {
+  concat(dataCredits: Movie): any[]
   backdrop_path?: string
   id: number
   name: string

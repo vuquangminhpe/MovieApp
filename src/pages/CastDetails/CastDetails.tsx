@@ -1,12 +1,13 @@
 import { PersonDetailsApi } from '@/Apis/PersonDetailsApi'
 import CustomScrollContainer from '@/Components/Custom/CustomScrollContainer'
+import Popover from '@/Components/Custom/Popover/Popover'
 import RenderMovies from '@/Components/RenderMovies/RenderMovie'
 import configBase from '@/constants/config'
 import { Gender } from '@/constants/person.enum'
 import { Movie } from '@/types/Movie'
 import { getIdFromNameId } from '@/utils/utils'
 import { useQuery } from '@tanstack/react-query'
-import { useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 
 export default function CastDetails() {
   const { personId } = useParams()
@@ -23,12 +24,20 @@ export default function CastDetails() {
     queryKey: ['dataCreditsPerson', personIdCast],
     queryFn: () => PersonDetailsApi.getMovie_credits(Number(personIdCast))
   })
+  const { data: data_tv_CreditsPerson } = useQuery({
+    queryKey: ['data_tv_CreditsPerson', personIdCast],
+    queryFn: () => PersonDetailsApi.getMovie_tv_credits(Number(personIdCast))
+  })
   const dataCredits = dataCreditsPerson?.data.cast
   const dataPerson = dataPersons?.data
   const dataExternal = dataExternalIds?.data
-  console.log('data', dataExternal)
+  const dataTvCredits = data_tv_CreditsPerson?.data.cast
+  let allActingPerson = []
+  if (dataTvCredits && dataCredits) {
+    allActingPerson = dataTvCredits.concat(dataCredits)
+  }
+  console.log(allActingPerson)
 
-  console.log(dataPerson)
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const genderName = Object.entries(Gender).find(([key, value]) => value === dataPerson?.gender)?.[0] || 'Unknown'
 
@@ -139,6 +148,67 @@ export default function CastDetails() {
                 ))}
               </div>
             </CustomScrollContainer>
+          </div>
+          <div className='mt-4'>
+            <div className='flex justify-between'>
+              <div className='font-bold text-xl'>Acting</div>
+              <div className='flex gap-2'>
+                <div className='hidden bg-customeBlue'>Clear</div>
+                <label htmlFor='All'>All</label>
+                <select>
+                  <option value=''></option>
+                  <option value=''></option>
+                </select>
+              </div>
+            </div>
+            {allActingPerson?.map((itemActingPerson: Movie) => (
+              <div className='mt-4 rounded-sm shadow-xl w-full h-auto'>
+                <div className='flex justify-start gap-4 items-center text-center align-top p-6'>
+                  <div className='mr-5'>
+                    {itemActingPerson.release_date ? new Date(itemActingPerson.release_date).getFullYear() : '—'}
+                  </div>
+                  <Popover
+                    onEvent='onClick'
+                    show={true}
+                    children={
+                      <div className='border-2 rounded-full border-gray-950 size-3 flex justify-center items-center text-center mr-5'>
+                        <div className='rounded-full items-center w-[7px] h-[7px] hover:bg-black translate-x-[0.5px] translate-y-[0.3px]'></div>
+                      </div>
+                    }
+                    renderPopover={
+                      <div className='bg-blue-950 w-auto h-auto max-w-[700px] rounded-sm shadow-sm'>
+                        <div className='p-3 flex gap-2'>
+                          <img
+                            className='w-[120px] h-[200px] object-cover rounded-sm shadow-sm'
+                            src={`${configBase.imageBaseUrl}${itemActingPerson.poster_path}`}
+                            alt=''
+                          />
+
+                          <div className='ml-3'>
+                            <div className='flex gap-2'>
+                              <div className='font-bold text-white text-xl'>{itemActingPerson.name}</div>
+                              <div className='w-[40px] rounded-sm shadow-sm h-5 p-3 bg-customeBlue flex items-center text-center justify-center'>
+                                <img
+                                  className='text-white size-5'
+                                  src='https://www.themoviedb.org/assets/2/v4/glyphicons/basic/glyphicons-basic-49-star-67a24f6d4324aa644c594653e762b1c0de2b3e1ce0852171cfa49cc2650de374.svg'
+                                  alt=''
+                                />{' '}
+                                <div>{Math.floor(itemActingPerson.vote_average as number)}</div>
+                              </div>
+                            </div>
+                            <div className='text-white text-wrap line-clamp-2'>{itemActingPerson.overview}</div>
+                          </div>
+                        </div>
+                      </div>
+                    }
+                  />
+                  <Link to={''} className='text-black flex'>
+                    {itemActingPerson.original_name} <div className='text-gray-400 mx-3'>as</div>{' '}
+                    {itemActingPerson.character}
+                  </Link>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </div>
