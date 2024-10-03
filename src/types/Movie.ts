@@ -18,6 +18,7 @@ export interface Movie {
 }
 
 export interface MovieTrendings {
+  [x: string]: any
   concat(dataCredits: Movie): any[]
   backdrop_path?: string
   id: number
@@ -136,4 +137,23 @@ export interface DetailsImages {
   posters: BackdropImages[]
 
   id: number
+}
+export interface MovieList {
+  movie: Movie[]
+  pagination: {
+    page: number
+    limit: number
+    page_size: number
+  }
+}
+export interface MovieConfig {
+  query?: string | number
+  include_adult?: string
+  language?: string
+  primary_release_year?: string
+  page?: number | string
+  region?: string
+  year?: string
+  first_air_date_year?: number
+  limit?: number | string
 }

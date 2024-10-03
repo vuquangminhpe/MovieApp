@@ -4,12 +4,14 @@ import Popover from '@/Components/Custom/Popover/Popover'
 import RenderMovies from '@/Components/RenderMovies/RenderMovie'
 import configBase from '@/constants/config'
 import { Gender } from '@/constants/person.enum'
-import { Movie } from '@/types/Movie'
+import { Movie, MovieTrendings } from '@/types/Movie'
 import { getIdFromNameId } from '@/utils/utils'
 import { useQuery } from '@tanstack/react-query'
+import { useEffect, useMemo, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 
 export default function CastDetails() {
+  const [filterActing, setFilterActing] = useState<string>('desc')
   const { personId } = useParams()
   const personIdCast = getIdFromNameId(personId as string)
   const { data: dataPersons } = useQuery({
@@ -36,8 +38,29 @@ export default function CastDetails() {
   if (dataTvCredits && dataCredits) {
     allActingPerson = dataTvCredits.concat(dataCredits)
   }
+  const SORT_OPTIONS = [
+    { value: 'desc', label: 'Newest First' },
+    { value: 'asc', label: 'Oldest First' },
+    { value: 'all', label: 'All' }
+  ]
   console.log(allActingPerson)
 
+  const handleSortChange = (value: string) => {
+    setFilterActing(value)
+  }
+  const sortedActingList = useMemo(() => {
+    if (filterActing === 'all') return allActingPerson
+
+    return allActingPerson.sort((a, b) => {
+      const dateA = new Date(a.release_date || a.first_air_date).getTime()
+      const dateB = new Date(b.release_date || b.first_air_date).getTime()
+      console.log(dateA, dateB)
+
+      return filterActing === 'desc' ? dateB - dateA : dateA - dateB
+    })
+  }, [allActingPerson, filterActing])
+
+  useEffect(() => {}, [])
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const genderName = Object.entries(Gender).find(([key, value]) => value === dataPerson?.gender)?.[0] || 'Unknown'
 
@@ -109,7 +132,11 @@ export default function CastDetails() {
             <div className='capitalize text-sm mt-2'>
               <div className='font-semibold'>also knows as</div>
               <div className='flex flex-col'>
-                {dataPerson?.also_known_as.map((item) => <div className='mt-2'>{item}</div>)}
+                {dataPerson?.also_known_as.map((item) => (
+                  <div key={`${item}`} className='mt-2'>
+                    {item}
+                  </div>
+                ))}
               </div>
             </div>
             <div className='capitalize text-sm mt-2'>
@@ -154,61 +181,95 @@ export default function CastDetails() {
               <div className='font-bold text-xl'>Acting</div>
               <div className='flex gap-2'>
                 <div className='hidden bg-customeBlue'>Clear</div>
-                <label htmlFor='All'>All</label>
-                <select>
-                  <option value=''></option>
-                  <option value=''></option>
-                </select>
-              </div>
-            </div>
-            {allActingPerson?.map((itemActingPerson: Movie) => (
-              <div className='mt-4 rounded-sm shadow-xl w-full h-auto'>
-                <div className='flex justify-start gap-4 items-center text-center align-top p-6'>
-                  <div className='mr-5'>
-                    {itemActingPerson.release_date ? new Date(itemActingPerson.release_date).getFullYear() : '—'}
-                  </div>
+                <label htmlFor='All'>
                   <Popover
-                    onEvent='onClick'
-                    show={true}
-                    children={
-                      <div className='border-2 rounded-full border-gray-950 size-3 flex justify-center items-center text-center mr-5'>
-                        <div className='rounded-full items-center w-[7px] h-[7px] hover:bg-black translate-x-[0.5px] translate-y-[0.3px]'></div>
+                    renderPopover={
+                      <div className='flex flex-col items-center gap-4'>
+                        {SORT_OPTIONS.map((option) => (
+                          <button
+                            key={option.value}
+                            onClick={() => handleSortChange(option.value)}
+                            className={`px-4 py-2 rounded-md ${
+                              filterActing === option.value ? 'bg-blue-600 text-white' : 'bg-gray-100 hover:bg-gray-200'
+                            }`}
+                          >
+                            {option.label}
+                          </button>
+                        ))}
                       </div>
                     }
-                    renderPopover={
-                      <div className='bg-blue-950 w-auto h-auto max-w-[700px] rounded-sm shadow-sm'>
-                        <div className='p-3 flex gap-2'>
-                          <img
-                            className='w-[120px] h-[200px] object-cover rounded-sm shadow-sm'
-                            src={`${configBase.imageBaseUrl}${itemActingPerson.poster_path}`}
-                            alt=''
-                          />
-
-                          <div className='ml-3'>
-                            <div className='flex gap-2'>
-                              <div className='font-bold text-white text-xl'>{itemActingPerson.name}</div>
-                              <div className='w-[40px] rounded-sm shadow-sm h-5 p-3 bg-customeBlue flex items-center text-center justify-center'>
-                                <img
-                                  className='text-white size-5'
-                                  src='https://www.themoviedb.org/assets/2/v4/glyphicons/basic/glyphicons-basic-49-star-67a24f6d4324aa644c594653e762b1c0de2b3e1ce0852171cfa49cc2650de374.svg'
-                                  alt=''
-                                />{' '}
-                                <div>{Math.floor(itemActingPerson.vote_average as number)}</div>
-                              </div>
-                            </div>
-                            <div className='text-white text-wrap line-clamp-2'>{itemActingPerson.overview}</div>
-                          </div>
-                        </div>
+                    children={
+                      <div className='text-black'>
+                        {filterActing} <select name='' id=''></select>
                       </div>
                     }
                   />
-                  <Link to={''} className='text-black flex'>
-                    {itemActingPerson.original_name} <div className='text-gray-400 mx-3'>as</div>{' '}
-                    {itemActingPerson.character}
-                  </Link>
-                </div>
+                </label>
               </div>
-            ))}
+            </div>
+            <div className='w-full'>
+              {sortedActingList?.map((itemActingPerson: Movie) => (
+                <div key={itemActingPerson.id} className='mt-4 rounded-sm shadow-xl w-full'>
+                  <div className='flex items-center p-6 gap-4'>
+                    <div className='w-16 text-center'>
+                      {itemActingPerson.release_date ? new Date(itemActingPerson.release_date).getFullYear() : '—'}
+                    </div>
+
+                    <div className='w-8'>
+                      <Popover
+                        onEvent='onClick'
+                        show={true}
+                        children={
+                          <div className='border-2 rounded-full border-gray-950 w-3 h-3 flex items-center justify-center cursor-pointer hover:bg-gray-100'>
+                            <div className='rounded-full w-[7px] h-[7px] hover:bg-black'></div>
+                          </div>
+                        }
+                        renderPopover={
+                          <div className='bg-blue-950 max-w-[700px] rounded-sm shadow-sm'>
+                            <div className='p-3 flex gap-4'>
+                              <img
+                                className='w-[120px] h-[200px] object-cover rounded-sm'
+                                src={`${configBase.imageBaseUrl}${itemActingPerson.poster_path}`}
+                                alt=''
+                              />
+                              <div className='flex flex-col gap-2'>
+                                <div className='flex items-center gap-2'>
+                                  <h3 className='font-bold text-white text-xl'>{itemActingPerson.name}</h3>
+                                  <div className='bg-customeBlue px-3 py-1 rounded-sm flex items-center gap-1'>
+                                    <img
+                                      className='w-5 h-5'
+                                      src='https://www.themoviedb.org/assets/2/v4/glyphicons/basic/glyphicons-basic-49-star-67a24f6d4324aa644c594653e762b1c0de2b3e1ce0852171cfa49cc2650de374.svg'
+                                      alt='star'
+                                    />
+                                    <span className='text-white'>
+                                      {Math.floor(itemActingPerson.vote_average as number)}
+                                    </span>
+                                  </div>
+                                </div>
+                                <p className='text-white line-clamp-2'>{itemActingPerson.overview}</p>
+                              </div>
+                            </div>
+                          </div>
+                        }
+                      />
+                    </div>
+
+                    {/* Title and role column - Flexible width */}
+                    <div className='flex-1'>
+                      <Link to='' className='flex items-center text-blac'>
+                        <span className='font-medium hover:text-blue-600'>
+                          {itemActingPerson.original_name || itemActingPerson.original_title}
+                        </span>
+                        <span className='text-gray-400 mx-3 '>as</span>
+                        <span className='hover:text-blue-600'>
+                          {itemActingPerson.character ? itemActingPerson.character : 'No Acting'}
+                        </span>
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>

@@ -3,12 +3,12 @@ const removeSpecialCharacter = (str: string) => {
   return str.replace(/!|@|%|\^|\*|\(|\)|\+|\=|\<|\>|\?|\/|,|\.|\:|\;|\'|\"|\&|\#|\[|\]|~|\$|_|`|-|{|}|\||\\/g, '')
 }
 export const generateNameId = ({ name, id }: { name: string; id: number }) => {
-  return removeSpecialCharacter(name).replace(/\s/g, '-') + `-i-${id}`
+  const formattedName = removeSpecialCharacter(name).replace(/\s/g, '-')
+  return `${id}-${formattedName}`
 }
 
 export const getIdFromNameId = (nameId: string) => {
-  const arr = nameId.split('-i-')
-  return arr[arr.length - 1]
+  return nameId.split('-')[0]
 }
 
 export function formatCurrency(currency: number) {

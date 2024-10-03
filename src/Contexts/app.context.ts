@@ -12,9 +12,9 @@
 //   setExtendedPurchases: React.Dispatch<React.SetStateAction<ExtendedPurchases[]>>
 //   reset: () => void
 // }
-interface AppContextInterface {
-  profile: User | null
-}
+// interface AppContextInterface {
+//   profile: User | null
+// }
 // const initialAppContext: AppContextInterface = {
 //   isAuthenticated: Boolean(getAccessTokenFromLS()),
 //   setIsAuthenticated: () => null,
