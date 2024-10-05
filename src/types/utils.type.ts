@@ -9,4 +9,8 @@ export interface SuccessResponse<Data> {
   results: Data
   cast?: Data
   crew?: Data
+  keywords: Data
+  backdrops: Data
+  logos: Data
+  posters: Data
 }

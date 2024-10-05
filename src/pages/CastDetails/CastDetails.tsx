@@ -1,18 +1,23 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { PersonDetailsApi } from '@/Apis/PersonDetailsApi'
 import CustomScrollContainer from '@/Components/Custom/CustomScrollContainer'
 import Popover from '@/Components/Custom/Popover/Popover'
 import RenderMovies from '@/Components/RenderMovies/RenderMovie'
 import configBase from '@/constants/config'
+import path from '@/constants/path'
 import { Gender } from '@/constants/person.enum'
 import { Movie, MovieTrendings } from '@/types/Movie'
-import { getIdFromNameId } from '@/utils/utils'
+import { generateNameId, getIdFromNameId } from '@/utils/utils'
 import { useQuery } from '@tanstack/react-query'
-import { useEffect, useMemo, useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { useMemo, useState } from 'react'
+import { Link, useParams, useSearchParams } from 'react-router-dom'
 
 export default function CastDetails() {
   const [filterActing, setFilterActing] = useState<string>('desc')
   const { personId } = useParams()
+
+  const [searchParams, setSearchParams] = useSearchParams()
+  const mediaType = searchParams.get('credit_media_type')
   const personIdCast = getIdFromNameId(personId as string)
   const { data: dataPersons } = useQuery({
     queryKey: ['dataPersons', personIdCast],
@@ -34,35 +39,58 @@ export default function CastDetails() {
   const dataPerson = dataPersons?.data
   const dataExternal = dataExternalIds?.data
   const dataTvCredits = data_tv_CreditsPerson?.data.cast
-  let allActingPerson = []
-  if (dataTvCredits && dataCredits) {
-    allActingPerson = dataTvCredits.concat(dataCredits)
-  }
+  const credits_TV = dataTvCredits?.map((item: Movie) => ({
+    ...item,
+    media_type: 'tv'
+  }))
+  const credits_Movie = dataCredits?.map((item: MovieTrendings) => ({ ...item, media_type: 'movie' }))
+  const MEDIA_OPTIONS = [
+    { value: 'all', label: 'All' },
+    { value: 'movie', label: 'Movies' },
+    { value: 'tv', label: 'TV Shows' }
+  ]
+
   const SORT_OPTIONS = [
     { value: 'desc', label: 'Newest First' },
     { value: 'asc', label: 'Oldest First' },
     { value: 'all', label: 'All' }
   ]
-  console.log(allActingPerson)
 
   const handleSortChange = (value: string) => {
     setFilterActing(value)
   }
-  const sortedActingList = useMemo(() => {
-    if (filterActing === 'all') return allActingPerson
+  const handleChangeMediaType = (type: string) => {
+    if (type === 'all') {
+      searchParams.delete('credit_media_type')
+    } else {
+      searchParams.set('credit_media_type', type)
+    }
+    setSearchParams(searchParams)
+  }
 
-    return allActingPerson.sort((a, b) => {
-      const dateA = new Date(a.release_date || a.first_air_date).getTime()
-      const dateB = new Date(b.release_date || b.first_air_date).getTime()
-      console.log(dateA, dateB)
-
-      return filterActing === 'desc' ? dateB - dateA : dateA - dateB
-    })
-  }, [allActingPerson, filterActing])
-
-  useEffect(() => {}, [])
+  let allActingPerson = []
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const genderName = Object.entries(Gender).find(([key, value]) => value === dataPerson?.gender)?.[0] || 'Unknown'
+  if (credits_Movie && credits_TV) {
+    allActingPerson = credits_Movie.concat(credits_TV)
+  }
+  const filteredAndSortedList = useMemo(() => {
+    let filtered = allActingPerson
+
+    if (searchParams.get('credit_media_type')) {
+      filtered = allActingPerson.filter((item: Movie) => item.media_type === searchParams.get('credit_media_type'))
+    }
+
+    if (filterActing !== 'all') {
+      return filtered.sort((a: Movie, b: Movie) => {
+        const dateA = new Date(a.release_date || a.first_air_date).getTime()
+        const dateB = new Date(b.release_date || b.first_air_date).getTime()
+        return filterActing === 'desc' ? dateB - dateA : dateA - dateB
+      })
+    }
+
+    return filtered
+  }, [allActingPerson, filterActing, searchParams])
 
   return (
     <div className='container my-5'>
@@ -177,38 +205,56 @@ export default function CastDetails() {
             </CustomScrollContainer>
           </div>
           <div className='mt-4'>
-            <div className='flex justify-between'>
+            <div className='flex justify-between items-center'>
               <div className='font-bold text-xl'>Acting</div>
-              <div className='flex gap-2'>
-                <div className='hidden bg-customeBlue'>Clear</div>
-                <label htmlFor='All'>
-                  <Popover
-                    renderPopover={
-                      <div className='flex flex-col items-center gap-4'>
-                        {SORT_OPTIONS.map((option) => (
-                          <button
-                            key={option.value}
-                            onClick={() => handleSortChange(option.value)}
-                            className={`px-4 py-2 rounded-md ${
-                              filterActing === option.value ? 'bg-blue-600 text-white' : 'bg-gray-100 hover:bg-gray-200'
-                            }`}
-                          >
-                            {option.label}
-                          </button>
-                        ))}
-                      </div>
-                    }
-                    children={
-                      <div className='text-black'>
-                        {filterActing} <select name='' id=''></select>
-                      </div>
-                    }
-                  />
-                </label>
+              <div className='flex gap-4'>
+                <Popover
+                  renderPopover={
+                    <div className='flex flex-col items-center gap-4'>
+                      {SORT_OPTIONS.map((option) => (
+                        <button
+                          key={option.value}
+                          onClick={() => handleSortChange(option.value)}
+                          className={`px-4 py-2 rounded-md ${
+                            filterActing === option.value ? 'bg-blue-600 text-white' : 'bg-gray-100'
+                          }`}
+                        >
+                          {option.label}
+                        </button>
+                      ))}
+                    </div>
+                  }
+                >
+                  <button className='px-4 py-2 bg-gray-100 rounded-md'>
+                    {filterActing === 'desc' ? 'Newest First' : filterActing === 'asc' ? 'Oldest First' : 'All'}
+                  </button>
+                </Popover>
+
+                <Popover
+                  renderPopover={
+                    <div className='flex flex-col cursor-pointer items-center gap-4'>
+                      {MEDIA_OPTIONS.map((option) => (
+                        <div
+                          onClick={() => handleChangeMediaType(option.value)}
+                          key={option.value}
+                          className={`px-4 py-2 rounded-md ${
+                            mediaType === option.value ? 'bg-blue-600 text-white' : 'bg-gray-100'
+                          }`}
+                        >
+                          {option.label}
+                        </div>
+                      ))}
+                    </div>
+                  }
+                >
+                  <button className='px-4 py-2 bg-gray-100 rounded-md'>
+                    {mediaType ? MEDIA_OPTIONS.find((opt) => opt.value === mediaType)?.label : 'All Media'}
+                  </button>
+                </Popover>
               </div>
             </div>
             <div className='w-full'>
-              {sortedActingList?.map((itemActingPerson: Movie) => (
+              {filteredAndSortedList?.map((itemActingPerson: Movie) => (
                 <div key={itemActingPerson.id} className='mt-4 rounded-sm shadow-xl w-full'>
                   <div className='flex items-center p-6 gap-4'>
                     <div className='w-16 text-center'>
@@ -254,17 +300,19 @@ export default function CastDetails() {
                       />
                     </div>
 
-                    {/* Title and role column - Flexible width */}
                     <div className='flex-1'>
-                      <Link to='' className='flex items-center text-blac'>
-                        <span className='font-medium hover:text-blue-600'>
+                      <div className='flex items-center text-black'>
+                        <Link
+                          to={`${path.movie}/${generateNameId({ name: (itemActingPerson.original_name as string) || (itemActingPerson.original_title as string), id: itemActingPerson.id as number })}`}
+                          className='font-medium hover:text-blue-600'
+                        >
                           {itemActingPerson.original_name || itemActingPerson.original_title}
-                        </span>
+                        </Link>
                         <span className='text-gray-400 mx-3 '>as</span>
                         <span className='hover:text-blue-600'>
                           {itemActingPerson.character ? itemActingPerson.character : 'No Acting'}
                         </span>
-                      </Link>
+                      </div>
                     </div>
                   </div>
                 </div>
