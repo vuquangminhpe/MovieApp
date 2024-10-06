@@ -59,7 +59,7 @@ export default function MovieDetails({ colorLiker = '#4CAF50' }: MovieDetailData
   })
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const dataKeywordsDetails = dataKeywords?.data.keywords.map((ele: any) => ele.name)
-  const dataImg: SuccessResponse<DetailsImages[]> = dataImages?.data
+  const dataImg: SuccessResponse<DetailsImages[]> | undefined = dataImages?.data
   const dataCredit = dataCredits?.data.cast
   const dataRecommendations = dataRecommendationsDetails?.data.results
   const dataRecommendations_filter = dataRecommendations?.filter(
@@ -151,7 +151,7 @@ export default function MovieDetails({ colorLiker = '#4CAF50' }: MovieDetailData
                   <div className=''>User Score</div>
                   <div className=' flex w-full ml-4 translate-x-3  text-white items-center'>
                     <div className='flex w-[90%] cursor-pointer bg-blue-950 rounded-xl text-center justify-center items-center'>
-                      <RatingMovieDetails percentage={percentage} dataMovie={dataMovie} />
+                      <RatingMovieDetails idMovie={Number(id)} percentage={percentage} dataMovie={dataMovie} />
 
                       <img
                         className='size-4 translate-y-[1px] ml-1 bg-white rounded-full '

@@ -57,10 +57,6 @@ export default function MovieTrailer({ dataPopulars, setMouseHoverImages }: Prop
       setSelectedVideos(null)
     }
   }, [isModalOpen])
-  const handlePlayerError = (error: any) => {
-    console.error('YouTube Player Error:', error)
-    setPlayerError('Đã xảy ra lỗi khi tải video. Vui lòng thử lại sau.')
-  }
 
   return (
     <div className='pl-7 py-7 w-full'>
@@ -113,11 +109,7 @@ export default function MovieTrailer({ dataPopulars, setMouseHoverImages }: Prop
             {playerError ? (
               <div className='text-red-500'>{playerError}</div>
             ) : (
-              <YouTubePlayer
-                key={dataMoviesVideos.key}
-                videoId={getYouTubeId(dataMoviesVideos.key as string) || ''}
-                onError={handlePlayerError}
-              />
+              <YouTubePlayer key={dataMoviesVideos.key} videoId={getYouTubeId(dataMoviesVideos.key as string) || ''} />
             )}
             <button
               onClick={closeModal}

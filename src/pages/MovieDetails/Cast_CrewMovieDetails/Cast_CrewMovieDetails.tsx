@@ -5,7 +5,7 @@ import MovieTrailer from '@/pages/HomeMovies/MovieTrailer'
 import { DetailsImages, MovieTrendings } from '@/types/Movie'
 import { SuccessResponse } from '@/types/utils.type'
 interface Props {
-  dataImages: SuccessResponse<DetailsImages[]>
+  dataImages: SuccessResponse<DetailsImages[]> | undefined
   setMouseHoverImages: React.Dispatch<React.SetStateAction<string>>
   dataTrailerLatest: MovieTrendings[] | undefined
 }
@@ -36,17 +36,17 @@ export default function Cast_CrewMovieDetails({ dataImages, setMouseHoverImages,
     {
       id: 'Most_Poplar',
       name: 'Most Poplar',
-      children: addDataRender(dataImages?.backdrops)
+      children: addDataRender(dataImages?.backdrops as DetailsImages[])
     },
     {
       id: 'backdrops',
       name: 'Backdrops',
-      children: addDataRender(dataImages?.logos)
+      children: addDataRender(dataImages?.logos as DetailsImages[])
     },
     {
       id: 'posters',
       name: 'Posters',
-      children: addDataRender(dataImages?.posters)
+      children: addDataRender(dataImages?.posters as DetailsImages[])
     }
   ]
   return (

@@ -11,8 +11,14 @@ import {
 import { Button } from '@/Components/ui/button'
 import { movieDetail } from '@/types/Movie'
 import { useState } from 'react'
+import { useMutation } from '@tanstack/react-query'
+import DetailsMovieApi from '@/Apis/DetailsMovieApi'
+import { AxiosResponse } from 'axios'
+import { SuccessResponse } from '@/types/utils.type'
+import { toast } from 'react-toastify'
 
 interface Props {
+  idMovie: number
   percentage: number | 0
   dataMovie: movieDetail | undefined
   min?: number
@@ -22,7 +28,7 @@ interface Props {
 }
 
 export default function RatingMovieDetails({
-  percentage,
+  idMovie,
   dataMovie,
   min = 0,
   max = 100,
@@ -30,7 +36,9 @@ export default function RatingMovieDetails({
   onChange
 }: Props) {
   const [value, setValue] = useState(defaultValue)
-
+  const ratingMovieMutation = useMutation({
+    mutationFn: () => DetailsMovieApi.addRatingMovieDetails(idMovie, value / 10)
+  })
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = parseInt(e.target.value)
     setValue(newValue)
@@ -46,6 +54,16 @@ export default function RatingMovieDetails({
     value: (max / 10) * i,
     label: i * 10
   }))
+  const handleRatingMovie = async () => {
+    ratingMovieMutation.mutateAsync(undefined, {
+      onSuccess: (data: AxiosResponse<SuccessResponse<{ status_message: string }>>) => {
+        toast.success(`${data.data.status_message}`)
+      },
+      onError: (error: Error) => {
+        toast.error(`${error}`)
+      }
+    })
+  }
 
   return (
     <div>
@@ -99,6 +117,7 @@ export default function RatingMovieDetails({
                   <input
                     type='range'
                     min={min}
+                    step={10}
                     max={max}
                     value={value}
                     onChange={handleChange}
@@ -106,7 +125,6 @@ export default function RatingMovieDetails({
                   />
                 </div>
 
-                {/* Mark labels */}
                 <div className='relative mt-2'>
                   {marks.map((mark, index) => (
                     <div
@@ -128,7 +146,9 @@ export default function RatingMovieDetails({
             <DrawerClose>
               <Button variant='outline'>Cancel</Button>
             </DrawerClose>
-            <Button className='w-20 absolute right-0'>Submit</Button>
+            <Button onClick={handleRatingMovie} className='w-20 absolute right-0'>
+              Submit
+            </Button>
           </DrawerFooter>
         </DrawerContent>
       </Drawer>

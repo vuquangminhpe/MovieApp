@@ -5,12 +5,6 @@ export interface ErrorResponse<Data> {
 }
 
 export interface SuccessResponse<Data> {
-  page: string
-  results: Data
-  cast?: Data
-  crew?: Data
-  keywords: Data
-  backdrops: Data
-  logos: Data
-  posters: Data
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [x: string]: Data
 }
