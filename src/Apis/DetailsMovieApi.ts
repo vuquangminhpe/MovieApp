@@ -1,4 +1,4 @@
-import { DetailsImages, MovieCast, movieDetail, MovieTrendings } from '../types/Movie'
+import { Account_States, DetailsImages, MovieCast, movieDetail, MovieTrendings } from '../types/Movie'
 import { SuccessResponse } from '../types/utils.type'
 import http from '../utils/http'
 
@@ -13,7 +13,8 @@ const DetailsMovieApi = {
   addRatingMovieDetails: (movie_id: number, ratingNumber: number) =>
     http.post<SuccessResponse<{ status_message: string }>>(`movie/${movie_id}/rating`, {
       value: ratingNumber
-    })
+    }),
+  getAccount_States: (movie_id: number) => http.get<Account_States>(`movie/${movie_id}/account_states`)
 }
 
 export default DetailsMovieApi

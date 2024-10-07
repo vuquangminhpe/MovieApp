@@ -124,13 +124,13 @@ export interface MovieCast {
 }
 
 export interface BackdropImages {
-  aspect_ratio: number
-  height: number
-  iso_639_1: null | string
-  file_path: string
-  vote_average: number
-  vote_count: number
-  width: number
+  aspect_ratio?: number
+  height?: number
+  iso_639_1?: null | string
+  file_path?: string
+  vote_average?: number
+  vote_count?: number
+  width?: number
 }
 
 export interface DetailsImages {
@@ -158,4 +158,13 @@ export interface MovieConfig {
   year?: string
   first_air_date_year?: number
   limit?: number | string
+}
+
+export interface Account_States {
+  id: number
+  favorite: false
+  rated: {
+    value: number
+  }
+  watchlist: false
 }

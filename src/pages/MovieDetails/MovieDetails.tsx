@@ -4,7 +4,15 @@ import { formatNumberToSocialStyle, generateNameId, getIdFromNameId } from '../.
 import { useQuery } from '@tanstack/react-query'
 import { ListApi } from '../../Apis/ListApi'
 import configBase from '../../constants/config'
-import { CastMember, DetailsImages, Movie, movieDetail, MovieTrendings, videosDetails } from '../../types/Movie'
+import {
+  BackdropImages,
+  CastMember,
+  DetailsImages,
+  Movie,
+  movieDetail,
+  MovieTrendings,
+  videosDetails
+} from '../../types/Movie'
 
 import { useState } from 'react'
 import DynamicMovieBackdrop from '../../Components/Custom/DynamicMovieBackdrop'
@@ -14,11 +22,14 @@ import CustomScrollContainer from '../../Components/Custom/CustomScrollContainer
 
 import RenderMovies from '@/Components/RenderMovies/RenderMovie'
 import path from '@/constants/path'
-
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/Components/ui/carousel'
+import { Card, CardContent } from '@/Components/ui/card'
 import RatingMovieDetails from './RatingMovieDetails'
 import Cast_CrewMovieDetails from './Cast_CrewMovieDetails'
 import AddOwnerMovieDetails from './AddOwnerMovieDetails'
 import { SuccessResponse } from '@/types/utils.type'
+import { Expand } from 'lucide-react'
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTrigger } from '@/Components/ui/dialog'
 
 interface MovieDetailData {
   colorLiker?: string
@@ -67,6 +78,7 @@ export default function MovieDetails({ colorLiker = '#4CAF50' }: MovieDetailData
   )
 
   const dataMovieDetails_Videos: videosDetails | undefined = dataYoutube_MovieDetails?.data.results[0]
+  console.log(dataImg)
 
   const dataMovie = dataMovieDetails?.data
   const percentage = Math.round((dataMovie as movieDetail)?.vote_average * 10)
@@ -93,11 +105,45 @@ export default function MovieDetails({ colorLiker = '#4CAF50' }: MovieDetailData
           <div className='container'>
             <div className=' grid grid-cols-12 z-20 relative'>
               <div className='col-span-3 h-[450px]'>
-                <img
-                  src={`${configBase.imageBaseUrl}${dataMovie?.poster_path}`}
-                  alt=''
-                  className=' object-cover h-full rounded-xl shadow-sm'
-                />
+                <div className='relative group w-full h-full'>
+                  <Dialog>
+                    <DialogTrigger className='h-full w-full'>
+                      <img src={imageUrl} alt='' className='object-cover h-full w-full rounded-xl shadow-sm' />
+
+                      <div className='absolute inset-0 bg-[#001a1a]/80 backdrop-blur-[2px] group-hover:opacity-100 opacity-0 transition-all duration-300 rounded-xl flex items-center justify-center'>
+                        <button className='flex items-center gap-2 px-5 py-2.5 bg-[#001a1a]/60 backdrop-blur-sm rounded-lg border border-white/10 text-white/90 hover:text-white'>
+                          <Expand size={16} />
+                          <span>Expand</span>
+                        </button>
+                      </div>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogDescription>
+                          <Carousel className='w-full max-w-xs'>
+                            <CarouselContent>
+                              {(dataImg?.posters as BackdropImages[]).map((dataImages_item: BackdropImages) => (
+                                <CarouselItem key={dataImages_item.iso_639_1}>
+                                  <div className='p-1'>
+                                    <Card>
+                                      <CardContent className='flex aspect-square items-center justify-center p-6'>
+                                        {dataImages_item.file_path && (
+                                          <img src={`${configBase.imageBaseUrl}${dataImages_item.file_path}`} alt='' />
+                                        )}
+                                      </CardContent>
+                                    </Card>
+                                  </div>
+                                </CarouselItem>
+                              ))}
+                            </CarouselContent>
+                            <CarouselPrevious />
+                            <CarouselNext />
+                          </Carousel>
+                        </DialogDescription>
+                      </DialogHeader>
+                    </DialogContent>
+                  </Dialog>
+                </div>
               </div>
               <div className='col-span-9 ml-6 text-white'>
                 <div className='capitalize font-semibold text-2xl'>{dataMovie?.original_title}</div>

@@ -10,8 +10,8 @@ import {
 } from '@/Components/ui/drawer'
 import { Button } from '@/Components/ui/button'
 import { movieDetail } from '@/types/Movie'
-import { useState } from 'react'
-import { useMutation } from '@tanstack/react-query'
+import { useEffect, useState } from 'react'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import DetailsMovieApi from '@/Apis/DetailsMovieApi'
 import { AxiosResponse } from 'axios'
 import { SuccessResponse } from '@/types/utils.type'
@@ -23,7 +23,7 @@ interface Props {
   dataMovie: movieDetail | undefined
   min?: number
   max?: number
-  defaultValue?: number
+
   onChange?: (value: number) => void
 }
 
@@ -32,10 +32,15 @@ export default function RatingMovieDetails({
   dataMovie,
   min = 0,
   max = 100,
-  defaultValue = 0,
+
   onChange
 }: Props) {
-  const [value, setValue] = useState(defaultValue)
+  const { data: dataAccount_States, refetch } = useQuery({
+    queryKey: ['account_states', idMovie],
+    queryFn: () => DetailsMovieApi.getAccount_States(idMovie)
+  })
+  const dataRated = (dataAccount_States?.data.rated.value as number) * 10
+  const [value, setValue] = useState(dataRated)
   const ratingMovieMutation = useMutation({
     mutationFn: () => DetailsMovieApi.addRatingMovieDetails(idMovie, value / 10)
   })
@@ -44,6 +49,10 @@ export default function RatingMovieDetails({
     setValue(newValue)
     onChange?.(newValue)
   }
+  useEffect(() => {
+    setValue(dataRated || 0)
+  }, [dataRated, setValue])
+  console.log(dataAccount_States?.data.rated.value as number)
 
   const getTrackBackground = () => {
     const percentage = ((value - min) / (max - min)) * 100
@@ -58,6 +67,7 @@ export default function RatingMovieDetails({
     ratingMovieMutation.mutateAsync(undefined, {
       onSuccess: (data: AxiosResponse<SuccessResponse<{ status_message: string }>>) => {
         toast.success(`${data.data.status_message}`)
+        refetch()
       },
       onError: (error: Error) => {
         toast.error(`${error}`)
@@ -68,8 +78,16 @@ export default function RatingMovieDetails({
   return (
     <div>
       <Drawer>
-        <DrawerTrigger className='flex'>
-          What's your <div className='ml-1 border-b-2 border-b-cyan-400'>Vibe</div>
+        <DrawerTrigger>
+          {!dataRated ? (
+            <div className='flex'>
+              What's your <div className='ml-1 border-b-2 border-b-cyan-400'>Vibe</div>
+            </div>
+          ) : (
+            <div className='flex'>
+              Your <div className='mx-1 border-b-2 border-b-cyan-400'>Vibe</div> <div>{dataRated}%</div>
+            </div>
+          )}
         </DrawerTrigger>
         <DrawerContent>
           <DrawerHeader>
