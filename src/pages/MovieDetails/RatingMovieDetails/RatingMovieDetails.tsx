@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Drawer,
   DrawerClose,
@@ -39,6 +40,9 @@ export default function RatingMovieDetails({
     queryKey: ['account_states', idMovie],
     queryFn: () => DetailsMovieApi.getAccount_States(idMovie)
   })
+  const deletedMutation = useMutation({
+    mutationFn: () => DetailsMovieApi.deleteRating(idMovie)
+  })
   const dataRated = (dataAccount_States?.data.rated.value as number) * 10
   const [value, setValue] = useState(dataRated)
   const ratingMovieMutation = useMutation({
@@ -49,10 +53,6 @@ export default function RatingMovieDetails({
     setValue(newValue)
     onChange?.(newValue)
   }
-  useEffect(() => {
-    setValue(dataRated || 0)
-  }, [dataRated, setValue])
-  console.log(dataAccount_States?.data.rated.value as number)
 
   const getTrackBackground = () => {
     const percentage = ((value - min) / (max - min)) * 100
@@ -64,7 +64,7 @@ export default function RatingMovieDetails({
     label: i * 10
   }))
   const handleRatingMovie = async () => {
-    ratingMovieMutation.mutateAsync(undefined, {
+    await ratingMovieMutation.mutateAsync(undefined, {
       onSuccess: (data: AxiosResponse<SuccessResponse<{ status_message: string }>>) => {
         toast.success(`${data.data.status_message}`)
         refetch()
@@ -74,7 +74,22 @@ export default function RatingMovieDetails({
       }
     })
   }
+  const handleDeletedRating = () => {
+    deletedMutation.mutate(undefined, {
+      onSuccess: (data: AxiosResponse<SuccessResponse<{ status_message: string }>, any>) => {
+        console.log(data)
 
+        toast.success(`${data.data.status_message}`)
+        refetch()
+      },
+      onError: (error: Error) => {
+        toast.error(`${error.message}`)
+      }
+    })
+  }
+  useEffect(() => {
+    setValue(dataRated || 0)
+  }, [dataRated, setValue])
   return (
     <div>
       <Drawer>
@@ -100,6 +115,7 @@ export default function RatingMovieDetails({
                   <span className='text-gray-500 text-sm'>user score</span>
                   <button
                     onClick={() => {
+                      handleDeletedRating()
                       setValue(0)
                       onChange?.(0)
                     }}

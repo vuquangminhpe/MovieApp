@@ -14,7 +14,9 @@ const DetailsMovieApi = {
     http.post<SuccessResponse<{ status_message: string }>>(`movie/${movie_id}/rating`, {
       value: ratingNumber
     }),
-  getAccount_States: (movie_id: number) => http.get<Account_States>(`movie/${movie_id}/account_states`)
+  getAccount_States: (movie_id: number) => http.get<Account_States>(`movie/${movie_id}/account_states`),
+  deleteRating: (movie_id: number) =>
+    http.delete<SuccessResponse<{ status_message: string }>>(`movie/${movie_id}/rating`)
 }
 
 export default DetailsMovieApi

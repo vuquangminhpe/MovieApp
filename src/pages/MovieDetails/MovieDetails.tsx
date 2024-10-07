@@ -30,6 +30,7 @@ import AddOwnerMovieDetails from './AddOwnerMovieDetails'
 import { SuccessResponse } from '@/types/utils.type'
 import { Expand } from 'lucide-react'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTrigger } from '@/Components/ui/dialog'
+import { toast } from 'react-toastify'
 
 interface MovieDetailData {
   colorLiker?: string
@@ -78,9 +79,10 @@ export default function MovieDetails({ colorLiker = '#4CAF50' }: MovieDetailData
   )
 
   const dataMovieDetails_Videos: videosDetails | undefined = dataYoutube_MovieDetails?.data.results[0]
-  console.log(dataImg)
 
   const dataMovie = dataMovieDetails?.data
+  console.log(dataMovie)
+
   const percentage = Math.round((dataMovie as movieDetail)?.vote_average * 10)
   const radius = 18
   const circumference = 2 * Math.PI * radius
@@ -96,7 +98,9 @@ export default function MovieDetails({ colorLiker = '#4CAF50' }: MovieDetailData
     const minutes = runtime % 60
     return `${hours}h ${minutes}m`
   }
-
+  const handleLikeImg = () => {
+    toast.success('You have successfully rated the image.')
+  }
   const imageUrl = `${configBase.imageBaseUrl}${dataMovie?.backdrop_path || dataMovie?.poster_path}`
   return (
     <div className='my-8'>
@@ -117,28 +121,62 @@ export default function MovieDetails({ colorLiker = '#4CAF50' }: MovieDetailData
                         </button>
                       </div>
                     </DialogTrigger>
-                    <DialogContent>
+                    <DialogContent className='max-w-[900px] w-[80vw]'>
                       <DialogHeader>
-                        <DialogDescription>
-                          <Carousel className='w-full max-w-xs'>
+                        <DialogDescription className='flex'>
+                          <Carousel className='w-[500px] h-[450px] mr-10'>
                             <CarouselContent>
-                              {(dataImg?.posters as BackdropImages[]).map((dataImages_item: BackdropImages) => (
+                              {(dataImg?.posters as BackdropImages[])?.map((dataImages_item: BackdropImages) => (
                                 <CarouselItem key={dataImages_item.iso_639_1}>
-                                  <div className='p-1'>
-                                    <Card>
-                                      <CardContent className='flex aspect-square items-center justify-center p-6'>
-                                        {dataImages_item.file_path && (
-                                          <img src={`${configBase.imageBaseUrl}${dataImages_item.file_path}`} alt='' />
-                                        )}
-                                      </CardContent>
-                                    </Card>
-                                  </div>
+                                  <Card>
+                                    <CardContent>
+                                      {dataImages_item.file_path && (
+                                        <img
+                                          src={`${configBase.imageBaseUrl}${dataImages_item.file_path}`}
+                                          alt=''
+                                          className='h-[440px] w-[600px] object-cover object-center'
+                                        />
+                                      )}
+                                    </CardContent>
+                                  </Card>
                                 </CarouselItem>
                               ))}
                             </CarouselContent>
                             <CarouselPrevious />
                             <CarouselNext />
                           </Carousel>
+
+                          <div className='w-[70%] mt-[100px] ml-8'>
+                            <div className='flex w-full justify-between'>
+                              <img
+                                onClick={handleLikeImg}
+                                className=' size-8'
+                                src='https://www.themoviedb.org/assets/2/v4/glyphicons/basic/glyphicons-basic-452-hand-dislike-d97408deec38f6595c7b2e40eadb649ef2beee92df579b3f88095e9c183ca92e.svg'
+                                alt=''
+                              />
+                              <img
+                                onClick={handleLikeImg}
+                                className='size-8'
+                                src='https://www.themoviedb.org/assets/2/v4/glyphicons/basic/glyphicons-basic-451-hand-like-10db6816d1483cba3abf2e8a9e9133b3441882c804f6d3c2283aa946aca674a0.svg'
+                                alt=''
+                              />
+                            </div>
+
+                            <div className='flex mt-12 justify-between'>
+                              <div className='text-black font-semibold'>Info</div>
+                              <img
+                                src='https://www.themoviedb.org/assets/2/v4/glyphicons/basic/glyphicons-basic-218-lock-open-e3ddaaf88cb0c2f1c62bf0620eaaacd12522f0f589c77e523c659d7f3f2a1e89.svg'
+                                alt=''
+                                className='size-5'
+                              />
+                            </div>
+                            <div className='border-b-[1px] border-gray-200 mt-4'></div>
+                            <div className='mt-3'>Primary?</div>
+                            <div className='mt-3'>
+                              <div className='text-gray-400'>Added By</div>
+                              <div className='text-black font-semibold'>{}</div>
+                            </div>
+                          </div>
                         </DialogDescription>
                       </DialogHeader>
                     </DialogContent>
