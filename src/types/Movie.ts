@@ -121,6 +121,7 @@ export interface MovieCast {
   [x: string]: any
   id: number
   cast: CastMember[]
+  crew?: CastMember[]
 }
 
 export interface BackdropImages {

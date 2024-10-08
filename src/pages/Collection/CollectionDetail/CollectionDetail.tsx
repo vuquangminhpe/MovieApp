@@ -113,10 +113,6 @@ export default function CollectionDetail({ collection, dataImg, colorLiker = '#4
             </div>
             <div className='col-span-9 ml-6 text-white'>
               <div className='capitalize font-semibold text-2xl'>{collection?.original_title}</div>
-              <div className='flex'>
-                {collection?.release_date}
-                <div className='ml-1 text-white'>{'•'}</div>
-              </div>
               <div className='w-[310px] h-20 flex mt-3 items-center text-center justify-center'>
                 <svg className='w-auto h-full hover:scale-150 transition-all cursor-pointer' viewBox='0 0 40 40'>
                   <circle
@@ -156,20 +152,16 @@ export default function CollectionDetail({ collection, dataImg, colorLiker = '#4
                   </text>{' '}
                 </svg>
                 <div className=''>User Score</div>
-                <div className=' flex w-full ml-4 translate-x-3  text-white items-center'>
-                  <div className='flex w-[90%] cursor-pointer bg-blue-950 rounded-xl text-center justify-center items-center'>
-                    <img
-                      className='size-4 translate-y-[1px] ml-1 bg-white rounded-full '
-                      src='https://www.themoviedb.org/assets/2/v4/glyphicons/basic/glyphicons-basic-636-circle-info-06837a451a09552349b182d84ae84f26308efee8f7e8ddca255bd5dbc4a66ea4.svg'
-                      alt=''
-                    />
-                  </div>
-                </div>
+                <div className=' flex w-full ml-4 translate-x-3  text-white items-center'></div>
               </div>
 
               <div className=' mt-5'>
                 <h2 className='capitalize text-white font-semibold'>overview</h2>
                 <div className='text-wrap text-gray-300'>{collection?.overview}</div>
+              </div>
+              <div className='mt-5'>
+                <div className='capitalize font-semibold text-sm'>number of movies: {collection?.genre_ids.length}</div>
+                <div className='mt-2 font-semibold text-sm'>Revenue: ${collection?.popularity}</div>
               </div>
             </div>
           </div>

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Link, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import { formatNumberToSocialStyle, generateNameId, getIdFromNameId } from '../../utils/utils'
 import { useQuery } from '@tanstack/react-query'
 import { ListApi } from '../../Apis/ListApi'
@@ -38,6 +38,8 @@ interface MovieDetailData {
 
 export default function MovieDetails({ colorLiker = '#4CAF50' }: MovieDetailData) {
   const { movieId } = useParams()
+  const navigate = useNavigate()
+
   const [mouseHoverImages, setMouseHoverImages] = useState(
     'https://media.themoviedb.org/t/p/w1920_and_h600_multi_faces_filter(duotone,00192f,00baff)/SqAZjEqqBAYvyu3KSrWq1d0QLB.jpg'
   )
@@ -81,7 +83,6 @@ export default function MovieDetails({ colorLiker = '#4CAF50' }: MovieDetailData
   const dataMovieDetails_Videos: videosDetails | undefined = dataYoutube_MovieDetails?.data.results[0]
 
   const dataMovie = dataMovieDetails?.data
-  console.log(dataMovie)
 
   const percentage = Math.round((dataMovie as movieDetail)?.vote_average * 10)
   const radius = 18
@@ -108,6 +109,21 @@ export default function MovieDetails({ colorLiker = '#4CAF50' }: MovieDetailData
       return
     }
   }, [dataMovie])
+
+  const handleViewCollection = () => {
+    navigate(
+      `${path.collection}/${generateNameId({
+        name: dataMovie?.belongs_to_collection?.name as string,
+        id: dataMovie?.belongs_to_collection?.id as number
+      })}`,
+      {
+        state: {
+          collectionId: dataMovie?.id
+        }
+      }
+    )
+  }
+
   return (
     <div className='my-8'>
       <div className='relative h-[520px] '>
@@ -302,15 +318,12 @@ export default function MovieDetails({ colorLiker = '#4CAF50' }: MovieDetailData
                 <div>Part of the {dataMovieDetails?.data.belongs_to_collection?.name}</div>
                 <div>{dataMovieDetails?.data.tagline}</div>
                 {dataMovie?.belongs_to_collection && (
-                  <Link
-                    to={`${path.collection}/${generateNameId({
-                      name: dataMovie.belongs_to_collection?.name as string,
-                      id: dataMovie.belongs_to_collection?.id as number
-                    })}`}
+                  <div
+                    onClick={handleViewCollection}
                     className='bg-black text-white p-2 mt-3 w-[200px] text-center items-center uppercase rounded-2xl text-sm font-bold'
                   >
                     view the collection
-                  </Link>
+                  </div>
                 )}
               </div>
             </div>
