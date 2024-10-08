@@ -2,6 +2,7 @@ const path = {
   home: '/',
   movie: '/movie',
   person: '/person',
+  collection: '/collection',
   movieDetails: 'movie/:movieId',
   castDetails: 'person/:personId',
   movie_popular: '/movie/popular',
@@ -11,6 +12,7 @@ const path = {
   tv_popular: '/tv/popular',
   tv_airing_today: '/tv/Airing Today',
   on_tv: '/tv/On TV',
-  tv_top_rated: '/tv/Top Rated'
+  tv_top_rated: '/tv/Top Rated',
+  collectionDetails: '/collection/:collection_id'
 }
 export default path

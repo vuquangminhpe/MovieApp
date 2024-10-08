@@ -14,7 +14,7 @@ import {
   videosDetails
 } from '../../types/Movie'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import DynamicMovieBackdrop from '../../Components/Custom/DynamicMovieBackdrop'
 import DetailsMovieApi from '../../Apis/DetailsMovieApi'
 import RenderDetailsMovie from '../../Components/RenderMovies/RenderDetailsMovie'
@@ -48,7 +48,7 @@ export default function MovieDetails({ colorLiker = '#4CAF50' }: MovieDetailData
   })
   const { data: dataTrailer } = useQuery({ queryKey: ['dataTrailerLatest', []], queryFn: ListApi.UpcomingList })
   const dataTrailerLatest = dataTrailer?.data.results
-  const { data: dataMovieDetails } = useQuery({
+  const { data: dataMovieDetails, isLoading } = useQuery({
     queryKey: ['movieDetail', id],
     queryFn: () => DetailsMovieApi.getDetailsMovie(Number(id))
   })
@@ -101,7 +101,13 @@ export default function MovieDetails({ colorLiker = '#4CAF50' }: MovieDetailData
   const handleLikeImg = () => {
     toast.success('You have successfully rated the image.')
   }
+
   const imageUrl = `${configBase.imageBaseUrl}${dataMovie?.backdrop_path || dataMovie?.poster_path}`
+  useEffect(() => {
+    if (isLoading) {
+      return
+    }
+  }, [dataMovie])
   return (
     <div className='my-8'>
       <div className='relative h-[520px] '>
@@ -246,7 +252,7 @@ export default function MovieDetails({ colorLiker = '#4CAF50' }: MovieDetailData
                   </div>
                 </div>
 
-                <AddOwnerMovieDetails dataMovieDetails_Videos={dataMovieDetails_Videos} />
+                <AddOwnerMovieDetails dataMovie={dataMovie} dataMovieDetails_Videos={dataMovieDetails_Videos} />
                 <div className='opacity-50 mt-6'>{dataMovie?.tagline}</div>
                 <div className=' mt-5'>
                   <h2 className='capitalize text-white font-semibold'>overview</h2>
@@ -295,12 +301,17 @@ export default function MovieDetails({ colorLiker = '#4CAF50' }: MovieDetailData
               <div className='text-white font-semibold capitalize mb-2 flex flex-col'>
                 <div>Part of the {dataMovieDetails?.data.belongs_to_collection?.name}</div>
                 <div>{dataMovieDetails?.data.tagline}</div>
-                <Link
-                  to={''}
-                  className='bg-black text-white p-2 mt-3 w-[200px] text-center items-center uppercase rounded-2xl text-sm font-bold'
-                >
-                  view the collection
-                </Link>
+                {dataMovie?.belongs_to_collection && (
+                  <Link
+                    to={`${path.collection}/${generateNameId({
+                      name: dataMovie.belongs_to_collection?.name as string,
+                      id: dataMovie.belongs_to_collection?.id as number
+                    })}`}
+                    className='bg-black text-white p-2 mt-3 w-[200px] text-center items-center uppercase rounded-2xl text-sm font-bold'
+                  >
+                    view the collection
+                  </Link>
+                )}
               </div>
             </div>
           </div>

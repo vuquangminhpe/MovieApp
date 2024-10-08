@@ -1,12 +1,55 @@
+import { AccountApi } from '@/Apis/AccountApi'
 import Popover from '@/Components/Custom/Popover'
 import YouTubePlayer from '@/Components/Custom/YouTubePlayerProps'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTrigger } from '@/Components/ui/dialog'
 import { getYouTubeId } from '@/constants/regex'
-import { videosDetails } from '@/types/Movie'
+import { movieDetail, videosDetails } from '@/types/Movie'
+import { useMutation } from '@tanstack/react-query'
+import { toast } from 'react-toastify'
 interface Props {
   dataMovieDetails_Videos: videosDetails | undefined
+  dataMovie: movieDetail | undefined
 }
-export default function AddOwnerMovieDetails({ dataMovieDetails_Videos }: Props) {
+export default function AddOwnerMovieDetails({ dataMovieDetails_Videos, dataMovie }: Props) {
+  const addWatchListMutation = useMutation({
+    mutationFn: () =>
+      AccountApi.addWatchList({
+        media_type: 'movie',
+        media_id: dataMovie?.production_companies[0].id as number,
+        watchlist: true
+      })
+  })
+
+  const addFavoriteMutation = useMutation({
+    mutationFn: () =>
+      AccountApi.addFavorite({
+        media_type: 'movie',
+        media_id: dataMovie?.production_companies[0].id as number,
+        favorite: true
+      })
+  })
+  const handleAddWatchList = async () => {
+    addWatchListMutation.mutateAsync(undefined, {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      onSuccess: (data: any) => {
+        toast.success(`${data.data.status_message}`)
+      },
+      onError: (error: Error) => {
+        toast.error(`${error.message}`)
+      }
+    })
+  }
+  const handleAddFavorite = async () => {
+    addFavoriteMutation.mutateAsync(undefined, {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      onSuccess: (data: any) => {
+        toast.success(`${data.data.status_message}`)
+      },
+      onError: (error: Error) => {
+        toast.error(`${error.message}`)
+      }
+    })
+  }
   return (
     <div className='flex gap-6 mt-7'>
       <Popover
@@ -55,6 +98,7 @@ export default function AddOwnerMovieDetails({ dataMovieDetails_Videos }: Props)
         show={true}
         children={
           <svg
+            onClick={handleAddFavorite}
             xmlns='http://www.w3.org/2000/svg'
             fill='none'
             viewBox='0 0 24 24'
@@ -80,6 +124,7 @@ export default function AddOwnerMovieDetails({ dataMovieDetails_Videos }: Props)
         show={true}
         children={
           <svg
+            onClick={handleAddWatchList}
             xmlns='http://www.w3.org/2000/svg'
             fill='none'
             viewBox='0 0 24 24'

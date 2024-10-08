@@ -6,6 +6,7 @@ import MainLayout from './Layouts/MainLayout'
 import HomeMovies from './pages/HomeMovies'
 import MovieDetails from './pages/MovieDetails'
 import CastDetails from './pages/CastDetails'
+import CollectionMovies from './pages/Collection'
 
 // function ProtectedRoute() {
 //   const { isAuthenticated } = useContext(AppContext)
@@ -121,6 +122,15 @@ export default function useRouteElement() {
       element: (
         <MainLayout>
           <CastDetails />
+        </MainLayout>
+      )
+    },
+    {
+      path: path.collectionDetails,
+      index: true,
+      element: (
+        <MainLayout>
+          <CollectionMovies />
         </MainLayout>
       )
     }
