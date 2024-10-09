@@ -7,6 +7,7 @@ import { Part } from '@/types/Collection.type'
 import { CastMember, DetailsImages, MovieCast } from '@/types/Movie'
 import { SuccessResponse } from '@/types/utils.type'
 import DetailsMovieApi from '@/Apis/DetailsMovieApi'
+import configBase from '@/constants/config'
 
 export default function CollectionMovies() {
   const location = useLocation()
@@ -18,6 +19,7 @@ export default function CollectionMovies() {
     queryKey: ['collectionData', id],
     queryFn: () => CollectionApi.getDetailsCollection(Number(id))
   })
+  const dataCollectionAll = dataCollectionDetails?.data.parts
   const dataCollection = dataCollectionDetails?.data.parts[0] as Part
   const { data: dataCollectionIMG } = useQuery({
     queryKey: ['collectionIMGData', id],
@@ -41,6 +43,7 @@ export default function CollectionMovies() {
       return value_B - value_A
     })
   }
+  console.log(dataCredits?.data?.crew)
 
   return (
     <div>
@@ -48,14 +51,65 @@ export default function CollectionMovies() {
       <div className='mt-12'>
         <div className='container p-3'>
           <div className='text-black font-semibold dark:text-white capitalize'>featured cast</div>
-          <div className='grid grid-cols-4 max-lg:grid-cols-2 max-md:grid-cols-1 gap-2'>
+          <div className='grid mt-3 grid-cols-4 max-lg:grid-cols-2 max-md:grid-cols-1 gap-2'>
             {dataTopCast_Crew(dataCredits?.data?.cast as MovieCast)
               .slice(0, 14)
               .map((itemCast: CastMember) => (
-                <div className='flex w-full h-[40px] shadow-xl rounded-xl bg-white'>
-                  <div>{itemCast.name}</div>
+                <div className='flex w-full h-[50px] shadow-xl rounded-2xl bg-white'>
+                  <div>
+                    <img
+                      src={`${configBase.imageBaseUrl}${itemCast.profile_path}`}
+                      className='h-full w-10 mr-6 rounded-l-md'
+                      alt=''
+                    />
+                  </div>
+                  <div>
+                    <div className='text-sm font-bold'>{itemCast.name}</div>
+                    <div className='text-sm text-gray-500'>{itemCast.character}</div>
+                  </div>
                 </div>
               ))}
+          </div>
+          <div className='w-full border-b-2 my-14 border-gray-100'></div>
+          <div className='text-black font-semibold dark:text-white capitalize'>featured crew</div>
+          <div className='grid mt-3 grid-cols-4 max-lg:grid-cols-2 max-md:grid-cols-1 gap-2'>
+            {dataTopCast_Crew(dataCredits?.data?.crew as MovieCast)
+              .slice(0, 14)
+              .map((itemCast: CastMember) => (
+                <div className='flex w-full h-[50px] shadow-xl rounded-2xl bg-white'>
+                  <div>
+                    <img
+                      src={`${configBase.imageBaseUrl}${itemCast.profile_path}`}
+                      className='h-full w-10 mr-6 rounded-l-md'
+                      alt=''
+                    />
+                  </div>
+                  <div>
+                    <div className='text-sm font-bold'>{itemCast.name}</div>
+                    <div className='text-sm text-gray-500'>{itemCast.known_for_department}</div>
+                  </div>
+                </div>
+              ))}
+          </div>
+          <div className='w-full border-b-2 my-14 border-gray-100'></div>
+          <div className='text-black font-semibold dark:text-white capitalize'>
+            {dataCollection?.genre_ids.length} {''}movies
+          </div>
+          <div className='mt-5'>
+            {dataCollectionAll?.map((item: Part) => (
+              <div className='shadow-xl h-[100px] rounded-xl mt-2 flex'>
+                <img
+                  className='h-full min-w-[80px] rounded-l-xl'
+                  src={`${configBase.imageBaseUrl}${item.poster_path}`}
+                  alt=''
+                />
+                <div className='ml-5'>
+                  <div className='font-bold text-xl'>{item.title}</div>
+                  <div className='text-gray-400 text-sm'>{item.release_date}</div>
+                  <div className='line-clamp-2'>{item.overview}</div>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </div>
