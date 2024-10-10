@@ -1,7 +1,7 @@
 import { ListApi } from '@/Apis/ListApi'
-import configBase from '@/constants/config'
-import { Movie } from '@/types/Movie'
 import { useQuery } from '@tanstack/react-query'
+import MovieListView from './MovieListView'
+import { Movie } from '@/types/Movie'
 import { useLocation } from 'react-router-dom'
 
 export default function MovieList() {
@@ -13,10 +13,11 @@ export default function MovieList() {
   })
   const listData = PopularData?.data.results
 
+  console.log(listData)
   return (
     <div className='container py-5'>
       <div className='flex'>
-        <div className=''>
+        <div className='w-[500px]'>
           <div className='font-bold text-xl capitalize'>{nameLocation} movies</div>
           <div className='shadow-xl rounded-xl flex p-3 justify-between items-center'>
             <div className='font-semibold text-sm'>Sort</div>
@@ -45,16 +46,8 @@ export default function MovieList() {
             </svg>
           </div>
         </div>
-        <div className='max-w-[70%] grid grid-cols-5 gap-4'>
-          {listData?.map((item: Movie) => (
-            <div key={item.id} className='w-full'>
-              <img
-                src={`${configBase.imageBaseUrl}${item.poster_path}`}
-                alt={item.title || ''}
-                className='w-full h-auto object-cover'
-              />
-            </div>
-          ))}
+        <div className='grid grid-cols-5 gap-5 ml-7 mt-8'>
+          {listData?.map((itemListData: Movie) => <MovieListView key={itemListData.id} listData={itemListData} />)}
         </div>
       </div>
     </div>
