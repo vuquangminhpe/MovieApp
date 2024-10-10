@@ -1,13 +1,14 @@
 import { CollectionApi } from '@/Apis/CollectionApi'
-import { getIdFromNameId } from '@/utils/utils'
+import { generateNameId, getIdFromNameId } from '@/utils/utils'
 import { useQuery } from '@tanstack/react-query'
-import { useLocation, useParams } from 'react-router-dom'
+import { Link, useLocation, useParams } from 'react-router-dom'
 import CollectionDetail from './CollectionDetail'
 import { Part } from '@/types/Collection.type'
 import { CastMember, DetailsImages, MovieCast } from '@/types/Movie'
 import { SuccessResponse } from '@/types/utils.type'
 import DetailsMovieApi from '@/Apis/DetailsMovieApi'
 import configBase from '@/constants/config'
+import path from '@/constants/path'
 
 export default function CollectionMovies() {
   const location = useLocation()
@@ -30,6 +31,18 @@ export default function CollectionMovies() {
     queryKey: ['credit_MovieDetail', location.state.collectionId],
     queryFn: () => DetailsMovieApi.getCreditMovie(Number(location.state.collectionId))
   })
+  function findUniqueCastId(arrayData: MovieCast[]): boolean {
+    const countMap: { [key: string]: number } = {}
+
+    arrayData.forEach((item) => {
+      const castIdStr = String(item.id)
+      countMap[castIdStr] = (countMap[castIdStr] || 0) + 1
+    })
+
+    const uniqueCastIds = Object.values(countMap).filter((count) => count === 1)
+
+    return uniqueCastIds.length === 1
+  }
   const dataTopCast_Crew = (arrayData: MovieCast | undefined) => {
     if (!Array.isArray(arrayData)) {
       console.error('Invalid array data', arrayData)
@@ -40,7 +53,11 @@ export default function CollectionMovies() {
       const value_A = Math.floor(a.popularity)
       const value_B = Math.floor(b.popularity)
 
-      return value_B - value_A
+      if (findUniqueCastId(arrayData)) {
+        return value_B - value_A
+      }
+
+      return 0
     })
   }
   console.log(dataCredits?.data?.crew)
@@ -55,7 +72,10 @@ export default function CollectionMovies() {
             {dataTopCast_Crew(dataCredits?.data?.cast as MovieCast)
               .slice(0, 14)
               .map((itemCast: CastMember) => (
-                <div className='flex w-full h-[50px] shadow-xl rounded-2xl bg-white'>
+                <Link
+                  to={`${path.person}/${generateNameId({ name: itemCast.name as string, id: itemCast.id })}`}
+                  className='flex w-full h-[50px] shadow-xl rounded-2xl bg-white'
+                >
                   <div>
                     <img
                       src={`${configBase.imageBaseUrl}${itemCast.profile_path}`}
@@ -67,7 +87,7 @@ export default function CollectionMovies() {
                     <div className='text-sm font-bold'>{itemCast.name}</div>
                     <div className='text-sm text-gray-500'>{itemCast.character}</div>
                   </div>
-                </div>
+                </Link>
               ))}
           </div>
           <div className='w-full border-b-2 my-14 border-gray-100'></div>
@@ -75,20 +95,23 @@ export default function CollectionMovies() {
           <div className='grid mt-3 grid-cols-4 max-lg:grid-cols-2 max-md:grid-cols-1 gap-2'>
             {dataTopCast_Crew(dataCredits?.data?.crew as MovieCast)
               .slice(0, 14)
-              .map((itemCast: CastMember) => (
-                <div className='flex w-full h-[50px] shadow-xl rounded-2xl bg-white'>
+              .map((itemCrew: CastMember) => (
+                <Link
+                  to={`${path.person}/${generateNameId({ name: itemCrew.name as string, id: itemCrew.id })}`}
+                  className='flex w-full h-[50px] shadow-xl rounded-2xl bg-white'
+                >
                   <div>
                     <img
-                      src={`${configBase.imageBaseUrl}${itemCast.profile_path}`}
+                      src={`${configBase.imageBaseUrl}${itemCrew.profile_path}`}
                       className='h-full w-10 mr-6 rounded-l-md'
                       alt=''
                     />
                   </div>
                   <div>
-                    <div className='text-sm font-bold'>{itemCast.name}</div>
-                    <div className='text-sm text-gray-500'>{itemCast.known_for_department}</div>
+                    <div className='text-sm font-bold'>{itemCrew.name}</div>
+                    <div className='text-sm text-gray-500'>{itemCrew.known_for_department}</div>
                   </div>
-                </div>
+                </Link>
               ))}
           </div>
           <div className='w-full border-b-2 my-14 border-gray-100'></div>
@@ -97,7 +120,10 @@ export default function CollectionMovies() {
           </div>
           <div className='mt-5'>
             {dataCollectionAll?.map((item: Part) => (
-              <div className='shadow-xl h-[100px] rounded-xl mt-2 flex'>
+              <Link
+                to={`${path.movie}/${generateNameId({ name: item.original_title as string, id: item.id })}`}
+                className='shadow-xl h-[100px] rounded-xl mt-2 flex'
+              >
                 <img
                   className='h-full min-w-[80px] rounded-l-xl'
                   src={`${configBase.imageBaseUrl}${item.poster_path}`}
@@ -108,7 +134,7 @@ export default function CollectionMovies() {
                   <div className='text-gray-400 text-sm'>{item.release_date}</div>
                   <div className='line-clamp-2'>{item.overview}</div>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         </div>

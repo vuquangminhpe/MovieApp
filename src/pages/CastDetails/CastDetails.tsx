@@ -94,49 +94,51 @@ export default function CastDetails() {
 
   return (
     <div className='container my-5'>
-      <div className='grid grid-cols-12'>
-        <div className='col-span-3 flex flex-col'>
-          <img
-            className='w-[300px] h-[400px] object-cover shadow-xl rounded-sm'
-            src={`${configBase.imageBaseUrl}${dataPerson?.profile_path}`}
-            alt=''
-          />
-          <div className='mt-6 flex gap-4'>
-            <a href={`https://www.facebook.com/${dataExternal?.facebook_id}`} target='_blank'>
-              <img
-                src='https://www.themoviedb.org/assets/2/v4/glyphicons/social/facebook-2c5718e4ece8eb3a3cc49ae97000e541c0aad50869b419b5aa579693bc0ad059.svg'
-                alt=''
-                className='size-7 cursor-pointer'
-              />
-            </a>
-            <a href={`https://x.com/${dataExternal?.twitter_id}`} target='_blank'>
-              <img
-                src='https://www.themoviedb.org/assets/2/v4/glyphicons/social/twitter-a6ff8c172b8e086f4a64578cee0a16676c1a067b47a1b1b186d58795d241a852.svg'
-                alt=''
-                className='size-7 cursor-pointer '
-              />
-            </a>
-            <a href={`https://www.instagram.com/${dataExternal?.instagram_id}`} target='_blank'>
-              <img
-                src='https://www.themoviedb.org/assets/2/v4/glyphicons/social/instagram-74e6299c864adc384258da3b3a8eb09282b7ccda4dd1dfa9a4158ba2ea8583b9.svg'
-                alt=''
-                className='size-7 cursor-pointer'
-              />
-            </a>
-            <a href={`https://www.tiktok.com/${dataExternal?.tiktok_id}`} target='_blank'>
-              <img
-                src='https://www.themoviedb.org/assets/2/v4/glyphicons/social/tiktok-69d6a5d09a7fd09b663fa45337fa05cbfc4cbf16b45d72d9962b036a9e2702b4.svg'
-                alt=''
-                className='size-7 cursor-pointer'
-              />
-            </a>
-            <a href={`https://www.youtube.com/${dataExternal?.youtube_id}`} target='_blank'>
-              <img
-                src='https://www.themoviedb.org/assets/2/v4/glyphicons/social/youtube-de379f898e1a71c488c71075eb00f5c003699069b9cb1f38c8ac7ea99c8a6338.svg'
-                alt=''
-                className='size-7 cursor-pointer'
-              />
-            </a>
+      <div className='grid grid-cols-12 max-lg:flex max-lg:flex-col'>
+        <div className='col-span-3 flex lg:flex-col max-lg:flex max-lg:ml-2'>
+          <div className='max-lg:mr-4'>
+            <img
+              className='w-[300px] h-[400px] object-cover shadow-xl rounded-sm'
+              src={`${configBase.imageBaseUrl}${dataPerson?.profile_path}`}
+              alt=''
+            />
+            <div className='mt-6 flex gap-4'>
+              <a href={`https://www.facebook.com/${dataExternal?.facebook_id}`} target='_blank'>
+                <img
+                  src='https://www.themoviedb.org/assets/2/v4/glyphicons/social/facebook-2c5718e4ece8eb3a3cc49ae97000e541c0aad50869b419b5aa579693bc0ad059.svg'
+                  alt=''
+                  className='size-7 cursor-pointer max-lg:size-5'
+                />
+              </a>
+              <a href={`https://x.com/${dataExternal?.twitter_id}`} target='_blank'>
+                <img
+                  src='https://www.themoviedb.org/assets/2/v4/glyphicons/social/twitter-a6ff8c172b8e086f4a64578cee0a16676c1a067b47a1b1b186d58795d241a852.svg'
+                  alt=''
+                  className='size-7 cursor-pointer max-lg:size-5 '
+                />
+              </a>
+              <a href={`https://www.instagram.com/${dataExternal?.instagram_id}`} target='_blank'>
+                <img
+                  src='https://www.themoviedb.org/assets/2/v4/glyphicons/social/instagram-74e6299c864adc384258da3b3a8eb09282b7ccda4dd1dfa9a4158ba2ea8583b9.svg'
+                  alt=''
+                  className='size-7 cursor-pointer max-lg:size-5'
+                />
+              </a>
+              <a href={`https://www.tiktok.com/${dataExternal?.tiktok_id}`} target='_blank'>
+                <img
+                  src='https://www.themoviedb.org/assets/2/v4/glyphicons/social/tiktok-69d6a5d09a7fd09b663fa45337fa05cbfc4cbf16b45d72d9962b036a9e2702b4.svg'
+                  alt=''
+                  className='size-7 cursor-pointer max-lg:size-5'
+                />
+              </a>
+              <a href={`https://www.youtube.com/${dataExternal?.youtube_id}`} target='_blank'>
+                <img
+                  src='https://www.themoviedb.org/assets/2/v4/glyphicons/social/youtube-de379f898e1a71c488c71075eb00f5c003699069b9cb1f38c8ac7ea99c8a6338.svg'
+                  alt=''
+                  className='size-7 cursor-pointer max-lg:size-5'
+                />
+              </a>
+            </div>
           </div>
 
           <div className='mt-6'>

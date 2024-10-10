@@ -7,6 +7,7 @@ import HomeMovies from './pages/HomeMovies'
 import MovieDetails from './pages/MovieDetails'
 import CastDetails from './pages/CastDetails'
 import CollectionMovies from './pages/Collection'
+import MovieList from './pages/MovieList'
 
 // function ProtectedRoute() {
 //   const { isAuthenticated } = useContext(AppContext)
@@ -131,6 +132,15 @@ export default function useRouteElement() {
       element: (
         <MainLayout>
           <CollectionMovies />
+        </MainLayout>
+      )
+    },
+    {
+      path: path.movie_popular,
+      index: true,
+      element: (
+        <MainLayout>
+          <MovieList />
         </MainLayout>
       )
     }
