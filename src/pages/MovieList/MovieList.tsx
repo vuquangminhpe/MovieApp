@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { ListApi } from '@/Apis/ListApi'
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query'
 import MovieListView from './MovieListView'
-import { Movie, ownerGenres } from '@/types/Movie'
+import { Movie, MovieTrendings, ownerGenres } from '@/types/Movie'
 import { useLocation } from 'react-router-dom'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/Components/ui/accordion'
@@ -44,19 +45,18 @@ const filterSort = [
     label: 'Title (Z-A)'
   }
 ]
-
 export default function MovieList() {
   const languageCodes = ISO6391.getAllCodes()
-  console.log(languageCodes)
 
   const languages = ISO6391.getAllNames()
-  console.log(languages)
-  const location = useLocation()
+  const { pathname } = useLocation()
   const [open, setOpen] = useState(false)
   const [openLanguage, setOpenLanguage] = useState(false)
   const [value, setValue] = useState('')
   const [valueLanguage, setValueLanguage] = useState('')
-  const nameLocation = location.pathname.split('/')[2]
+  const nameLocation = pathname.split('/')[2]
+  console.log(pathname)
+
   const observerRef = useRef<IntersectionObserver>()
   const loadMoreRef = useRef<HTMLDivElement>(null)
   const { data: dataGenres } = useQuery({
@@ -64,7 +64,23 @@ export default function MovieList() {
     queryFn: () => ListApi.getGenres({ language: 'en' })
   })
   const dataGenres_Movies = dataGenres?.data.genres
+  const getApiFunction = () => {
+    if (pathname.includes('/movie/Top_Rated')) {
+      return ListApi.DataRated
+    }
+    if (pathname.includes('movie/Upcoming')) {
+      return ListApi.UpcomingList
+    }
+    if (pathname.includes('/movie/Popular')) {
+      return ListApi.PopularList
+    }
+    if (pathname.includes('/movie/Now_Playing')) {
+      return ListApi.NowPlaying_List
+    }
+    return ListApi.PopularList
+  }
 
+  const currentApi = getApiFunction()
   const {
     data: PopularData,
     fetchNextPage,
@@ -72,12 +88,14 @@ export default function MovieList() {
     isFetchingNextPage,
     status
   } = useInfiniteQuery({
-    queryKey: ['dataPopularList'],
+    queryKey: [pathname],
     queryFn: async ({ pageParam = 1 }) => {
-      const result = ListApi.PopularList({
+      const result = currentApi({
         page: pageParam,
         language: 'en-US'
       })
+      console.log(result)
+
       return result
     },
     getNextPageParam: (lastPage) => {
@@ -116,7 +134,8 @@ export default function MovieList() {
       }
     }
   }, [handleObserver])
-  const allMovies = PopularData?.pages.flatMap((page) => page.data.results) ?? []
+  const allMovies =
+    PopularData?.pages.flatMap((page) => page.data.results as MovieTrendings | readonly MovieTrendings[]) ?? []
   if (status === 'pending') {
     return (
       <div className='flex w-full container'>
@@ -144,8 +163,9 @@ export default function MovieList() {
         <div className='flex'>
           {Array(5)
             .fill(0)
-            .map(() => (
+            .map((_, index) => (
               <div
+                key={index}
                 role='status'
                 className='max-w-sm p-4 border border-gray-200 rounded shadow animate-pulse md:p-6 dark:border-gray-700'
               >
@@ -189,7 +209,6 @@ export default function MovieList() {
   } else if (status === 'error') {
     return <div className='text-center text-red-500 py-4'>Error loading movies. Please try again later</div>
   }
-  console.log(allMovies)
 
   return (
     <div className='container py-5'>

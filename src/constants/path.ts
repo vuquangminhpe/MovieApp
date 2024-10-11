@@ -5,7 +5,7 @@ const path = {
   collection: '/collection',
   movieDetails: 'movie/:movieId',
   castDetails: 'person/:personId',
-  movie_popular: '/movie/popular',
+  movie_popular: '/movie/Popular',
   movie_now_playing: '/movie/Now_Playing',
   movie_upcoming: '/movie/Upcoming',
   movie_top_rated: '/movie/Top_Rated',

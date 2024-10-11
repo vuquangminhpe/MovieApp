@@ -89,15 +89,6 @@ export default function Header() {
             className='text-white w-[60px] mr-3 font-bold ml-2'
             renderPopover={
               <div className=' shadow-sm max-w-52 w-40  text-sm font-sans gap-1 border rounded-xl border-gray-300 bg-white text-black flex flex-col justify-center text-left items-center'>
-                <Link to='' className='hover:bg-gray-200 p-2 rounded-xl  w-full'>
-                  Discussions
-                </Link>
-                <Link to='' className='hover:bg-gray-200 p-2  w-full'>
-                  Leaderbroard
-                </Link>
-                <Link to='' className='hover:bg-gray-200 p-2 w-full'>
-                  Support
-                </Link>
                 <Link to='' className='hover:bg-gray-200 p-2 rounded-xl w-full'>
                   API
                 </Link>

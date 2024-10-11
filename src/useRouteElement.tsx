@@ -1,6 +1,6 @@
 // import { Navigate, Outlet, useRoutes } from 'react-router-dom'
 
-import { useRoutes } from 'react-router-dom'
+import { useLocation, useRoutes } from 'react-router-dom'
 import path from './constants/path'
 import MainLayout from './Layouts/MainLayout'
 import HomeMovies from './pages/HomeMovies'
@@ -99,6 +99,9 @@ import MovieList from './pages/MovieList'
 //   return routeElements
 // }
 export default function useRouteElement() {
+  const location = useLocation()
+  const dataLink = location.pathname
+
   const routeElements = useRoutes([
     {
       path: path.home,
@@ -136,7 +139,7 @@ export default function useRouteElement() {
       )
     },
     {
-      path: path.movie_popular,
+      path: dataLink,
       index: true,
       element: (
         <MainLayout>
