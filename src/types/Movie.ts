@@ -169,3 +169,11 @@ export interface Account_States {
   }
   watchlist: false
 }
+
+export interface ownerGenres {
+  id: string
+  name: string
+}
+export interface typeGenres {
+  genres: ownerGenres[]
+}
