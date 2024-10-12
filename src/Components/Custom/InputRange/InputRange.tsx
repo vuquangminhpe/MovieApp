@@ -27,7 +27,6 @@ export default function InputRange({ valueScore = 10, nameScore, min = 0, max = 
     value: (max / valueScore) * i,
     label: i * typeScore
   }))
-  console.log(value)
 
   return (
     <div className='relative pt-3 mt-7 pb-2'>

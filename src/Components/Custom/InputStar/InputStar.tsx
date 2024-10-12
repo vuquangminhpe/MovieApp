@@ -14,7 +14,6 @@ export default function InputStar({ id, initialRating, onChange }: StarRatingPro
   const [rating, setRating] = useState<number>((initialRating as number) / 2 || 0)
   const [hover, setHover] = useState<number>(0)
   const ratingContainerRef = useRef<HTMLDivElement>(null)
-  console.log(rating)
 
   const ratingMoviesMutation = useMutation({ mutationFn: () => DetailsMovieApi.addRatingMovieDetails(id, rating * 2) })
   const calculateRating = (clientX: number) => {
@@ -25,7 +24,6 @@ export default function InputStar({ id, initialRating, onChange }: StarRatingPro
     const rawRating = offsetX / starWidth
     return Math.max(0, Math.min(5, Math.round(rawRating * 2) / 2))
   }
-  console.log(id)
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const newRating = calculateRating(e.clientX)

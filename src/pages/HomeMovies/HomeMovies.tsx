@@ -43,7 +43,6 @@ export default function HomeMovies() {
   useEffect(() => {
     refetch()
   }, [extendedDataRated, dataRatedMovies])
-  console.log(movieId)
 
   return (
     <div className='flex flex-col'>

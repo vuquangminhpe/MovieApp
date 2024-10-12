@@ -12,7 +12,6 @@ import path from '@/constants/path'
 
 export default function CollectionMovies() {
   const location = useLocation()
-  console.log(location.state.collectionId)
 
   const { collection_id } = useParams()
   const id = getIdFromNameId(collection_id as string)
@@ -60,7 +59,6 @@ export default function CollectionMovies() {
       return 0
     })
   }
-  console.log(dataCredits?.data?.crew)
 
   return (
     <div>

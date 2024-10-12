@@ -77,8 +77,6 @@ export default function RatingMovieDetails({
   const handleDeletedRating = () => {
     deletedMutation.mutate(undefined, {
       onSuccess: (data: AxiosResponse<SuccessResponse<{ status_message: string }>, any>) => {
-        console.log(data)
-
         toast.success(`${data.data.status_message}`)
         refetch()
       },

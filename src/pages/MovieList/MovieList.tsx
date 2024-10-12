@@ -55,7 +55,6 @@ export default function MovieList() {
   const [value, setValue] = useState('')
   const [valueLanguage, setValueLanguage] = useState('')
   const nameLocation = pathname.split('/')[2]
-  console.log(pathname)
 
   const observerRef = useRef<IntersectionObserver>()
   const loadMoreRef = useRef<HTMLDivElement>(null)
@@ -94,7 +93,6 @@ export default function MovieList() {
         page: pageParam,
         language: 'en-US'
       })
-      console.log(result)
 
       return result
     },
