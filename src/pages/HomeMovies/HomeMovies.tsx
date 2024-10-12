@@ -5,19 +5,45 @@ import MouseAnimate from '../../Components/Custom/MouseAnimate'
 import PopularMovie from './PopularMovie/LeaderBroad'
 import { useEffect, useState } from 'react'
 import MovieTrailer from './MovieTrailer'
+import { Movie, MovieTrendings } from '@/types/Movie'
+import { AccountApi } from '@/Apis/AccountApi'
 
 export default function HomeMovies() {
+  const [movieId, setMovieId] = useState<number>()
+
   const [mouseHoverImages, setMouseHoverImages] = useState(
     'https://media.themoviedb.org/t/p/w1920_and_h600_multi_faces_filter(duotone,00192f,00baff)/SqAZjEqqBAYvyu3KSrWq1d0QLB.jpg'
   )
   const { data: dataRated } = useQuery({ queryKey: ['dataTrending', []], queryFn: ListApi.TrendingData })
   const dataTrending = dataRated?.data.results
-  const { data: dataTrailer } = useQuery({ queryKey: ['dataTrailerLatest', []], queryFn: ListApi.UpcomingList })
+  const { data: dataTrailer } = useQuery({
+    queryKey: ['dataTrailerLatest', []],
+    queryFn: () =>
+      ListApi.UpcomingList({
+        language: 'en'
+      })
+  })
+
   const dataTrailerLatest = dataTrailer?.data.results
-  const { data: dataPopular } = useQuery({ queryKey: ['dataPopularList', []], queryFn: ListApi.PopularList })
+  const { data: dataPopular } = useQuery({
+    queryKey: ['dataPopularList', []],
+    queryFn: () =>
+      ListApi.PopularList({
+        language: 'en'
+      })
+  })
   const dataPopulars = dataPopular?.data.results
 
-  useEffect(() => {}, [mouseHoverImages])
+  const { data: dataRatedMovies, refetch } = useQuery({
+    queryKey: ['dataRatedMovies_popular'],
+    queryFn: AccountApi.getRatedMoviesAccount
+  })
+  const dataRateds = dataRatedMovies?.data.results
+  const extendedDataRated = dataRateds?.find((item: MovieTrendings) => (item.id as number | undefined) === movieId)
+  useEffect(() => {
+    refetch()
+  }, [extendedDataRated, dataRatedMovies])
+  console.log(movieId)
 
   return (
     <div className='flex flex-col'>
@@ -53,7 +79,11 @@ export default function HomeMovies() {
       </div>
       <div className='container w-full'>
         {' '}
-        <MovieTrending dataMoviesTrending={dataTrending} />
+        <MovieTrending
+          setMovieId={setMovieId}
+          rating={extendedDataRated?.rating as number}
+          dataMoviesTrending={dataTrending}
+        />
         <div className=' relative rounded-xl shadow-sm w-full'>
           <img
             src={mouseHoverImages}
@@ -62,7 +92,11 @@ export default function HomeMovies() {
           />
           <MovieTrailer setMouseHoverImages={setMouseHoverImages} dataPopulars={dataTrailerLatest} />
         </div>
-        <PopularMovie dataPopulars={dataPopulars} />
+        <PopularMovie
+          setMovieId={setMovieId}
+          rating={extendedDataRated?.rating as number}
+          dataPopulars={dataPopulars as Movie[] | undefined}
+        />
       </div>
     </div>
   )

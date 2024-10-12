@@ -4,6 +4,9 @@ import { Movie, MovieTrendings } from '../../../types/Movie'
 import path from '../../../constants/path'
 import { generateNameId } from '../../../utils/utils'
 
+import InputStar from '@/Components/Custom/InputStar'
+import { Popover, PopoverContent, PopoverTrigger } from '@radix-ui/react-popover'
+
 interface RenderMoviesProps {
   dataTrending: MovieTrendings | Movie
   colorLiker?: string
@@ -11,15 +14,21 @@ interface RenderMoviesProps {
   configWidth_Height?: string
   typeText?: string
   CustomIMG?: string
+  movie_id: number
+  setMovieId: React.Dispatch<React.SetStateAction<number | undefined>>
+  voteRate: number
 }
 
 const RenderMovies = ({
+  movie_id,
   dataTrending,
   colorLiker = '#4CAF50',
   isShow = true,
   configWidth_Height = 'w-48 h-72',
   typeText = 'text-white',
-  CustomIMG = ''
+  CustomIMG = '',
+  setMovieId,
+  voteRate
 }: RenderMoviesProps) => {
   const percentage = Math.round((dataTrending as MovieTrendings).vote_average * 10)
   const radius = 18
@@ -38,7 +47,32 @@ const RenderMovies = ({
     >
       <div className='absolute top-2 right-2 z-10'>
         <div className='w-6 h-6 flex items-center justify-center cursor-pointer'>
-          <span className='text-gray-400 text-xl'>⋮</span>
+          <Popover>
+            <PopoverTrigger>
+              {' '}
+              <span onClick={() => setMovieId(movie_id)} className='text-gray-400 text-xl'>
+                ⋮
+              </span>
+            </PopoverTrigger>
+            <PopoverContent>
+              <div className='max-w-56 p-2 bg-white h-auto shadow-xl rounded-sm'>
+                <div>Add to List</div>
+                <div>Favorite</div>
+                <div>Watchlist</div>
+                <Popover>
+                  <PopoverTrigger>
+                    {' '}
+                    <div>Your Rating</div>
+                  </PopoverTrigger>
+                  <PopoverContent>
+                    <div className='bg-blue-950 inline-block p-3'>
+                      <InputStar initialRating={voteRate} id={movie_id as number} />
+                    </div>
+                  </PopoverContent>
+                </Popover>
+              </div>
+            </PopoverContent>
+          </Popover>
         </div>
       </div>
       <Link

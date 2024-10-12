@@ -6,9 +6,11 @@ import RenderMovies from '../../../Components/RenderMovies/RenderMovie'
 
 interface MovieTrendingProps {
   dataMoviesTrending?: MovieTrendings[]
+  setMovieId: React.Dispatch<React.SetStateAction<number | undefined>>
+  rating: number
 }
 
-const MovieTrending = ({ dataMoviesTrending }: MovieTrendingProps) => {
+const MovieTrending = ({ dataMoviesTrending, setMovieId, rating }: MovieTrendingProps) => {
   return (
     <div className='pl-7 py-7 w-full'>
       <div className='text-xl font-bold mb-4'>Trending</div>
@@ -18,7 +20,13 @@ const MovieTrending = ({ dataMoviesTrending }: MovieTrendingProps) => {
           <div className='flex gap-3 pr-4' style={{ width: 'max-content' }}>
             {dataMoviesTrending?.map((dataTrending) => (
               <Link key={dataTrending.id} to={path.home} className='max-w-full'>
-                <RenderMovies key={dataTrending.id} dataTrending={dataTrending} />
+                <RenderMovies
+                  voteRate={rating as number}
+                  setMovieId={setMovieId}
+                  movie_id={dataTrending.id}
+                  key={dataTrending.id}
+                  dataTrending={dataTrending}
+                />
                 <div className='text-sm font-semibold max-w-[220px]'>
                   {dataTrending.original_name || dataTrending.original_title}
                 </div>

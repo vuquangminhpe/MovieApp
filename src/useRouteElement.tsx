@@ -1,6 +1,6 @@
 // import { Navigate, Outlet, useRoutes } from 'react-router-dom'
 
-import { useLocation, useRoutes } from 'react-router-dom'
+import { useRoutes } from 'react-router-dom'
 import path from './constants/path'
 import MainLayout from './Layouts/MainLayout'
 import HomeMovies from './pages/HomeMovies'
@@ -99,8 +99,8 @@ import MovieList from './pages/MovieList'
 //   return routeElements
 // }
 export default function useRouteElement() {
-  const location = useLocation()
-  const dataLink = location.pathname
+  // const location = useLocation()
+  // const dataLink = location.pathname
 
   const routeElements = useRoutes([
     {
@@ -139,7 +139,34 @@ export default function useRouteElement() {
       )
     },
     {
-      path: dataLink,
+      path: path.movie_popular,
+      index: true,
+      element: (
+        <MainLayout>
+          <MovieList />
+        </MainLayout>
+      )
+    },
+    {
+      path: path.movie_now_playing,
+      index: true,
+      element: (
+        <MainLayout>
+          <MovieList />
+        </MainLayout>
+      )
+    },
+    {
+      path: path.movie_upcoming,
+      index: true,
+      element: (
+        <MainLayout>
+          <MovieList />
+        </MainLayout>
+      )
+    },
+    {
+      path: path.movie_top_rated,
       index: true,
       element: (
         <MainLayout>
