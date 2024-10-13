@@ -1,3 +1,4 @@
+import useQueryConfig from '@/hooks/useQueryConfig'
 import { useState } from 'react'
 
 interface Props {
@@ -6,16 +7,27 @@ interface Props {
   typeScore?: number
   min?: number
   max?: number
+  typeName: string
   onChange?: (value: number) => void
 }
 
-export default function InputRange({ valueScore = 10, nameScore, min = 0, max = 100, typeScore = 1, onChange }: Props) {
+export default function InputRange({
+  typeName,
+  valueScore = 10,
+  nameScore,
+  min = 0,
+  max = 100,
+  typeScore = 1,
+  onChange
+}: Props) {
   const [value, setValue] = useState(0)
+  const { setQueryParams } = useQueryConfig()
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = parseInt(e.target.value)
     setValue(newValue)
     onChange?.(newValue)
+    setQueryParams({ [typeName]: newValue })
   }
 
   const getTrackBackground = () => {

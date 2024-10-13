@@ -1,27 +1,54 @@
+import { useNavigate, useLocation } from 'react-router-dom'
+import { useMemo } from 'react'
 import omitBy from 'lodash/omitBy'
 import isUndefined from 'lodash/isUndefined'
 import useQueryParams from './useQueryParams'
 import { MovieConfig } from '@/types/Movie'
 
-export type queryConfig = {
+export type QueryConfig = {
   [key in keyof MovieConfig]: string
 }
 
 export default function useQueryConfig() {
-  const queryParams: queryConfig = useQueryParams()
-  const queryParamsConfig: queryConfig = omitBy(
-    {
-      page: queryParams.page || '1',
-      limit: queryParams.limit || 10,
-      query: queryParams.query,
-      include_adult: queryParams.include_adult,
-      language: queryParams.language || 'en-US',
-      primary_release_year: queryParams.primary_release_year,
-      region: queryParams.region,
-      year: queryParams.year,
-      first_air_date_year: queryParams.first_air_date_year
-    },
-    isUndefined
-  )
-  return queryParamsConfig
+  const queryParams: QueryConfig = useQueryParams()
+  const navigate = useNavigate()
+  const location = useLocation()
+
+  const queryConfig = useMemo(() => {
+    return omitBy(
+      {
+        sort: queryParams.sort,
+        filter: queryParams.filter,
+        dateFrom: queryParams.dateFrom,
+        dateTo: queryParams.dateTo,
+        selectedGenres: queryParams.selectedGenres,
+        language: queryParams.language,
+        userScore: queryParams.userScore,
+        userVotes: queryParams.userVotes,
+        runtime: queryParams.runtime
+      },
+      isUndefined
+    ) as QueryConfig
+  }, [queryParams])
+
+  const setQueryParams = (updates: Partial<QueryConfig>) => {
+    const newQueryConfig = { ...queryConfig, ...updates }
+    const searchParams = new URLSearchParams()
+
+    Object.entries(newQueryConfig).forEach(([key, value]) => {
+      if (value !== undefined) {
+        searchParams.append(key, value)
+      }
+    })
+
+    navigate({
+      pathname: location.pathname,
+      search: searchParams.toString()
+    })
+  }
+
+  return {
+    queryConfig,
+    setQueryParams
+  }
 }

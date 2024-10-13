@@ -15,27 +15,15 @@ import { Label } from '@/Components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/Components/ui/radio-group'
 import ISO6391 from 'iso-639-1'
 import InputRange from '@/Components/Custom/InputRange'
+import useQueryConfig from '@/hooks/useQueryConfig'
+import UseFilteredMovies from './UseFilteredMovies'
 const filterSort = [
-  {
-    value: 'Popularity_Descending',
-    label: 'Popularity Descending'
-  },
-  {
-    value: 'Popularity_Ascending',
-    label: 'Popularity Ascending'
-  },
-  {
-    value: 'Rating_Ascending',
-    label: 'Rating Ascending'
-  },
-  {
-    value: 'Release_Date_Descending',
-    label: 'Release Date Descending'
-  },
-  {
-    value: 'Release_Date_Ascending',
-    label: 'Release Date Ascending'
-  },
+  { value: 'popularity.desc', label: 'Popularity Descending' },
+  { value: 'popularity.asc', label: 'Popularity Ascending' },
+  { value: 'vote_average.desc', label: 'Rating Descending' },
+  { value: 'vote_average.asc', label: 'Rating Ascending' },
+  { value: 'release_date.desc', label: 'Release Date Descending' },
+  { value: 'release_date.asc', label: 'Release Date Ascending' },
   {
     value: 'Title_A_Z',
     label: 'Title (A-Z)'
@@ -46,6 +34,7 @@ const filterSort = [
   }
 ]
 export default function MovieList() {
+  const { queryConfig, setQueryParams } = useQueryConfig()
   const languageCodes = ISO6391.getAllCodes()
 
   const languages = ISO6391.getAllNames()
@@ -55,7 +44,6 @@ export default function MovieList() {
   const [value, setValue] = useState('')
   const [valueLanguage, setValueLanguage] = useState('')
   const nameLocation = pathname.split('/')[2]
-
   const observerRef = useRef<IntersectionObserver>()
   const loadMoreRef = useRef<HTMLDivElement>(null)
   const { data: dataGenres } = useQuery({
@@ -134,6 +122,8 @@ export default function MovieList() {
   }, [handleObserver])
   const allMovies =
     PopularData?.pages.flatMap((page) => page.data.results as MovieTrendings | readonly MovieTrendings[]) ?? []
+  const filteredMovies = UseFilteredMovies(allMovies)
+
   if (status === 'pending') {
     return (
       <div className='flex w-full container'>
@@ -231,32 +221,30 @@ export default function MovieList() {
                           aria-expanded={open}
                           className='w-[200px] justify-between'
                         >
-                          {value ? filterSort.find((framework) => framework.value === value)?.label : 'Select sort...'}
+                          {value ? filterSort.find((item) => item.value === value)?.label : 'Select sort...'}
                           <ChevronsUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
                         </Button>
                       </PopoverTrigger>
                       <PopoverContent className='w-[200px] p-0'>
                         <Command>
-                          <CommandInput placeholder='sort by...' />
+                          <CommandInput placeholder='Search sort...' />
                           <CommandList>
                             <CommandEmpty>Sort found.</CommandEmpty>
                             <CommandGroup>
-                              {filterSort.map((framework) => (
+                              {filterSort.map((item) => (
                                 <CommandItem
-                                  key={framework.value}
-                                  value={framework.value}
+                                  key={item.value}
+                                  value={item.value}
                                   onSelect={(currentValue) => {
+                                    setQueryParams({ sort: currentValue })
                                     setValue(currentValue === value ? '' : currentValue)
                                     setOpen(false)
                                   }}
                                 >
                                   <Check
-                                    className={cn(
-                                      'mr-2 h-4 w-4',
-                                      value === framework.value ? 'opacity-100' : 'opacity-0'
-                                    )}
+                                    className={cn('mr-2 h-4 w-4', value === item.value ? 'opacity-100' : 'opacity-0')}
                                   />
-                                  {framework.label}
+                                  {item.label}
                                 </CommandItem>
                               ))}
                             </CommandGroup>
@@ -278,7 +266,11 @@ export default function MovieList() {
                 <AccordionContent className='px-3'>
                   <div className='border-t-[1px] border-gray-200'></div>
                   <div className='mt-2 capitalize text-sm py-3'>show me</div>
-                  <RadioGroup defaultValue='Everything' className='py-3'>
+                  <RadioGroup
+                    defaultValue='Everything'
+                    className='py-3'
+                    onValueChange={(value) => setQueryParams({ filter: value })}
+                  >
                     <div className='flex items-center space-x-2'>
                       <RadioGroupItem value='Everything' id='Everything' />
                       <Label htmlFor='Everything'>Everything</Label>
@@ -300,13 +292,17 @@ export default function MovieList() {
                   <div className='flex justify-around py-3 items-center '>
                     <div className='p-2 text-gray-400'>from</div>
                     <div className='shadow-xl rounded-sm'>
-                      <input className='p-2' type='date' />
+                      <input
+                        className='p-2'
+                        type='date'
+                        onChange={(e) => setQueryParams({ dateFrom: e.target.value })}
+                      />
                     </div>
                   </div>
                   <div className='flex justify-around py-3 items-center '>
                     <div className='p-2 text-gray-400'>to</div>
                     <div className='shadow-xl rounded-sm'>
-                      <input className='p-2' type='date' />
+                      <input className='p-2' type='date' onChange={(e) => setQueryParams({ dateTo: e.target.value })} />
                     </div>
                   </div>
                   <div className='p-1'>
@@ -331,6 +327,7 @@ export default function MovieList() {
                         role='combobox'
                         aria-expanded={openLanguage}
                         className='w-[200px] justify-between'
+                        onClick={() => setQueryParams({ language: valueLanguage })}
                       >
                         {valueLanguage
                           ? languages.find((language: string) => language === valueLanguage)
@@ -367,18 +364,29 @@ export default function MovieList() {
                       </Command>
                     </PopoverContent>
                   </Popover>
-                  <InputRange typeScore={1} nameScore='User Score' />
-                  <InputRange typeScore={100} valueScore={5} max={500} nameScore='minimum user votes' />
-                  <InputRange typeScore={2 * 60} max={360} valueScore={3} nameScore='runtime' />
+                  <InputRange typeName='userScore' typeScore={1} nameScore='User Score' />
+                  <InputRange
+                    typeName='userVotes'
+                    typeScore={100}
+                    valueScore={5}
+                    max={500}
+                    nameScore='minimum user votes'
+                  />
+                  <InputRange typeName={'runtime'} typeScore={2 * 60} max={360} valueScore={3} nameScore='runtime' />
                 </AccordionContent>
               </AccordionItem>
             </Accordion>
+          </div>
+          <div className='mt-7 bg-blue-400/70 p-4 text-center text-white shadow-xl rounded-xl cursor-pointer hover:bg-blue-950 font-bold text-xl'>
+            Search
           </div>
         </div>
 
         <div>
           <div className='grid grid-cols-5 max-lg:grid-cols-2 max-md:grid-cols-1 gap-5 ml-7 mt-8'>
-            {allMovies?.map((itemListData: Movie) => <MovieListView key={itemListData.id} listData={itemListData} />)}
+            {filteredMovies?.map((itemListData: MovieTrendings) => (
+              <MovieListView key={itemListData.id} listData={itemListData as unknown as Movie} />
+            ))}{' '}
           </div>
           <div ref={loadMoreRef} className='w-full py-4 text-center'>
             {isFetchingNextPage ? (

@@ -197,6 +197,11 @@ export default function CastDetails() {
                       key={dataPerformerDetails.id}
                       configWidth_Height='w-[150px] h-[250px]'
                       dataTrending={dataPerformerDetails}
+                      movie_id={0}
+                      setMovieId={function (): void {
+                        throw new Error('Function not implemented.')
+                      }}
+                      voteRate={0}
                     />
                     <div className='p-2 font-semibold line-clamp-3 max-w-[100px]'>
                       {(dataPerformerDetails as Movie).title || dataPerformerDetails.original_name}

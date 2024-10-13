@@ -9,107 +9,26 @@ import ModeToggle from '../../ModeToggle'
 import { useState } from 'react'
 import { Popover as Popovers, PopoverContent, PopoverTrigger } from '@/Components/ui/popover'
 export default function Header() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isMenuOpen_left, setIsMenuOpen_left] = useState(false)
+  const [isMenuOpen_right, setIsMenuOpen_right] = useState(false)
   const { data: DataRated } = useQuery({
     queryKey: ['listRated'],
-    queryFn: () => ListApi.DataRated()
+    queryFn: () =>
+      ListApi.DataRated({
+        language: 'en'
+      })
   })
 
   const dataRatedMovies = DataRated?.data.results
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen)
+  const toggleMenu_left = () => {
+    setIsMenuOpen_left(!isMenuOpen_left)
   }
-
-  return (
-    <div className='relative z-auto bg-blue-950 flex h-[100px] md:justify-between items-center w-full p-4  min-w-full'>
-      {' '}
-      <div className='flex'>
-        <Link to={path.home} className='mr-4 min-w-[154px]'>
-          <img
-            src='https://www.themoviedb.org/assets/2/v4/logos/v2/blue_short-8e7b30f73a4020692ccca9c88bafe5dcb6f8a62a4c6bc55cd9ba82bb2cd95f6c.svg'
-            alt='The Movie Database (TMDB)'
-            width='154'
-            height='20'
-          />
-        </Link>
-        <div className='hidden lg:flex'>
-          <Popover
-            children='Movies'
-            className='text-white w-[60px] mr-3 font-bold ml-2'
-            renderPopover={
-              <div className='shadow-sm max-w-52 w-40  text-sm font-sans gap-1 border rounded-xl border-gray-300 bg-white text-black flex flex-col justify-center text-left items-center'>
-                <Link to={`${path.movie_popular}`} className='hover:bg-gray-200 p-2 rounded-xl  w-full'>
-                  Popular
-                </Link>
-                <Link to={`${path.movie_now_playing}`} className='hover:bg-gray-200 p-2  w-full'>
-                  Now Playing
-                </Link>
-                <Link to={`${path.movie_upcoming}`} className='hover:bg-gray-200 p-2 w-full'>
-                  Upcoming
-                </Link>
-                <Link to={`${path.movie_top_rated}`} className='hover:bg-gray-200 p-2 rounded-xl w-full'>
-                  Top Rated
-                </Link>
-              </div>
-            }
-          />
-          <Popover
-            children='TV Shows'
-            className='text-white w-[80px] mr-3 font-bold ml-2'
-            renderPopover={
-              <div className=' shadow-sm max-w-52 w-40  text-sm font-sans gap-1 border rounded-xl border-gray-300 bg-white text-black flex flex-col justify-center text-left items-center'>
-                <Link to='' className='hover:bg-gray-200 p-2 rounded-xl  w-full'>
-                  Popular
-                </Link>
-                <Link to='' className='hover:bg-gray-200 p-2  w-full'>
-                  On TV
-                </Link>
-                <Link to='' className='hover:bg-gray-200 p-2 w-full'>
-                  Airing Today
-                </Link>
-                <Link to='' className='hover:bg-gray-200 p-2 rounded-xl w-full'>
-                  Top Rated
-                </Link>
-              </div>
-            }
-          />
-          <Popover
-            children='People'
-            className='text-white w-[60px] mr-3 font-bold ml-2'
-            renderPopover={
-              <div className=' shadow-sm max-w-52 w-40  text-sm font-sans gap-1 border rounded-xl border-gray-300 bg-white text-black flex flex-col justify-center text-left items-center'>
-                <Link to='' className='hover:bg-gray-200 p-2 rounded-xl  w-full'>
-                  Popular People
-                </Link>
-              </div>
-            }
-          />
-          <Popover
-            children='More'
-            className='text-white w-[60px] mr-3 font-bold ml-2'
-            renderPopover={
-              <div className=' shadow-sm max-w-52 w-40  text-sm font-sans gap-1 border rounded-xl border-gray-300 bg-white text-black flex flex-col justify-center text-left items-center'>
-                <Link to='' className='hover:bg-gray-200 p-2 rounded-xl w-full'>
-                  API
-                </Link>
-              </div>
-            }
-          />
-        </div>
-      </div>
-      <button className='lg:hidden transition-all text-white p-2' onClick={toggleMenu}>
-        <svg
-          xmlns='http://www.w3.org/2000/svg'
-          fill='none'
-          viewBox='0 0 24 24'
-          strokeWidth={1.5}
-          stroke='currentColor'
-          className='w-6 h-6'
-        >
-          <path strokeLinecap='round' strokeLinejoin='round' d='M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5' />
-        </svg>
-      </button>
-      <div className='max-lg:translate-x-32  items-center flex ml-7 mt-1'>
+  const toggleMenu_right = () => {
+    setIsMenuOpen_right(!isMenuOpen_right)
+  }
+  const customMenuRight = (customClassName: string) => {
+    return (
+      <div className={`${customClassName} items-center flex ml-7 mt-1`}>
         <Popover
           children={
             <div className='text-white '>
@@ -297,22 +216,125 @@ export default function Header() {
         />
         <ModeToggle classNameConfig='-translate-x-20 items-center' />
       </div>
-      {isMenuOpen && (
+    )
+  }
+  const customMenuLeft = (customClassName?: string) => {
+    return (
+      <div className={`${customClassName}`}>
+        <Popover
+          children='Movies'
+          className='text-white w-[60px] mr-3 font-bold ml-2'
+          renderPopover={
+            <div className='shadow-sm max-w-52 w-40  text-sm font-sans gap-1 border rounded-xl border-gray-300 bg-white text-black flex flex-col justify-center text-left items-center'>
+              <Link to={`${path.movie_popular}`} className='hover:bg-gray-200 p-2 rounded-xl  w-full'>
+                Popular
+              </Link>
+              <Link to={`${path.movie_now_playing}`} className='hover:bg-gray-200 p-2  w-full'>
+                Now Playing
+              </Link>
+              <Link to={`${path.movie_upcoming}`} className='hover:bg-gray-200 p-2 w-full'>
+                Upcoming
+              </Link>
+              <Link to={`${path.movie_top_rated}`} className='hover:bg-gray-200 p-2 rounded-xl w-full'>
+                Top Rated
+              </Link>
+            </div>
+          }
+        />
+        <Popover
+          children='TV Shows'
+          className='text-white w-[80px] mr-3 font-bold ml-2'
+          renderPopover={
+            <div className=' shadow-sm max-w-52 w-40  text-sm font-sans gap-1 border rounded-xl border-gray-300 bg-white text-black flex flex-col justify-center text-left items-center'>
+              <Link to='' className='hover:bg-gray-200 p-2 rounded-xl  w-full'>
+                Popular
+              </Link>
+              <Link to='' className='hover:bg-gray-200 p-2  w-full'>
+                On TV
+              </Link>
+              <Link to='' className='hover:bg-gray-200 p-2 w-full'>
+                Airing Today
+              </Link>
+              <Link to='' className='hover:bg-gray-200 p-2 rounded-xl w-full'>
+                Top Rated
+              </Link>
+            </div>
+          }
+        />
+        <Popover
+          children='People'
+          className='text-white w-[60px] mr-3 font-bold ml-2'
+          renderPopover={
+            <div className=' shadow-sm max-w-52 w-40  text-sm font-sans gap-1 border rounded-xl border-gray-300 bg-white text-black flex flex-col justify-center text-left items-center'>
+              <Link to='' className='hover:bg-gray-200 p-2 rounded-xl  w-full'>
+                Popular People
+              </Link>
+            </div>
+          }
+        />
+        <Popover
+          children='More'
+          className='text-white w-[60px] mr-3 font-bold ml-2'
+          renderPopover={
+            <div className=' shadow-sm max-w-52 w-40  text-sm font-sans gap-1 border rounded-xl border-gray-300 bg-white text-black flex flex-col justify-center text-left items-center'>
+              <Link to='' className='hover:bg-gray-200 p-2 rounded-xl w-full'>
+                API
+              </Link>
+            </div>
+          }
+        />
+      </div>
+    )
+  }
+  return (
+    <div className='relative z-auto bg-blue-950 flex h-[100px] md:justify-between items-center w-full p-4  min-w-full'>
+      {' '}
+      <div className='flex'>
+        <Link to={path.home} className='mr-4 min-w-[154px]'>
+          <img
+            src='https://www.themoviedb.org/assets/2/v4/logos/v2/blue_short-8e7b30f73a4020692ccca9c88bafe5dcb6f8a62a4c6bc55cd9ba82bb2cd95f6c.svg'
+            alt='The Movie Database (TMDB)'
+            width='154'
+            height='20'
+          />
+        </Link>
+        {customMenuLeft('hidden lg:flex')}
+      </div>
+      <div className='w-full flex justify-between lg:hidden'>
+        <button className=' transition-all text-white p-2' onClick={toggleMenu_left}>
+          <svg
+            xmlns='http://www.w3.org/2000/svg'
+            fill='none'
+            viewBox='0 0 24 24'
+            strokeWidth={1.5}
+            stroke='currentColor'
+            className='w-6 h-6'
+          >
+            <path strokeLinecap='round' strokeLinejoin='round' d='M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5' />
+          </svg>
+        </button>
+        <button className=' transition-all text-white p-2' onClick={toggleMenu_right}>
+          <svg
+            xmlns='http://www.w3.org/2000/svg'
+            fill='none'
+            viewBox='0 0 24 24'
+            strokeWidth={1.5}
+            stroke='currentColor'
+            className='w-6 h-6'
+          >
+            <path strokeLinecap='round' strokeLinejoin='round' d='M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5' />
+          </svg>
+        </button>
+      </div>
+      {customMenuRight('max-lg:translate-x-32 hidden  items-center lg:flex')}
+      {isMenuOpen_left && (
         <div className='lg:hidden transition-all absolute top-[100px] left-0 right-0 bg-blue-950 p-4'>
-          <div className='flex flex-col space-y-4'>
-            <Link to='' className='text-white  hover:text-gray-300'>
-              Movies
-            </Link>
-            <Link to='' className='text-white hover:text-gray-300'>
-              TV Shows
-            </Link>
-            <Link to='' className='text-white hover:text-gray-300'>
-              People
-            </Link>
-            <Link to='' className='text-white hover:text-gray-300'>
-              More
-            </Link>
-          </div>
+          {customMenuLeft('flex gap-4')}
+        </div>
+      )}
+      {isMenuOpen_right && (
+        <div className='lg:hidden transition-all absolute top-[100px] left-0 right-0 bg-blue-950 p-4'>
+          <div className='flex flex-col space-y-4'> {customMenuRight('translate-x-20')}</div>
         </div>
       )}
     </div>

@@ -150,15 +150,15 @@ export interface MovieList {
   }
 }
 export interface MovieConfig {
-  query?: string | number
-  include_adult?: string
+  sort?: string
+  filter?: string
+  dateFrom?: Date
+  dateTo?: Date
+  selectedGenres?: []
   language?: string
-  primary_release_year?: string
-  page?: number | string
-  region?: string
-  year?: string
-  first_air_date_year?: number
-  limit?: number | string
+  userScore?: number
+  userVotes?: number
+  runtime?: number
 }
 
 export interface Account_States {
