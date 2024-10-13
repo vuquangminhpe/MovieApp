@@ -28,6 +28,7 @@ export default function InputRange({
     setValue(newValue)
     onChange?.(newValue)
     setQueryParams({ [typeName]: newValue })
+    console.log(value)
   }
 
   const getTrackBackground = () => {

@@ -1,18 +1,12 @@
 import useQueryConfig from '@/hooks/useQueryConfig'
 import { MovieTrendings } from '@/types/Movie'
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo } from 'react'
 
 export default function UseFilteredMovies(allMovies: MovieTrendings[]) {
   const { queryConfig } = useQueryConfig()
-  const [movies, setMovies] = useState<MovieTrendings[]>([])
-
-  useEffect(() => {
-    if (!allMovies) return
-    setMovies(allMovies)
-  }, [allMovies])
 
   const filteredAndSortedMovies = useMemo(() => {
-    let result = [...movies]
+    let result = [...allMovies]
 
     if (queryConfig.filter) {
       result = result.filter((movie) => {
@@ -36,25 +30,19 @@ export default function UseFilteredMovies(allMovies: MovieTrendings[]) {
     }
 
     if (queryConfig.language) {
-      result = result.filter((movie) => movie.language === queryConfig.language)
+      result = result.filter((movie) => movie.original_language === queryConfig.language)
     }
 
     if (queryConfig.userScore) {
-      result = result.filter((movie) => movie.vote_average >= Number(queryConfig.userScore))
+      result = result.filter((movie) => movie.vote_average >= Number(queryConfig.userScore) / 10)
     }
 
     if (queryConfig.userVotes) {
       result = result.filter((movie) => (movie.vote_count as number) >= Number(queryConfig.userVotes))
     }
 
-    if (queryConfig.runtime) {
-      result = result.filter((movie) => movie.runtime >= Number(queryConfig.runtime))
-    }
-
     if (queryConfig.sort) {
       result.sort((a, b) => {
-        const getFirstLetter = (name: string) => name?.match(/[a-zA-Z]/)?.[0]?.toLowerCase() ?? ''
-
         switch (queryConfig.sort) {
           case 'popularity.desc':
             return (b.popularity as number) - (a.popularity as number)
@@ -68,10 +56,6 @@ export default function UseFilteredMovies(allMovies: MovieTrendings[]) {
             return new Date(b.release_date as string).getTime() - new Date(a.release_date as string).getTime()
           case 'release_date.asc':
             return new Date(a.release_date as string).getTime() - new Date(b.release_date as string).getTime()
-          case 'Title_A_Z':
-            return getFirstLetter(a.name).localeCompare(getFirstLetter(b.name))
-          case 'Title_Z_A':
-            return getFirstLetter(b.name).localeCompare(getFirstLetter(a.name))
 
           default:
             return 0
@@ -80,7 +64,7 @@ export default function UseFilteredMovies(allMovies: MovieTrendings[]) {
     }
 
     return result
-  }, [movies, queryConfig])
+  }, [queryConfig])
 
   return filteredAndSortedMovies
 }

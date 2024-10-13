@@ -24,8 +24,7 @@ export default function useQueryConfig() {
         selectedGenres: queryParams.selectedGenres,
         language: queryParams.language,
         userScore: queryParams.userScore,
-        userVotes: queryParams.userVotes,
-        runtime: queryParams.runtime
+        userVotes: queryParams.userVotes
       },
       isUndefined
     ) as QueryConfig

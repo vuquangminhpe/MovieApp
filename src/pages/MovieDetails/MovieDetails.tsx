@@ -48,7 +48,13 @@ export default function MovieDetails({ colorLiker = '#4CAF50' }: MovieDetailData
     queryKey: ['IMGMovieDetail', id],
     queryFn: () => DetailsMovieApi.getImages(Number(id))
   })
-  const { data: dataTrailer } = useQuery({ queryKey: ['dataTrailerLatest', []], queryFn: ListApi.UpcomingList })
+  const { data: dataTrailer } = useQuery({
+    queryKey: ['dataTrailerLatest', []],
+    queryFn: () =>
+      ListApi.UpcomingList({
+        language: 'en'
+      })
+  })
   const dataTrailerLatest = dataTrailer?.data.results
   const { data: dataMovieDetails, isLoading } = useQuery({
     queryKey: ['movieDetail', id],

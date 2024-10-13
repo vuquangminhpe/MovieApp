@@ -23,21 +23,24 @@ const filterSort = [
   { value: 'vote_average.desc', label: 'Rating Descending' },
   { value: 'vote_average.asc', label: 'Rating Ascending' },
   { value: 'release_date.desc', label: 'Release Date Descending' },
-  { value: 'release_date.asc', label: 'Release Date Ascending' },
-  {
-    value: 'Title_A_Z',
-    label: 'Title (A-Z)'
-  },
-  {
-    value: 'Title_Z_A',
-    label: 'Title (Z-A)'
-  }
+  { value: 'release_date.asc', label: 'Release Date Ascending' }
 ]
 export default function MovieList() {
-  const { queryConfig, setQueryParams } = useQueryConfig()
+  const { setQueryParams } = useQueryConfig()
   const languageCodes = ISO6391.getAllCodes()
-
   const languages = ISO6391.getAllNames()
+
+  function getCodeFromLanguage(language: string) {
+    const index = languages.findIndex((lang) => lang === language)
+    console.log(index)
+
+    if (index !== -1) {
+      return languageCodes[index + 1]
+    } else {
+      return
+    }
+  }
+
   const { pathname } = useLocation()
   const [open, setOpen] = useState(false)
   const [openLanguage, setOpenLanguage] = useState(false)
@@ -346,6 +349,7 @@ export default function MovieList() {
                                 key={language}
                                 value={language}
                                 onSelect={(currentValue) => {
+                                  setQueryParams({ language: getCodeFromLanguage(valueLanguage) })
                                   setValueLanguage(currentValue === valueLanguage ? '' : currentValue)
                                   setOpen(false)
                                 }}
@@ -372,7 +376,6 @@ export default function MovieList() {
                     max={500}
                     nameScore='minimum user votes'
                   />
-                  <InputRange typeName={'runtime'} typeScore={2 * 60} max={360} valueScore={3} nameScore='runtime' />
                 </AccordionContent>
               </AccordionItem>
             </Accordion>
