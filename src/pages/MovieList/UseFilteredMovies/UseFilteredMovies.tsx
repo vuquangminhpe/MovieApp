@@ -17,11 +17,15 @@ export default function UseFilteredMovies(allMovies: MovieTrendings[]) {
     }
 
     if (queryConfig.dateFrom) {
-      result = result.filter((movie) => new Date(movie.releaseDate) >= new Date(queryConfig.dateFrom as string))
+      result = result.filter(
+        (movie) => new Date(movie.release_date as string) >= new Date(queryConfig.dateFrom as string)
+      )
     }
 
     if (queryConfig.dateTo) {
-      result = result.filter((movie) => new Date(movie.releaseDate) <= new Date(queryConfig.dateTo as string))
+      result = result.filter(
+        (movie) => new Date(movie.release_date as string) <= new Date(queryConfig.dateTo as string)
+      )
     }
 
     if (queryConfig.selectedGenres) {

@@ -31,13 +31,11 @@ export default function MovieList() {
   const languages = ISO6391.getAllNames()
 
   function getCodeFromLanguage(language: string) {
-    const index = languages.findIndex((lang) => lang === language)
-    console.log(index)
-
+    const index = languages.findIndex((lang) => lang.toUpperCase() === language.toUpperCase())
     if (index !== -1) {
-      return languageCodes[index + 1]
+      return languageCodes[index]
     } else {
-      return
+      return 0
     }
   }
 
@@ -88,7 +86,7 @@ export default function MovieList() {
       return result
     },
     getNextPageParam: (lastPage) => {
-      if (lastPage.data.page < lastPage.data.total_pages) {
+      if (Number(lastPage.data.page) < 22) {
         return Number(lastPage.data.page) + 1
       }
       return undefined
@@ -204,7 +202,7 @@ export default function MovieList() {
   return (
     <div className='container py-5'>
       <div className='flex'>
-        <div className='w-[650px]'>
+        <div className='min-w-[300px] max-w-[300px] w-[300px]'>
           <div className='font-bold text-xl capitalize'>{nameLocation} movies</div>
           <div className='shadow-xl rounded-xl'>
             <Accordion type='single' collapsible>
@@ -330,7 +328,6 @@ export default function MovieList() {
                         role='combobox'
                         aria-expanded={openLanguage}
                         className='w-[200px] justify-between'
-                        onClick={() => setQueryParams({ language: valueLanguage })}
                       >
                         {valueLanguage
                           ? languages.find((language: string) => language === valueLanguage)
@@ -349,7 +346,9 @@ export default function MovieList() {
                                 key={language}
                                 value={language}
                                 onSelect={(currentValue) => {
-                                  setQueryParams({ language: getCodeFromLanguage(valueLanguage) })
+                                  console.log(currentValue)
+
+                                  setQueryParams({ language: getCodeFromLanguage(valueLanguage) as string })
                                   setValueLanguage(currentValue === valueLanguage ? '' : currentValue)
                                   setOpen(false)
                                 }}
@@ -385,7 +384,7 @@ export default function MovieList() {
           </div>
         </div>
 
-        <div>
+        <div className='w-full'>
           <div className='grid grid-cols-5 max-lg:grid-cols-2 max-md:grid-cols-1 gap-5 ml-7 mt-8'>
             {filteredMovies?.map((itemListData: MovieTrendings) => (
               <MovieListView key={itemListData.id} listData={itemListData as unknown as Movie} />
@@ -397,7 +396,7 @@ export default function MovieList() {
                 <div className='animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900'></div>
               </div>
             ) : hasNextPage ? (
-              <div className='text-gray-500'>Scroll for more movies...</div>
+              <div className='text-gray-500 '>Scroll for more movies...</div>
             ) : (
               <div className='text-gray-500'>No more movies to load</div>
             )}
