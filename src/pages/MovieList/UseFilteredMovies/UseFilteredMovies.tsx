@@ -47,13 +47,17 @@ export default function UseFilteredMovies(allMovies: MovieTrendings[]) {
 
     if (queryConfig.dateFrom) {
       result = result.filter(
-        (movie) => new Date(movie.release_date as string) >= new Date(queryConfig.dateFrom as string)
+        (movie) =>
+          new Date((movie.release_date as string) || (movie.first_air_date as string)) >=
+          new Date(queryConfig.dateFrom as string)
       )
     }
 
     if (queryConfig.dateTo) {
       result = result.filter(
-        (movie) => new Date(movie.release_date as string) <= new Date(queryConfig.dateTo as string)
+        (movie) =>
+          new Date((movie.release_date as string) || (movie.first_air_date as string)) <=
+          new Date(queryConfig.dateTo as string)
       )
     }
 
@@ -62,7 +66,6 @@ export default function UseFilteredMovies(allMovies: MovieTrendings[]) {
       result = result.filter((movie) =>
         genres.every((genre) =>
           movie.genre_ids?.some((item_genre) => {
-            console.log(item_genre)
             return item_genre === Number(genre)
           })
         )
@@ -93,9 +96,15 @@ export default function UseFilteredMovies(allMovies: MovieTrendings[]) {
           case 'vote_average.asc':
             return a.vote_average - b.vote_average
           case 'release_date.desc':
-            return new Date(b.release_date as string).getTime() - new Date(a.release_date as string).getTime()
+            return (
+              new Date((b.release_date || b.first_air_date) as string).getTime() -
+              new Date((a.release_date || a.first_air_date) as string).getTime()
+            )
           case 'release_date.asc':
-            return new Date(a.release_date as string).getTime() - new Date(b.release_date as string).getTime()
+            return (
+              new Date((a.release_date || a.first_air_date) as string).getTime() -
+              new Date((b.release_date || b.first_air_date) as string).getTime()
+            )
           default:
             return 0
         }

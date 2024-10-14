@@ -12,5 +12,9 @@ export const ListApi = {
   NowPlaying_List: (params: typeParams) => http.get<SuccessResponse<Movie>>('movie/now_playing', { params }),
   getVideosList: (movie_id: number) => http.get<SuccessResponse<videosDetails[]>>(`movie/${movie_id}/videos`),
   getTVLatest: () => http.get<Movie>('tv/latest'),
-  getGenres: (params: Pick<typeParams, 'language'>) => http.get<typeGenres>('genre/movie/list', { params })
+  getGenres: (params: Pick<typeParams, 'language'>) => http.get<typeGenres>('genre/movie/list', { params }),
+  getAiringToday: () => http.get<SuccessResponse<MovieTrendings>>('tv/airing_today'),
+  getOnTheAir: () => http.get<SuccessResponse<MovieTrendings>>('tv/on_the_air'),
+  getTVPopular: () => http.get<SuccessResponse<MovieTrendings>>('tv/popular'),
+  getTVTopRated: () => http.get<SuccessResponse<MovieTrendings>>('tv/top_rated')
 }

@@ -246,16 +246,16 @@ export default function Header() {
           className='text-white w-[80px] mr-3 font-bold ml-2'
           renderPopover={
             <div className=' shadow-sm max-w-52 w-40  text-sm font-sans gap-1 border rounded-xl border-gray-300 bg-white text-black flex flex-col justify-center text-left items-center'>
-              <Link to='' className='hover:bg-gray-200 p-2 rounded-xl  w-full'>
+              <Link to={`${path.tv_popular}`} className='hover:bg-gray-200 p-2 rounded-xl  w-full'>
                 Popular
               </Link>
-              <Link to='' className='hover:bg-gray-200 p-2  w-full'>
+              <Link to={`${path.on_tv}`} className='hover:bg-gray-200 p-2  w-full'>
                 On TV
               </Link>
-              <Link to='' className='hover:bg-gray-200 p-2 w-full'>
+              <Link to={`${path.tv_airing_today}`} className='hover:bg-gray-200 p-2 w-full'>
                 Airing Today
               </Link>
-              <Link to='' className='hover:bg-gray-200 p-2 rounded-xl w-full'>
+              <Link to={`${path.tv_top_rated}`} className='hover:bg-gray-200 p-2 rounded-xl w-full'>
                 Top Rated
               </Link>
             </div>

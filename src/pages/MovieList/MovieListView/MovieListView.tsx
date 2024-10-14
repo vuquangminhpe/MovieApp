@@ -5,7 +5,7 @@ import { generateNameId } from '@/utils/utils'
 import { Link } from 'react-router-dom'
 interface Props {
   colorLiker?: string
-  listData: Movie
+  listData: Movie | MovieTrendings
 }
 export default function MovieListView({ colorLiker = '#4CAF50', listData }: Props) {
   const percentage = Math.round((listData as MovieTrendings).vote_average * 10)
@@ -19,7 +19,7 @@ export default function MovieListView({ colorLiker = '#4CAF50', listData }: Prop
   }
   return (
     <Link
-      to={`${path.movie}/${generateNameId({ name: listData.original_title, id: listData.id })}`}
+      to={`${path.movie}/${generateNameId({ name: (listData.original_title || listData.original_name) as string, id: listData.id })}`}
       className='w-full shadow-xl rounded-xl'
     >
       <img
@@ -61,8 +61,8 @@ export default function MovieListView({ colorLiker = '#4CAF50', listData }: Prop
         </div>
       </div>
       <div className='mt-2 p-3'>
-        <div className='font-bold text-sm'>{listData.original_title}</div>
-        <div className='text-gray-300'>{listData.release_date}</div>
+        <div className='font-bold text-sm'>{listData.original_title || listData.original_name}</div>
+        <div className='text-gray-300'>{listData.release_date || listData.first_air_date}</div>
       </div>
     </Link>
   )

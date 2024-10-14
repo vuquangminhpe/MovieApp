@@ -173,6 +173,42 @@ export default function useRouteElement() {
           <MovieList />
         </MainLayout>
       )
+    },
+    {
+      path: path.tv_popular,
+      index: true,
+      element: (
+        <MainLayout>
+          <MovieList />
+        </MainLayout>
+      )
+    },
+    {
+      path: path.tv_airing_today,
+      index: true,
+      element: (
+        <MainLayout>
+          <MovieList />
+        </MainLayout>
+      )
+    },
+    {
+      path: path.tv_top_rated,
+      index: true,
+      element: (
+        <MainLayout>
+          <MovieList />
+        </MainLayout>
+      )
+    },
+    {
+      path: path.on_tv,
+      index: true,
+      element: (
+        <MainLayout>
+          <MovieList />
+        </MainLayout>
+      )
     }
   ])
   return routeElements

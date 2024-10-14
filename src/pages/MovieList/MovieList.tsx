@@ -39,6 +39,7 @@ export default function MovieList() {
       return 0
     }
   }
+  const [loading, setLoading] = useState(false)
   const [selectedGenres, setSelectedGenres] = useState<number[]>([])
   const { pathname } = useLocation()
   const [open, setOpen] = useState(false)
@@ -66,8 +67,22 @@ export default function MovieList() {
     if (pathname.includes('/movie/Now_Playing')) {
       return ListApi.NowPlaying_List
     }
+    if (pathname.includes('/tv/Popular')) {
+      return ListApi.getTVPopular
+    }
+    if (pathname.includes('/tv/Airing_Today')) {
+      return ListApi.getAiringToday
+    }
+    if (pathname.includes('/tv/On-the-air')) {
+      return ListApi.getOnTheAir
+    }
+    if (pathname.includes('/tv/Top_Rated')) {
+      return ListApi.getTVTopRated
+    }
+
     return ListApi.PopularList
   }
+  console.log(pathname)
 
   const currentApi = getApiFunction()
   const {
@@ -87,8 +102,10 @@ export default function MovieList() {
       return result
     },
     getNextPageParam: (lastPage) => {
-      if (Number(lastPage.data.page) < 3) {
-        return Number(lastPage.data.page) + 1
+      if (loading) {
+        if (Number(lastPage.data.page) < 2) {
+          return Number(lastPage.data.page) + 1
+        }
       }
       return undefined
     },
@@ -126,7 +143,6 @@ export default function MovieList() {
   const allMovies =
     PopularData?.pages.flatMap((page) => page.data.results as MovieTrendings | readonly MovieTrendings[]) ?? []
   const filteredMovies = UseFilteredMovies(allMovies)
-  console.log(allMovies)
 
   const handleClick = (item: ownerGenres) => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -225,7 +241,7 @@ export default function MovieList() {
   return (
     <div className='container py-5'>
       <div className='flex'>
-        <div className='min-w-[300px] max-w-[300px] w-[300px]'>
+        <div className='min-w-[300px] max-md:min-w-[50px] max-md:translate-x-2 max-w-[300px] w-[300px]'>
           <div className='font-bold text-xl capitalize'>{nameLocation} movies</div>
           <div className='shadow-xl rounded-xl'>
             <Accordion type='single' collapsible>
@@ -238,7 +254,7 @@ export default function MovieList() {
                   <div className='mt-2 capitalize text-sm px-3'>sort results by</div>
                   <div className='p-2'>
                     <Popover open={open} onOpenChange={setOpen}>
-                      <PopoverTrigger asChild>
+                      <PopoverTrigger className='max-md:w-full' asChild>
                         <Button
                           variant='outline'
                           role='combobox'
@@ -349,7 +365,7 @@ export default function MovieList() {
                   <div className='border-t-[1px] mt-2 border-gray-200'></div>
                   <div className='mt-3 capitalize'>language</div>
                   <Popover open={openLanguage} onOpenChange={setOpenLanguage}>
-                    <PopoverTrigger asChild>
+                    <PopoverTrigger className='max-md:w-full mt-2' asChild>
                       <Button
                         variant='outline'
                         role='combobox'
@@ -413,12 +429,19 @@ export default function MovieList() {
         </div>
 
         <div className='w-full'>
-          <div className='grid grid-cols-5 max-lg:grid-cols-2 max-md:grid-cols-1 gap-5 ml-7 mt-8'>
+          <div className=' grid grid-cols-5 max-lg:grid-cols-2 max-md:grid-cols-1 max-md:-translate-x-2 gap-5 ml-7 mt-8'>
             {filteredMovies?.map((itemListData: MovieTrendings) => (
-              <MovieListView key={itemListData.id} listData={itemListData as unknown as Movie} />
+              <MovieListView key={itemListData.id} listData={itemListData as unknown as Movie as MovieTrendings} />
             ))}{' '}
           </div>
-          <div ref={loadMoreRef} className='w-full py-4 text-center'>
+          <div ref={loadMoreRef} className='w-full py-4 text-center flex justify-center items-center'>
+            <div
+              onClick={() => setLoading(true)}
+              className={`text-white font-semibold cursor-pointer leading-7 capitalize h-8 bg-blue-400/90 w-80 items-center rounded-xl shadow-xl text-center ${loading ? 'hidden' : 'inline-block'}`}
+            >
+              load more video ?
+            </div>
+
             {isFetchingNextPage ? (
               <div className='flex justify-center'>
                 <div className='animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900'></div>
@@ -426,7 +449,7 @@ export default function MovieList() {
             ) : hasNextPage ? (
               <div className='text-gray-500 '>Scroll for more movies...</div>
             ) : (
-              <div className='text-gray-500'>No more movies to load</div>
+              loading && <div className='text-gray-500'>No more movies to load</div>
             )}
           </div>
         </div>
