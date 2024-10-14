@@ -3,7 +3,7 @@ import { ListApi } from '@/Apis/ListApi'
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query'
 import MovieListView from './MovieListView'
 import { Movie, MovieTrendings, ownerGenres } from '@/types/Movie'
-import { useLocation } from 'react-router-dom'
+import { createSearchParams, Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/Components/ui/accordion'
 import { cn } from '@/lib/utils'
@@ -26,6 +26,7 @@ const filterSort = [
   { value: 'release_date.asc', label: 'Release Date Ascending' }
 ]
 export default function MovieList() {
+  const navigate = useNavigate()
   const { setQueryParams } = useQueryConfig()
   const languageCodes = ISO6391.getAllCodes()
   const languages = ISO6391.getAllNames()
@@ -38,7 +39,7 @@ export default function MovieList() {
       return 0
     }
   }
-
+  const [selectedGenres, setSelectedGenres] = useState<number[]>([])
   const { pathname } = useLocation()
   const [open, setOpen] = useState(false)
   const [openLanguage, setOpenLanguage] = useState(false)
@@ -86,12 +87,13 @@ export default function MovieList() {
       return result
     },
     getNextPageParam: (lastPage) => {
-      if (Number(lastPage.data.page) < 22) {
+      if (Number(lastPage.data.page) < 3) {
         return Number(lastPage.data.page) + 1
       }
       return undefined
     },
-    initialPageParam: 1
+    initialPageParam: 1,
+    staleTime: 5 * 60 * 1000
   })
 
   const handleObserver = useCallback(
@@ -124,7 +126,25 @@ export default function MovieList() {
   const allMovies =
     PopularData?.pages.flatMap((page) => page.data.results as MovieTrendings | readonly MovieTrendings[]) ?? []
   const filteredMovies = UseFilteredMovies(allMovies)
+  console.log(allMovies)
 
+  const handleClick = (item: ownerGenres) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    setSelectedGenres((prevSelected: any) => {
+      if (prevSelected.includes(Number(item.id))) {
+        const result = prevSelected.filter((id: number) => id !== Number(item.id))
+        return result
+      } else {
+        return [...prevSelected, item.id]
+      }
+    })
+  }
+
+  useEffect(() => {
+    if (selectedGenres) {
+      setQueryParams({ selectedGenres: selectedGenres })
+    }
+  }, [setQueryParams, selectedGenres])
   if (status === 'pending') {
     return (
       <div className='flex w-full container'>
@@ -149,8 +169,8 @@ export default function MovieList() {
           <span className='sr-only'>Loading...</span>
         </div>
 
-        <div className='flex'>
-          {Array(5)
+        <div className='grid grid-cols-5 max-lg:grid-cols-2 max-md:grid-cols-1 gap-5 ml-7 mt-8'>
+          {Array(20)
             .fill(0)
             .map((_, index) => (
               <div
@@ -198,7 +218,10 @@ export default function MovieList() {
   } else if (status === 'error') {
     return <div className='text-center text-red-500 py-4'>Error loading movies. Please try again later</div>
   }
-
+  const handleClearParams = () => {
+    navigate({ pathname: location.pathname, search: createSearchParams('').toString() })
+    setSelectedGenres([])
+  }
   return (
     <div className='container py-5'>
       <div className='flex'>
@@ -312,7 +335,11 @@ export default function MovieList() {
                       {dataGenres_Movies?.map((item: ownerGenres) => (
                         <div
                           key={item.id}
-                          className='inline-block hover:bg-blue-400 hover:text-white hover:border-white px-3 py-1 border-[0.5px] border-black rounded-full'
+                          className={`p-2 border shadow-sm rounded-2xl cursor-pointer
+            ${selectedGenres.includes(Number(item.id)) ? 'bg-blue-400 text-white border-white' : 'bg-gray-200 text-black'}`}
+                          onClick={() => {
+                            handleClick(item)
+                          }}
                         >
                           {item.name}
                         </div>
@@ -346,8 +373,6 @@ export default function MovieList() {
                                 key={language}
                                 value={language}
                                 onSelect={(currentValue) => {
-                                  console.log(currentValue)
-
                                   setQueryParams({ language: getCodeFromLanguage(valueLanguage) as string })
                                   setValueLanguage(currentValue === valueLanguage ? '' : currentValue)
                                   setOpen(false)
@@ -379,8 +404,11 @@ export default function MovieList() {
               </AccordionItem>
             </Accordion>
           </div>
-          <div className='mt-7 bg-blue-400/70 p-4 text-center text-white shadow-xl rounded-xl cursor-pointer hover:bg-blue-950 font-bold text-xl'>
-            Search
+          <div
+            onClick={handleClearParams}
+            className='mt-7 bg-blue-400/70 p-4 text-center text-white shadow-xl rounded-xl cursor-pointer hover:bg-blue-950 font-bold text-xl'
+          >
+            Clear filter
           </div>
         </div>
 

@@ -154,7 +154,7 @@ export interface MovieConfig {
   filter?: string
   dateFrom?: Date
   dateTo?: Date
-  selectedGenres?: []
+  selectedGenres?: number[]
   language?: string
   userScore?: number
   userVotes?: number

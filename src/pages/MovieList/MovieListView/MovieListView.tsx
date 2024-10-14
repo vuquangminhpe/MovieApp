@@ -26,6 +26,7 @@ export default function MovieListView({ colorLiker = '#4CAF50', listData }: Prop
         src={`${configBase.imageBaseUrl}${listData.poster_path}`}
         alt={listData.title || ''}
         className='w-full h-auto object-cover shadow-sm rounded-t-xl z-20'
+        loading='lazy'
       />
       <div className='absolute -translate-y-7 translate-x-2 w-12 h-12 z-50'>
         <svg className='w-full h-full' viewBox='0 0 40 40'>

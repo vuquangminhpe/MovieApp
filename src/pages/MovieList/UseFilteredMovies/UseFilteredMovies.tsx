@@ -1,19 +1,48 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+import { AccountApi } from '@/Apis/AccountApi'
 import useQueryConfig from '@/hooks/useQueryConfig'
+import { AccountRating } from '@/types/Account.type'
 import { MovieTrendings } from '@/types/Movie'
+import { useQuery } from '@tanstack/react-query'
 import { useMemo } from 'react'
 
 export default function UseFilteredMovies(allMovies: MovieTrendings[]) {
   const { queryConfig } = useQueryConfig()
+  const { data: dataRated } = useQuery({ queryKey: ['dataRated_filter'], queryFn: AccountApi.getRatedMoviesAccount })
+  const { data: dataFavorite } = useQuery({
+    queryKey: ['dataFavorite_filter'],
+    queryFn: AccountApi.getFavorite
+  })
+  const { data: dataWatchList } = useQuery({ queryKey: ['dataWatchList_filter'], queryFn: AccountApi.getWatchList })
+
+  const dataRated_filters = dataRated?.data.results
+  const dataFavorites = dataFavorite?.data.results
+  const dataWatchLists = dataWatchList?.data.results
+
+  let combinedData = [] as AccountRating[]
+  if (dataRated_filters && dataFavorites && dataWatchLists) {
+    combinedData = dataRated_filters.concat(dataFavorites, dataWatchLists)
+  }
+
+  const removeID = (array_1: AccountRating[], array_2: AccountRating[]) => {
+    const idSet = new Set(array_2.map((item: AccountRating) => item.id))
+    const result = array_1.filter((item: AccountRating) => {
+      return !idSet.has(item.id)
+    })
+    return result
+  }
 
   const filteredAndSortedMovies = useMemo(() => {
     let result = [...allMovies]
 
     if (queryConfig.filter) {
-      result = result.filter((movie) => {
-        if (queryConfig.filter === 'not_seen') return !movie.seen
-        if (queryConfig.filter === 'seen') return movie.seen
-        return true
-      })
+      if (queryConfig.filter === 'Everything') {
+        //
+      } else if (queryConfig.filter === 'not_seen') {
+        result = removeID(result, combinedData)
+      } else if (queryConfig.filter === 'seen') {
+        result = combinedData
+      }
     }
 
     if (queryConfig.dateFrom) {
@@ -30,7 +59,14 @@ export default function UseFilteredMovies(allMovies: MovieTrendings[]) {
 
     if (queryConfig.selectedGenres) {
       const genres = queryConfig.selectedGenres.split(',')
-      result = result.filter((movie) => genres.every((genre) => movie.genres.includes(genre)))
+      result = result.filter((movie) =>
+        genres.every((genre) =>
+          movie.genre_ids?.some((item_genre) => {
+            console.log(item_genre)
+            return item_genre === Number(genre)
+          })
+        )
+      )
     }
 
     if (queryConfig.language) {
@@ -60,7 +96,6 @@ export default function UseFilteredMovies(allMovies: MovieTrendings[]) {
             return new Date(b.release_date as string).getTime() - new Date(a.release_date as string).getTime()
           case 'release_date.asc':
             return new Date(a.release_date as string).getTime() - new Date(b.release_date as string).getTime()
-
           default:
             return 0
         }
@@ -68,7 +103,7 @@ export default function UseFilteredMovies(allMovies: MovieTrendings[]) {
     }
 
     return result
-  }, [queryConfig])
+  }, [allMovies, queryConfig, combinedData])
 
   return filteredAndSortedMovies
 }
