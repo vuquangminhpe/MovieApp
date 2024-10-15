@@ -10,6 +10,5 @@ export const PersonDetailsApi = {
   getMovie_credits: (person_id: number) => http.get<SuccessResponse<Movie>>(`person/${person_id}/movie_credits`),
   getMovie_tv_credits: (person_id: number) =>
     http.get<SuccessResponse<MovieTrendings>>(`person/${person_id}/tv_credits`),
-  getPeopleList: (params: Pick<typeParams, 'language'>) =>
-    http.get<SuccessResponse<PopularPeopleList[]>>('/person/popular', { params })
+  getPeopleList: (params: typeParams) => http.get<SuccessResponse<PopularPeopleList[]>>('/person/popular', { params })
 }

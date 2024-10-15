@@ -3,16 +3,75 @@ import configBase from '@/constants/config'
 import path from '@/constants/path'
 import { generateNameId } from '@/utils/utils'
 import { useQuery } from '@tanstack/react-query'
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-
+const RANGE = 2
 export default function PeopleList() {
-  const { data } = useQuery({
+  const [page, setPage] = useState<number>(1)
+  const { data, refetch } = useQuery({
     queryKey: ['dataPersonAll', []],
-    queryFn: () => PersonDetailsApi.getPeopleList({ language: 'en-US' })
+    queryFn: () => PersonDetailsApi.getPeopleList({ language: 'en-US', page: page })
   })
-  const dataAllPerson = data?.data.results
-  console.log(dataAllPerson)
 
+  const dataAllPerson = data?.data.results
+  const pageSize = Number(data?.data?.total_pages)
+  const renderPagination = () => {
+    let dotAfter = false
+    let dotBefore = false
+    const renderDotAfter = (index: number) => {
+      if (!dotAfter) {
+        dotAfter = true
+        return (
+          <button key={index} className='bg-white text-black rounded px-3 py-2 shadow-sm mx-2 cursor-pointer border'>
+            ...
+          </button>
+        )
+      }
+      return null
+    }
+    const renderDotBefore = (index: number) => {
+      if (!dotBefore) {
+        dotBefore = true
+        return (
+          <button key={index} className='bg-white text-black rounded px-3 py-2 shadow-sm mx-2 cursor-pointer border'>
+            ...
+          </button>
+        )
+      }
+      return null
+    }
+    useEffect(() => {
+      if (page >= 1) refetch()
+    }, [page, dataAllPerson])
+    if (pageSize)
+      return Array(pageSize)
+        .fill(0)
+        .map((_, index) => {
+          const pageNumber = index + 1
+          if (page <= RANGE * 2 + 1 && pageNumber > page + RANGE && pageNumber < pageSize - RANGE + 1) {
+            return renderDotAfter(index)
+          } else if (page > RANGE * 2 + 1 && page < pageSize - RANGE * 2) {
+            if (pageNumber < page - RANGE && pageNumber > RANGE) {
+              return renderDotBefore(index)
+            } else if (pageNumber > page + RANGE && pageNumber < pageSize - RANGE + 1) {
+              return renderDotAfter(index)
+            }
+          } else if (page >= pageSize - RANGE * 2 && page > RANGE && pageNumber < page - RANGE) {
+            return renderDotBefore(index)
+          }
+          return (
+            <div
+              onClick={() => setPage(index + 1)}
+              key={index}
+              className={`bg-white rounded text-black px-3 py-2 shadow-sm mx-2 cursor-pointer border ${
+                pageNumber === page ? 'border-cyan-500 text-cyan-500' : 'border-transparent'
+              }`}
+            >
+              {pageNumber}
+            </div>
+          )
+        })
+  }
   return (
     <div className='container py-7'>
       <div className='grid grid-cols-4 h-auto w-auto'>
@@ -36,6 +95,7 @@ export default function PeopleList() {
           </Link>
         ))}
       </div>
+      <div className='text-white flex w-full justify-center items-center mt-20'>{renderPagination()}</div>
     </div>
   )
 }
