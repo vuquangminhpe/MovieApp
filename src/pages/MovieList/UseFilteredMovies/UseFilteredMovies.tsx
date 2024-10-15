@@ -14,16 +14,33 @@ export default function UseFilteredMovies(allMovies: MovieTrendings[]) {
     queryFn: AccountApi.getFavorite
   })
   const { data: dataWatchList } = useQuery({ queryKey: ['dataWatchList_filter'], queryFn: AccountApi.getWatchList })
+  const { data: dataRatedTV } = useQuery({
+    queryKey: ['dataRated_filter_TV'],
+    queryFn: AccountApi.getRatedTVAccount
+  })
+  const { data: dataFavoriteTV } = useQuery({
+    queryKey: ['dataFavorite_filter_TV'],
+    queryFn: AccountApi.getFavoriteTV
+  })
+  const { data: dataWatchListTV } = useQuery({
+    queryKey: ['dataWatchList_filter_TV'],
+    queryFn: AccountApi.getWatchListTV
+  })
 
   const dataRated_filters = dataRated?.data.results
   const dataFavorites = dataFavorite?.data.results
   const dataWatchLists = dataWatchList?.data.results
-
-  let combinedData = [] as AccountRating[]
+  const dataRated_filters_TV = dataRatedTV?.data.results
+  const dataFavorites_TV = dataFavoriteTV?.data.results
+  const dataWatchLists_TV = dataWatchListTV?.data.results
+  let combinedDataMovies = [] as AccountRating[]
   if (dataRated_filters && dataFavorites && dataWatchLists) {
-    combinedData = dataRated_filters.concat(dataFavorites, dataWatchLists)
+    combinedDataMovies = dataRated_filters.concat(dataFavorites, dataWatchLists)
   }
-
+  let combinedDataTV = [] as AccountRating[]
+  if (dataRated_filters_TV && dataFavorites_TV && dataWatchLists_TV) {
+    combinedDataTV = dataRated_filters_TV.concat(dataFavorites_TV, dataWatchLists_TV)
+  }
   const removeID = (array_1: AccountRating[], array_2: AccountRating[]) => {
     const idSet = new Set(array_2.map((item: AccountRating) => item.id))
     const result = array_1.filter((item: AccountRating) => {
@@ -39,9 +56,9 @@ export default function UseFilteredMovies(allMovies: MovieTrendings[]) {
       if (queryConfig.filter === 'Everything') {
         //
       } else if (queryConfig.filter === 'not_seen') {
-        result = removeID(result, combinedData)
+        result = removeID(result, combinedDataMovies) || removeID(result, combinedDataTV)
       } else if (queryConfig.filter === 'seen') {
-        result = combinedData
+        result = combinedDataMovies || combinedDataTV
       }
     }
 
@@ -112,7 +129,7 @@ export default function UseFilteredMovies(allMovies: MovieTrendings[]) {
     }
 
     return result
-  }, [allMovies, queryConfig, combinedData])
+  }, [allMovies, queryConfig, combinedDataMovies, combinedDataTV])
 
   return filteredAndSortedMovies
 }

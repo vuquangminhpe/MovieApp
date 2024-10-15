@@ -11,5 +11,9 @@ export const AccountApi = {
   getRatedMoviesAccount: () =>
     http.get<SuccessResponse<AccountRating[]>>(`account/${configBase.baseIdName}/rated/movies`),
   getFavorite: () => http.get<SuccessResponse<AccountRating[]>>(`account/${configBase.baseIdName}/favorite/movies`),
-  getWatchList: () => http.get<SuccessResponse<AccountRating[]>>(`account/${configBase.baseIdName}/watchlist/movies`)
+  getWatchList: () => http.get<SuccessResponse<AccountRating[]>>(`account/${configBase.baseIdName}/watchlist/movies`),
+  getFavoriteTV: () => http.get<SuccessResponse<AccountRating[]>>(`account/${configBase.baseIdName}/watchlist/movies`),
+  getRatedTVAccount: () =>
+    http.get<SuccessResponse<AccountRating[]>>(`account/${configBase.baseIdName}/watchlist/movies`),
+  getWatchListTV: () => http.get<SuccessResponse<AccountRating[]>>(`account/${configBase.baseIdName}/watchlist/movies`)
 }

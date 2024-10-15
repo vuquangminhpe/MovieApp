@@ -8,6 +8,7 @@ import MovieDetails from './pages/MovieDetails'
 import CastDetails from './pages/CastDetails'
 import CollectionMovies from './pages/Collection'
 import MovieList from './pages/MovieList'
+import PeopleList from './pages/PeopleList'
 
 // function ProtectedRoute() {
 //   const { isAuthenticated } = useContext(AppContext)
@@ -121,6 +122,15 @@ export default function useRouteElement() {
       )
     },
     {
+      path: path.tvDetails,
+      index: true,
+      element: (
+        <MainLayout>
+          <MovieDetails />
+        </MainLayout>
+      )
+    },
+    {
       path: path.castDetails,
       index: true,
       element: (
@@ -207,6 +217,15 @@ export default function useRouteElement() {
       element: (
         <MainLayout>
           <MovieList />
+        </MainLayout>
+      )
+    },
+    {
+      path: path.peopleList,
+      index: true,
+      element: (
+        <MainLayout>
+          <PeopleList />
         </MainLayout>
       )
     }

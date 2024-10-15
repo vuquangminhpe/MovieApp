@@ -1,10 +1,11 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { ListApi } from '@/Apis/ListApi'
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query'
 import MovieListView from './MovieListView'
 import { Movie, MovieTrendings, ownerGenres } from '@/types/Movie'
 import { createSearchParams, Navigate, useLocation, useNavigate } from 'react-router-dom'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/Components/ui/accordion'
 import { cn } from '@/lib/utils'
 import { Button } from '@/Components/ui/button'
@@ -17,6 +18,7 @@ import ISO6391 from 'iso-639-1'
 import InputRange from '@/Components/Custom/InputRange'
 import useQueryConfig from '@/hooks/useQueryConfig'
 import UseFilteredMovies from './UseFilteredMovies'
+import { debounce } from 'lodash'
 const filterSort = [
   { value: 'popularity.desc', label: 'Popularity Descending' },
   { value: 'popularity.asc', label: 'Popularity Ascending' },
@@ -27,64 +29,64 @@ const filterSort = [
 ]
 export default function MovieList() {
   const navigate = useNavigate()
-  const { setQueryParams } = useQueryConfig()
-  const languageCodes = ISO6391.getAllCodes()
-  const languages = ISO6391.getAllNames()
-
-  function getCodeFromLanguage(language: string) {
-    const index = languages.findIndex((lang) => lang.toUpperCase() === language.toUpperCase())
-    if (index !== -1) {
-      return languageCodes[index]
-    } else {
-      return 0
-    }
-  }
-  const [loading, setLoading] = useState(false)
-  const [selectedGenres, setSelectedGenres] = useState<number[]>([])
+  const { setQueryParams, queryConfig } = useQueryConfig()
   const { pathname } = useLocation()
+
+  const [loading, setLoading] = useState(false)
+  const [selectedGenres, setSelectedGenres] = useState<number[]>(() => {
+    const genres = queryConfig.selectedGenres
+    return genres ? genres.split(',').map(Number) : []
+  })
   const [open, setOpen] = useState(false)
   const [openLanguage, setOpenLanguage] = useState(false)
   const [value, setValue] = useState('')
   const [valueLanguage, setValueLanguage] = useState('')
-  const nameLocation = pathname.split('/')[2]
+
+  const nameLocation = useMemo(() => pathname.split('/')[2], [pathname])
   const observerRef = useRef<IntersectionObserver>()
   const loadMoreRef = useRef<HTMLDivElement>(null)
+
+  const languageCodes = useMemo(() => ISO6391.getAllCodes(), [])
+  const languages = useMemo(() => ISO6391.getAllNames(), [])
+
+  const getCodeFromLanguage = useCallback(
+    (language: string) => {
+      const index = languages.findIndex((lang: string) => lang.toUpperCase() === language.toUpperCase())
+      return index !== -1 ? languageCodes[index] : 0
+    },
+    [languages, languageCodes]
+  )
+
   const { data: dataGenres } = useQuery({
     queryKey: ['dataGenresMovies', 'en'],
     queryFn: () => ListApi.getGenres({ language: 'en' })
   })
+
   const dataGenres_Movies = dataGenres?.data.genres
-  const getApiFunction = () => {
-    if (pathname.includes('/movie/Top_Rated')) {
-      return ListApi.DataRated
-    }
-    if (pathname.includes('movie/Upcoming')) {
-      return ListApi.UpcomingList
-    }
-    if (pathname.includes('/movie/Popular')) {
-      return ListApi.PopularList
-    }
-    if (pathname.includes('/movie/Now_Playing')) {
-      return ListApi.NowPlaying_List
-    }
-    if (pathname.includes('/tv/Popular')) {
-      return ListApi.getTVPopular
-    }
-    if (pathname.includes('/tv/Airing_Today')) {
-      return ListApi.getAiringToday
-    }
-    if (pathname.includes('/tv/On-the-air')) {
-      return ListApi.getOnTheAir
-    }
-    if (pathname.includes('/tv/Top_Rated')) {
-      return ListApi.getTVTopRated
-    }
 
-    return ListApi.PopularList
-  }
-  console.log(pathname)
+  const getApiFunction = useCallback(() => {
+    switch (true) {
+      case pathname.includes('/movie/Top_Rated'):
+        return ListApi.DataRated
+      case pathname.includes('movie/Upcoming'):
+        return ListApi.UpcomingList
+      case pathname.includes('/movie/Popular'):
+        return ListApi.PopularList
+      case pathname.includes('/movie/Now_Playing'):
+        return ListApi.NowPlaying_List
+      case pathname.includes('/tv/Popular'):
+        return ListApi.getTVPopular
+      case pathname.includes('/tv/Airing_Today'):
+        return ListApi.getAiringToday
+      case pathname.includes('/tv/On-the-air'):
+        return ListApi.getOnTheAir
+      case pathname.includes('/tv/Top_Rated'):
+        return ListApi.getTVTopRated
+      default:
+        return ListApi.PopularList
+    }
+  }, [pathname])
 
-  const currentApi = getApiFunction()
   const {
     data: PopularData,
     fetchNextPage,
@@ -94,18 +96,15 @@ export default function MovieList() {
   } = useInfiniteQuery({
     queryKey: [pathname],
     queryFn: async ({ pageParam = 1 }) => {
-      const result = currentApi({
+      const result = getApiFunction()({
         page: pageParam,
         language: 'en-US'
       })
-
       return result
     },
     getNextPageParam: (lastPage) => {
-      if (loading) {
-        if (Number(lastPage.data.page) < 2) {
-          return Number(lastPage.data.page) + 1
-        }
+      if (loading && Number(lastPage.data.page) < 2) {
+        return Number(lastPage.data.page) + 1
       }
       return undefined
     },
@@ -140,27 +139,39 @@ export default function MovieList() {
       }
     }
   }, [handleObserver])
-  const allMovies =
-    PopularData?.pages.flatMap((page) => page.data.results as MovieTrendings | readonly MovieTrendings[]) ?? []
+
+  const allMovies = useMemo(
+    () => PopularData?.pages.flatMap((page) => page.data.results as MovieTrendings | readonly MovieTrendings[]) ?? [],
+    [PopularData]
+  )
+
   const filteredMovies = UseFilteredMovies(allMovies)
 
-  const handleClick = (item: ownerGenres) => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    setSelectedGenres((prevSelected: any) => {
-      if (prevSelected.includes(Number(item.id))) {
-        const result = prevSelected.filter((id: number) => id !== Number(item.id))
-        return result
-      } else {
-        return [...prevSelected, item.id]
-      }
+  const handleClick = useCallback((item: ownerGenres) => {
+    setSelectedGenres((prevSelected) => {
+      const newSelected = prevSelected.includes(Number(item.id))
+        ? prevSelected.filter((id) => id !== Number(item.id))
+        : [...prevSelected, Number(item.id)]
+
+      return newSelected
     })
-  }
+  }, [])
+
+  const debouncedSetQueryParams = useCallback(
+    debounce((params: { selectedGenres: string }) => {
+      setQueryParams(params)
+    }, 300),
+    [setQueryParams]
+  )
 
   useEffect(() => {
-    if (selectedGenres) {
-      setQueryParams({ selectedGenres: selectedGenres })
+    if (selectedGenres.length > 0) {
+      debouncedSetQueryParams({ selectedGenres: selectedGenres.join(',') })
+    } else if (queryConfig.selectedGenres) {
+      setQueryParams({ selectedGenres: undefined })
     }
-  }, [setQueryParams, selectedGenres])
+  }, [selectedGenres, debouncedSetQueryParams, queryConfig.selectedGenres, setQueryParams])
+  useEffect(() => setLoading(false), [pathname])
   if (status === 'pending') {
     return (
       <div className='flex w-full container'>
@@ -431,7 +442,11 @@ export default function MovieList() {
         <div className='w-full'>
           <div className=' grid grid-cols-5 max-lg:grid-cols-2 max-md:grid-cols-1 max-md:-translate-x-2 gap-5 ml-7 mt-8'>
             {filteredMovies?.map((itemListData: MovieTrendings) => (
-              <MovieListView key={itemListData.id} listData={itemListData as unknown as Movie as MovieTrendings} />
+              <MovieListView
+                pathName={pathname}
+                key={itemListData.id}
+                listData={itemListData as unknown as Movie as MovieTrendings}
+              />
             ))}{' '}
           </div>
           <div ref={loadMoreRef} className='w-full py-4 text-center flex justify-center items-center'>

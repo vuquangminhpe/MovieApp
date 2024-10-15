@@ -1,3 +1,5 @@
+import { CastMember, Movie } from './Movie'
+
 export interface PersonDetail {
   adult: boolean
   also_known_as: string[]
@@ -27,4 +29,8 @@ export interface SocialMediaIds {
   tiktok_id: string
   twitter_id: string
   youtube_id: string
+}
+
+export interface PopularPeopleList extends CastMember {
+  known_for: Movie[]
 }

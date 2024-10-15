@@ -2,12 +2,15 @@ import configBase from '@/constants/config'
 import path from '@/constants/path'
 import { Movie, MovieTrendings } from '@/types/Movie'
 import { generateNameId } from '@/utils/utils'
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 interface Props {
   colorLiker?: string
   listData: Movie | MovieTrendings
+  pathName: string
 }
-export default function MovieListView({ colorLiker = '#4CAF50', listData }: Props) {
+export default function MovieListView({ colorLiker = '#4CAF50', listData, pathName }: Props) {
+  const [paths, setPaths] = useState<string>(`${path.movie}`)
   const percentage = Math.round((listData as MovieTrendings).vote_average * 10)
   const radius = 18
   const circumference = 2 * Math.PI * radius
@@ -17,9 +20,12 @@ export default function MovieListView({ colorLiker = '#4CAF50', listData }: Prop
   } else if (percentage < 30) {
     colorLiker = '#ed2133'
   }
+  useEffect(() => {
+    if (pathName.includes('/tv')) setPaths(`${path.OnTvSeries}`)
+  }, [pathName])
   return (
     <Link
-      to={`${path.movie}/${generateNameId({ name: (listData.original_title || listData.original_name) as string, id: listData.id })}`}
+      to={`${paths}/${generateNameId({ name: (listData.original_title || listData.original_name) as string, id: listData.id })}`}
       className='w-full shadow-xl rounded-xl'
     >
       <img
