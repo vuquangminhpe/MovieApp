@@ -64,7 +64,7 @@ export default function PeopleList() {
               onClick={() => setPage(index + 1)}
               key={index}
               className={`bg-white rounded text-black px-3 py-2 shadow-sm mx-2 cursor-pointer border ${
-                pageNumber === page ? 'border-cyan-500 text-cyan-500' : 'border-transparent'
+                pageNumber === page ? 'border-cyan-500 text-cyan-500' : 'border-gray-300'
               }`}
             >
               {pageNumber}
