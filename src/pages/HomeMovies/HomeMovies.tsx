@@ -16,6 +16,8 @@ export default function HomeMovies() {
   )
   const { data: dataRated } = useQuery({ queryKey: ['dataTrending', []], queryFn: ListApi.TrendingData })
   const dataTrending = dataRated?.data.results
+  console.log(dataTrending)
+
   const { data: dataTrailer } = useQuery({
     queryKey: ['dataTrailerLatest', []],
     queryFn: () =>
@@ -34,15 +36,12 @@ export default function HomeMovies() {
   })
   const dataPopulars = dataPopular?.data.results
 
-  const { data: dataRatedMovies, refetch } = useQuery({
+  const { data: dataRatedMovies } = useQuery({
     queryKey: ['dataRatedMovies_popular'],
     queryFn: AccountApi.getRatedMoviesAccount
   })
   const dataRateds = dataRatedMovies?.data.results
   const extendedDataRated = dataRateds?.find((item: MovieTrendings) => (item.id as number | undefined) === movieId)
-  useEffect(() => {
-    refetch()
-  }, [extendedDataRated, dataRatedMovies])
 
   return (
     <div className='flex flex-col'>
