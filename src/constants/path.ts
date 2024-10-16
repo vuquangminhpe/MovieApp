@@ -5,7 +5,7 @@ const path = {
   OnTvSeries: '/tv',
   collection: '/collection',
   movieDetails: 'movie/:movieId',
-  tvDetails: 'tv/:movieId',
+  tvDetails: 'tv/:tvID',
   castDetails: 'person/:personId',
   movie_popular: '/movie/Popular',
   movie_now_playing: '/movie/Now_Playing',

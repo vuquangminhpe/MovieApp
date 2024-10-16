@@ -1,7 +1,7 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Link } from 'react-router-dom'
 import configBase from '../../../constants/config'
 import { Movie, MovieTrendings } from '../../../types/Movie'
-import path from '../../../constants/path'
 import { generateNameId } from '../../../utils/utils'
 
 import InputStar from '@/Components/Custom/InputStar'
@@ -11,6 +11,7 @@ import DetailsMovieApi from '@/Apis/DetailsMovieApi'
 import { SuccessResponse } from '@/types/utils.type'
 import { AxiosResponse } from 'axios'
 import { toast } from 'react-toastify'
+import { useState } from 'react'
 
 interface RenderMoviesProps {
   dataTrending: MovieTrendings | Movie
@@ -22,6 +23,7 @@ interface RenderMoviesProps {
   movie_id: number
   setMovieId: React.Dispatch<React.SetStateAction<number | undefined>>
   voteRate: number
+  media_type?: string
 }
 
 const RenderMovies = ({
@@ -33,8 +35,10 @@ const RenderMovies = ({
   typeText = 'text-white',
   CustomIMG = '',
   setMovieId,
-  voteRate
+  voteRate,
+  media_type
 }: RenderMoviesProps) => {
+  const [mediaType, setMediaType] = useState<string>(media_type || 'movie')
   const percentage = Math.round((dataTrending as MovieTrendings).vote_average * 10)
   const radius = 18
   const circumference = 2 * Math.PI * radius
@@ -177,7 +181,7 @@ const RenderMovies = ({
         </div>
       </div>
       <Link
-        to={`${path.movie}/${generateNameId({ name: (dataTrending.original_name as string) || (dataTrending.original_title as string), id: dataTrending.id as number })}`}
+        to={`/${mediaType}/${generateNameId({ name: (dataTrending.original_name as string) || (dataTrending.original_title as string), id: dataTrending.id as number })}`}
       >
         <img
           className={`${CustomIMG} h-full w-full object-cover`}

@@ -9,6 +9,7 @@ import CastDetails from './pages/CastDetails'
 import CollectionMovies from './pages/Collection'
 import MovieList from './pages/MovieList'
 import PeopleList from './pages/PeopleList'
+import TVSeriesDetails from './pages/TVSeriesDetails'
 
 // function ProtectedRoute() {
 //   const { isAuthenticated } = useContext(AppContext)
@@ -126,7 +127,7 @@ export default function useRouteElement() {
       index: true,
       element: (
         <MainLayout>
-          <MovieDetails />
+          <TVSeriesDetails />
         </MainLayout>
       )
     },

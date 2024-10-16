@@ -11,6 +11,8 @@ interface MovieTrendingProps {
 }
 
 const MovieTrending = ({ dataMoviesTrending, setMovieId, rating }: MovieTrendingProps) => {
+  console.log(dataMoviesTrending)
+
   return (
     <div className='pl-7 py-7 w-full'>
       <div className='text-xl font-bold mb-4'>Trending</div>
@@ -21,6 +23,7 @@ const MovieTrending = ({ dataMoviesTrending, setMovieId, rating }: MovieTrending
             {dataMoviesTrending?.map((dataTrending) => (
               <Link key={dataTrending.id} to={path.home} className='max-w-full'>
                 <RenderMovies
+                  media_type={dataTrending.media_type as string}
                   voteRate={rating as number}
                   setMovieId={setMovieId}
                   movie_id={dataTrending.id}

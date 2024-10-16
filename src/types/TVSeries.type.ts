@@ -1,3 +1,5 @@
+import { BackdropImages, MovieTrendings } from './Movie'
+
 export interface CreatedBy {
   id: number
   credit_id: string
@@ -96,4 +98,21 @@ export interface TVSeries {
   type: string
   vote_average: number
   vote_count: number
+}
+
+export interface TVSeriesTrending extends MovieTrendings {
+  media_type: 'tv'
+}
+
+export interface BackdropImagesTVSeries {
+  backdrops: BackdropImages[]
+}
+
+export interface AccountStates_TV {
+  id?: number
+  favorite?: false
+  rated?: {
+    value?: number
+  }
+  watchlist: false
 }
