@@ -13,8 +13,8 @@ export const TVSeriesApi = {
   getSeason: (series_id: number) => http.get<SuccessResponse<TVSeriesTrending[]>>(`/tv/${series_id}/credits`),
   getReviews: (series_id: number) => http.get<SuccessResponse<TVSeriesTrending[]>>(`tv/${series_id}/reviews`),
   getVideosTVSeries: (series_id: number) => http.get<SuccessResponse<TVSeriesTrending[]>>(`tv/${series_id}/videos`),
-  AddRatingTV: (series_id: number) => http.post<SuccessResponse<TVSeriesTrending[]>>(`tv/${series_id}/rating`),
-  DeletedRatingTV: (series_id: number) => http.delete<SuccessResponse<TVSeriesTrending[]>>(`tv/${series_id}/rating`),
+  AddRatingTV: (series_id: number) => http.post<{ status_message: string }>(`tv/${series_id}/rating`),
+  DeletedRatingTV: (series_id: number) => http.delete<{ status_message: string }>(`tv/${series_id}/rating`),
   GetAccountStates: (series_id: number) =>
     http.delete<SuccessResponse<TVSeriesTrending[]>>(`tv/${series_id}/account_states`)
 }
