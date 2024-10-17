@@ -1,4 +1,4 @@
-import { BackdropImages, MovieTrendings } from './Movie'
+import { BackdropImages, CastMember, MovieTrendings } from './Movie'
 
 export interface CreatedBy {
   id: number
@@ -109,10 +109,58 @@ export interface BackdropImagesTVSeries {
 }
 
 export interface AccountStates_TV {
-  id?: number
-  favorite?: false
-  rated?: {
-    value?: number
+  id: number
+  favorite: false
+  rated: {
+    value: number
   }
   watchlist: false
+}
+
+export interface CastTV {
+  cast?: CastMember[]
+}
+
+export interface AuthorDetails {
+  name: string
+  username: string
+  avatar_path: string
+  rating: number
+}
+
+export interface ReviewTVSeries {
+  author: string
+  author_details: AuthorDetails
+  content: string
+  created_at: string
+  id: string
+  updated_at: string
+  url: string
+}
+
+export interface Aggregate_Credits extends Omit<CastMember, 'cast_id' | 'credit_id'> {
+  roles: Aggregate_Credits_roles_Details[]
+  total_episode_count: number
+}
+
+export interface Aggregate_Credits_roles_Details {
+  credits_id: string
+  character: string
+  episode_count: number
+}
+
+export interface keywordsTVSeries {
+  name: string
+  id: number
+}
+
+export interface TVSeries_Lists {
+  description: string
+  favorite_count: number
+  id: number
+  item_count: number
+  iso_639_1: string
+  iso_3166_1: string
+  name: string
+  poster_path: string | null
 }

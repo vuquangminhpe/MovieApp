@@ -26,11 +26,11 @@ import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious
 import { Card, CardContent } from '@/Components/ui/card'
 import RatingMovieDetails from './RatingMovieDetails'
 import Cast_CrewMovieDetails from './Cast_CrewMovieDetails'
-import AddOwnerMovieDetails from './AddOwnerMovieDetails'
 import { SuccessResponse } from '@/types/utils.type'
 import { Expand } from 'lucide-react'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTrigger } from '@/Components/ui/dialog'
 import { toast } from 'react-toastify'
+import AddOwnerMovieDetails from './AddOwnerMovieDetails'
 
 interface MovieDetailData {
   colorLiker?: string
