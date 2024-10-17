@@ -1,8 +1,9 @@
+import { Aggregate_Credits } from '@/types/TVSeries.type'
 import configBase from '../../../constants/config'
 import { BackdropImages, CastMember, DetailsImages, MovieCast, videosDetails } from '../../../types/Movie'
 
 interface RenderMoviesProps {
-  dataMovieDetails?: CastMember | MovieCast | videosDetails
+  dataMovieDetails?: CastMember | MovieCast | videosDetails | Aggregate_Credits
   configWidth_Height?: string
   dataShowDetails?: BackdropImages | DetailsImages
   isShow?: boolean

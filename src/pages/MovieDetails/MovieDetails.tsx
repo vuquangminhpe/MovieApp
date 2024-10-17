@@ -275,7 +275,7 @@ export default function MovieDetails({ colorLiker = '#4CAF50' }: MovieDetailData
                 </div>
 
                 <AddOwnerMovieDetails dataMovie={dataMovie} dataMovieDetails_Videos={dataMovieDetails_Videos} />
-                <div className='opacity-50 mt-6'>{dataMovie?.tagline}</div>
+                <div className='opacity-50 mt-6 font-serif'>{dataMovie?.tagline}</div>
                 <div className=' mt-5'>
                   <h2 className='capitalize text-white font-semibold'>overview</h2>
                   <div className='text-wrap text-gray-300'>{dataMovie?.overview}</div>

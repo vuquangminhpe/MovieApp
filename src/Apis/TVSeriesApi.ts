@@ -3,7 +3,6 @@ import {
   AccountStates_TV,
   Aggregate_Credits,
   BackdropImagesTVSeries,
-  CastTV,
   keywordsTVSeries,
   ReviewTVSeries,
   TVSeries,
@@ -22,7 +21,6 @@ export const TVSeriesApi = {
   getAggregateCredits: (series_id: number) =>
     http.get<SuccessResponse<Aggregate_Credits[]>>(`tv/${series_id}/aggregate_credits`),
 
-  getSeason: (series_id: number) => http.get<SuccessResponse<CastTV[]>>(`/tv/${series_id}/credits`),
   getReviews: (series_id: number) => http.get<SuccessResponse<ReviewTVSeries[]>>(`tv/${series_id}/reviews`),
   getVideosTVSeries: (series_id: number) => http.get<SuccessResponse<videosDetails>>(`tv/${series_id}/videos`),
   AddRatingTV: (series_id: number, ratingNumber: number) =>

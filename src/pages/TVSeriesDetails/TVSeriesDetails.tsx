@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import { formatNumberToSocialStyle, generateNameId, getIdFromNameId } from '../../utils/utils'
+import { generateNameId, getIdFromNameId } from '../../utils/utils'
 import { useQuery } from '@tanstack/react-query'
 import { ListApi } from '../../Apis/ListApi'
 import configBase from '../../constants/config'
@@ -8,7 +8,6 @@ import { BackdropImages, CastMember, videosDetails } from '../../types/Movie'
 
 import { useEffect, useState } from 'react'
 import DynamicMovieBackdrop from '../../Components/Custom/DynamicMovieBackdrop'
-import RenderDetailsMovie from '../../Components/RenderMovies/RenderDetailsMovie'
 import CustomScrollContainer from '../../Components/Custom/CustomScrollContainer'
 
 import RenderMovies from '@/Components/RenderMovies/RenderMovie'
@@ -24,7 +23,17 @@ import RatingTVDetails from './RatingTVDetails'
 import AddOwnerTVDetails from './AddOwnerTVDetails'
 import Cast_CrewTVDetails from './Cast_CrewTVDetails'
 import { TVSeriesApi } from '@/Apis/TVSeriesApi'
-import { BackdropImagesTVSeries, CastTV, TVSeries, TVSeriesTrending } from '@/types/TVSeries.type'
+import {
+  Aggregate_Credits,
+  Aggregate_Credits_roles_Details,
+  BackdropImagesTVSeries,
+  CastTV,
+  ReviewTVSeries,
+  Season,
+  TVSeries,
+  TVSeriesTrending
+} from '@/types/TVSeries.type'
+import RenderTVDetails from '@/Components/RenderMovies/RenderTVDetails'
 
 interface TVDetailData {
   colorLiker?: string
@@ -55,38 +64,45 @@ export default function TVSeriesDetails({ colorLiker = '#4CAF50' }: TVDetailData
     queryFn: () => TVSeriesApi.getTVSeriesDetails(Number(id))
   })
   const { data: dataYoutube_MovieDetails } = useQuery({
-    queryKey: ['videosDetails_MovieDetail', id],
+    queryKey: ['videosDetails_TVDetail', id],
     queryFn: () => ListApi.getVideosList(Number(id)),
     staleTime: 0
   })
   const { data: dataCredits } = useQuery({
-    queryKey: ['credit_MovieDetail', id],
-    queryFn: () => TVSeriesApi.getSeason(Number(id))
+    queryKey: ['credit_TVDetail', id],
+    queryFn: () => TVSeriesApi.getAggregateCredits(Number(id))
   })
+
   const { data: dataRecommendationsDetails } = useQuery({
-    queryKey: ['Recommendations_MovieDetails', id],
+    queryKey: ['Recommendations_TVDetails', id],
     queryFn: () => TVSeriesApi.getRecommendation(Number(id))
   })
   const { data: dataKeywords } = useQuery({
-    queryKey: ['keyWords_MovieDetails', id],
+    queryKey: ['keyWords_TVDetails', id],
     queryFn: () => TVSeriesApi.getKeyWords(Number(id))
   })
-
+  const { data: dataReviewsTV } = useQuery({
+    queryKey: ['ReviewsTV_TVDetails', id],
+    queryFn: () => TVSeriesApi.getReviews(Number(id))
+  })
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const dataKeywordsDetails = dataKeywords?.data.results.map((ele: any) => ele.name)
   const dataImg: SuccessResponse<BackdropImagesTVSeries[]> | undefined = dataImages?.data
   const dataCredit = dataCredits?.data.cast
+  const data_Roles = dataCredit?.map((itemRole) => itemRole.roles)
+
+  const dataReviews_TV = dataReviewsTV?.data.results
+  console.log(dataReviews_TV)
 
   const dataRecommendations = dataRecommendationsDetails?.data.results
-
   const dataRecommendations_filter = dataRecommendations?.filter(
     (items: TVSeriesTrending) => items.backdrop_path !== null
   )
-  console.log('dataRecommendations', dataRecommendations)
 
   const dataMovieDetails_Videos: videosDetails | undefined = dataYoutube_MovieDetails?.data.results[0]
 
   const dataTV: TVSeries | undefined = dataTVDetails?.data
+  console.log(dataTV)
 
   const percentage = Math.round((dataTV?.vote_average as number) * 10)
   const radius = 18
@@ -204,7 +220,13 @@ export default function TVSeriesDetails({ colorLiker = '#4CAF50' }: TVDetailData
                       <div className='cursor-pointer mx-1 '>{item.name}</div>,
                     </div>
                   ))}
-                  <div className='ml-2'> Time: {formatRuntime(dataTV?.episode_run_time[0] as number)}</div>
+                  <div className='ml-2'>
+                    {' '}
+                    Time:{' '}
+                    {(dataTV?.episode_run_time[0] as number) > 0
+                      ? formatRuntime(dataTV?.episode_run_time[0] as number)
+                      : '0h'}
+                  </div>
                 </div>
                 <div className='w-[310px] h-20 flex mt-3 items-center text-center justify-center'>
                   <svg className='w-auto h-full hover:scale-150 transition-all cursor-pointer' viewBox='0 0 40 40'>
@@ -259,10 +281,21 @@ export default function TVSeriesDetails({ colorLiker = '#4CAF50' }: TVDetailData
                 </div>
 
                 <AddOwnerTVDetails dataTV={dataTV} dataMovieDetails_Videos={dataMovieDetails_Videos} />
-                <div className='opacity-50 mt-6'>{dataTV?.tagline}</div>
+                <div className='opacity-50 mt-6 font-serif'>{dataTV?.tagline}</div>
                 <div className=' mt-5'>
                   <h2 className='capitalize text-white font-semibold'>overview</h2>
                   <div className='text-wrap text-gray-300'>{dataTV?.overview}</div>
+                </div>
+                <div className='capitalize text-white font-semibold mt-3'>all creator</div>
+                <div className='mt-1 w-full grid grid-cols-4 max-lg:grid-cols-2 max-md:grid-cols-1'>
+                  {data_Roles?.map((AllRoles) =>
+                    AllRoles?.map((itemRoles) => (
+                      <div className='flex gap-1 w-full' key={itemRoles.credits_id}>
+                        <div>{itemRoles.character}</div>
+                        <div></div>
+                      </div>
+                    ))
+                  )}
                 </div>
               </div>
             </div>
@@ -272,16 +305,16 @@ export default function TVSeriesDetails({ colorLiker = '#4CAF50' }: TVDetailData
       <div className='grid grid-cols-12 container w-full'>
         <div className='col-span-9 w-full'>
           <div className='w-full'>
-            <div className='mt-9 mb-3 ml-1 font-bold text-2xl'>Top Billed Cast</div>
+            <div className='mt-9 mb-3 ml-1 font-bold text-2xl'>Series Cast</div>
             <CustomScrollContainer height={470} width='100%'>
               <div className='flex gap-3 pr-4' style={{ width: 'max-content' }}>
-                {(dataCredit as CastMember[])?.map((dataPerformerDetails: CastMember) => (
+                {(dataCredit as Aggregate_Credits[])?.map((dataPerformerDetails: Aggregate_Credits) => (
                   <Link
                     to={`${path.person}/${generateNameId({ name: dataPerformerDetails?.name as string, id: dataPerformerDetails.id })}`}
-                    key={dataPerformerDetails.cast_id}
-                    className='max-w-full rounded-t-sm bg-white shadow-xl'
+                    key={dataPerformerDetails.id}
+                    className='max-w-full rounded-t-2xl bg-white shadow-xl'
                   >
-                    <RenderDetailsMovie key={dataPerformerDetails.id} dataMovieDetails={dataPerformerDetails} />
+                    <RenderTVDetails key={dataPerformerDetails.id} dataTVDetails={dataPerformerDetails} />
                     <div className='p-2 text-black font-semibold'>
                       {dataPerformerDetails.name || dataPerformerDetails.original_name}
                     </div>
@@ -291,19 +324,88 @@ export default function TVSeriesDetails({ colorLiker = '#4CAF50' }: TVDetailData
               </div>
             </CustomScrollContainer>
           </div>
-          <Cast_CrewTVDetails
-            setMouseHoverImages={setMouseHoverImages}
-            dataImages={dataImg}
-            dataTrailerLatest={dataTrailerLatest}
-          />
           <div className='border-b-[1px] border-gray-300 my-5'></div>
+          <div className='my-5'>
+            <div className='font-bold capitalize'>current season</div>
+            <div className='mt-2 shadow-xl h-[312px] rounded-xl'>
+              {dataTV?.seasons.map((itemSeason: Season) => (
+                <div className='flex gap-2'>
+                  <img
+                    src={`${configBase.imageBaseUrl}${itemSeason.poster_path}`}
+                    className='h-full w-52 rounded-l-xl'
+                    alt=''
+                  />
+                  <div className='ml-2'>
+                    <div className='font-bold text-xl'>{itemSeason.name}</div>
+                    <div className='flex gap-1'>
+                      <div>{new Date(itemSeason.air_date).getFullYear()}</div>
+                      <div>•</div>
+                      <div>{dataTV?.number_of_episodes} Episodes</div>
+                    </div>
+                    <div>{dataTV?.overview}</div>
+                    <div className='flex gap-1 mt-12'>
+                      <svg
+                        xmlns='http://www.w3.org/2000/svg'
+                        fill='none'
+                        viewBox='0 0 24 24'
+                        strokeWidth={1.5}
+                        stroke='currentColor'
+                        className='size-6'
+                      >
+                        <path
+                          strokeLinecap='round'
+                          strokeLinejoin='round'
+                          d='M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5m-9-6h.008v.008H12v-.008ZM12 15h.008v.008H12V15Zm0 2.25h.008v.008H12v-.008ZM9.75 15h.008v.008H9.75V15Zm0 2.25h.008v.008H9.75v-.008ZM7.5 15h.008v.008H7.5V15Zm0 2.25h.008v.008H7.5v-.008Zm6.75-4.5h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V15Zm0 2.25h.008v.008h-.008v-.008Zm2.25-4.5h.008v.008H16.5v-.008Zm0 2.25h.008v.008H16.5V15Z'
+                        />
+                      </svg>
+                      <Link to={''} className='border-b border-black cursor-pointer'>
+                        {dataTV?.next_episode_to_air?.name || dataTV?.last_episode_to_air?.name}
+                      </Link>
+                      <div>(1x2, {dataTV.last_episode_to_air.air_date})</div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className='border-b-[1px] border-gray-300 my-5'></div>
+
+            <div className='my-12'>
+              <div className='flex'>
+                <div className='text-xl font-bold text-black'>Social</div>
+                <div className='ml-20 text-xl font-bold text-black'>Reviews</div>
+              </div>
+              <div className='mt-2'>
+                {(dataReviews_TV as ReviewTVSeries[])?.length > 0
+                  ? dataReviews_TV?.map((itemReviews: ReviewTVSeries) => (
+                      <div className='w-full shadow-xl rounded-xl my-2 flex justify-between'>
+                        <img
+                          src={`${itemReviews?.author_details?.avatar_path}`}
+                          className='size-6 rounded-full object-contain'
+                          alt=''
+                        />
+                        <Link to={itemReviews.url} className='text-sm line-clamp-1'>
+                          {itemReviews.content}
+                        </Link>
+                        <div>{itemReviews.author_details.rating}</div>
+
+                        <div className='flex flex-col'>
+                          <div className='mr-2'>{itemReviews.updated_at}</div> <div>by {itemReviews.author}</div>by
+                        </div>
+                      </div>
+                    ))
+                  : `We don't have any reviews for ${dataTV?.name}. Would you like to write one?`}
+              </div>
+            </div>
+            <div className='border-b-[1px] border-gray-300 my-5'></div>
+          </div>
+          <Cast_CrewTVDetails dataImages={dataImg} dataTrailerLatest={dataTrailerLatest} />
           <div className='border-b-[1px] border-gray-300 my-5'></div>
-          <div className='text-xl font-bold text-black'>Recommendation</div>
+          <div className='text-xl font-bold text-black dark:text-white mb-2'>Recommendation</div>
           <CustomScrollContainer height={330} width='100%'>
             <div className='flex gap-3 pr-4' style={{ width: 'max-content' }}>
               {dataRecommendations ? (
                 dataRecommendations_filter?.map((dataPerformerDetails: TVSeriesTrending) => (
-                  <div key={dataPerformerDetails.id} className='max-w-full rounded-t-sm bg-white shadow-xl '>
+                  <div key={dataPerformerDetails.id} className='max-w-full rounded-t-xl bg-white shadow-xl '>
                     <RenderMovies
                       CustomIMG='object-top'
                       typeText='text-teal-500'
@@ -352,7 +454,11 @@ export default function TVSeriesDetails({ colorLiker = '#4CAF50' }: TVDetailData
             {dataKeywordsDetails?.length ? (
               <div className='grid  lg:grid-cols-3 md:grid-cols-1 text-center'>
                 {dataKeywordsDetails?.map((item: string) => (
-                  <Link to={''} className='bg-gray-300 text-sm mr-2 mb-2 text-black shadow-sm rounded-sm p-2 truncate'>
+                  <Link
+                    to={''}
+                    key={item}
+                    className='bg-gray-300 text-sm mr-2 mb-2 text-black shadow-sm rounded-sm p-2 truncate'
+                  >
                     {item}
                   </Link>
                 ))}

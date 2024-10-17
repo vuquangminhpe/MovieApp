@@ -5,12 +5,12 @@ import MovieTrailer from '@/pages/HomeMovies/MovieTrailer'
 import { DetailsImages, MovieTrendings } from '@/types/Movie'
 import { BackdropImagesTVSeries } from '@/types/TVSeries.type'
 import { SuccessResponse } from '@/types/utils.type'
+import { SetStateAction } from 'react'
 interface Props {
   dataImages: SuccessResponse<BackdropImagesTVSeries[]> | undefined
-  setMouseHoverImages: React.Dispatch<React.SetStateAction<string>>
   dataTrailerLatest: MovieTrendings[] | undefined
 }
-export default function Cast_CrewTVDetails({ dataImages, setMouseHoverImages, dataTrailerLatest }: Props) {
+export default function Cast_CrewTVDetails({ dataImages, dataTrailerLatest }: Props) {
   const addDataRender = (dataRenders: DetailsImages[], isShow?: boolean) => {
     isShow = false
     return (
@@ -32,7 +32,15 @@ export default function Cast_CrewTVDetails({ dataImages, setMouseHoverImages, da
     {
       id: 'videos',
       name: 'Videos',
-      children: <MovieTrailer setMouseHoverImages={setMouseHoverImages} dataPopulars={dataTrailerLatest} />
+      children: (
+        <MovieTrailer
+          dataPopulars={dataTrailerLatest}
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          setMouseHoverImages={function (value: SetStateAction<string>): void {
+            throw new Error('Function not implemented.')
+          }}
+        />
+      )
     },
     {
       id: 'Most_Poplar',

@@ -13,7 +13,7 @@ export interface Genre {
   name: string
 }
 
-export interface LastEpisodeToAir {
+export interface EpisodeToAir {
   id: number
   name: string
   overview: string
@@ -21,6 +21,7 @@ export interface LastEpisodeToAir {
   vote_count: number
   air_date: string
   episode_number: number
+  episode_type: string
   production_code: string
   runtime: number
   season_number: number
@@ -76,10 +77,9 @@ export interface TVSeries {
   in_production: boolean
   languages: string[]
   last_air_date: string
-  last_episode_to_air: LastEpisodeToAir
+  last_episode_to_air: EpisodeToAir
   name: string
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  next_episode_to_air: null | any
+  next_episode_to_air: EpisodeToAir
   networks: Network[]
   number_of_episodes: number
   number_of_seasons: number
