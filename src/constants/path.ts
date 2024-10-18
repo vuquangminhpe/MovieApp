@@ -19,6 +19,7 @@ const path = {
   peopleList: '/person_list',
   season: '/season',
   seasonDetails: 'tv/:tv_ID/season/:season_ID/episode/:episode_ID',
-  episode: '/episode'
+  episode: '/episode',
+  episodeDetails: 'tv/:tv_ID/season/:season_ID/episode/:episode_ID/cast'
 }
 export default path

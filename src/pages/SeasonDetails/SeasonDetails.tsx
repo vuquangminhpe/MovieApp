@@ -1,14 +1,16 @@
-import React from 'react'
 import { TVSeasonsDetailsApi } from '@/Apis/TVSeasonsDetailsApi'
 import configBase from '@/constants/config'
 import { Episode, TVSeason } from '@/types/TVSeason.type'
 import { getIdFromNameId } from '@/utils/utils'
 import { useQuery } from '@tanstack/react-query'
-import { useParams } from 'react-router-dom'
+import { Link, useLocation, useParams } from 'react-router-dom'
 import { Popover, PopoverContent, PopoverTrigger } from '@/Components/ui/popover'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/Components/ui/accordion'
 
 export default function SeasonDetails() {
+  const location = useLocation()
+  const pathname = location.pathname.slice(0, location.pathname.length - 1)
+
   const { season_ID, tv_ID } = useParams()
   const tvID = getIdFromNameId(tv_ID as string)
 
@@ -21,13 +23,13 @@ export default function SeasonDetails() {
   return (
     <div className='flex flex-col w-full'>
       <div className='bg-gray-600 w-full'>
-        <div className='container my-2 flex'>
+        <div className='container my-2 flex '>
           <img
             src={`${configBase.imageBaseUrl}${dataSeasonDetail?.poster_path}`}
             className='w-28 h-auto object-contain'
             alt=''
           />
-          <div>
+          <div className='ml-4'>
             <div className='font-bold text-xl text-white'>
               {dataSeasonDetail?.name} ({new Date(dataSeasonDetail?.air_date).getFullYear()})
             </div>
@@ -99,7 +101,9 @@ export default function SeasonDetails() {
                             d='M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456ZM16.894 20.567 16.5 21.75l-.394-1.183a2.25 2.25 0 0 0-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 0 0 1.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 0 0 1.423 1.423l1.183.394-1.183.394a2.25 2.25 0 0 0-1.423 1.423Z'
                           />
                         </svg>
-                        <div className='text-sm text-white'>0%</div>
+                        <div className='text-sm text-white'>
+                          <div>{itemEpisodes.vote_average ? itemEpisodes.vote_average : '0'}%</div>
+                        </div>
                       </div>
                       <div className='bg-cyan-400 rounded-r-xl text-sm p-1 cursor-pointer text-white'>Rate</div>
                     </div>
@@ -115,8 +119,38 @@ export default function SeasonDetails() {
               <div className='border-t border-gray-400 w-[95%] mx-auto'></div>
               <Accordion className='p-3' type='single' collapsible>
                 <AccordionItem value='item-1'>
-                  <AccordionTrigger>Expand</AccordionTrigger>
-                  <AccordionContent>Yes. It adheres to the WAI-ARIA design pattern.</AccordionContent>
+                  <AccordionTrigger className='flex justify-center'>Expand</AccordionTrigger>
+                  <AccordionContent className='mt-10'>
+                    <div className='flex justify-between '>
+                      <div className='flex text-black font-semibold'>Crew {itemEpisodes.crew.length}</div>
+                      <div className='font-semibold'>Guest Stars {itemEpisodes.guest_stars.length}</div>
+                      <Link to={`${pathname}${itemEpisodes.episode_number}/cast`} className='capitalize font-semibold'>
+                        full cast & crew
+                      </Link>
+                    </div>
+                    <div className='border-b border-gray-200'></div>
+                    <div className='mt-6'>
+                      <div className='flex justify-between'>
+                        <div className='flex flex-col gap-1'>
+                          <div className='capitalize text-sm font-semibold'>
+                            episode images{' '}
+                            <img
+                              src={
+                                itemEpisodes?.still_path
+                                  ? `${configBase?.imageBaseUrl}${itemEpisodes?.still_path}`
+                                  : `https://www.themoviedb.org/assets/2/v4/glyphicons/basic/glyphicons-basic-38-picture-grey-c2ebdbb057f2a7614185931650f8cee23fa137b93812ccb132b9df511df1cfac.svg`
+                              }
+                              className='w-[150px] h-[100px] object-contain'
+                              alt=''
+                            />
+                          </div>
+                        </div>
+                        <Link to={''} className='capitalize'>
+                          view all episode images
+                        </Link>
+                      </div>
+                    </div>
+                  </AccordionContent>
                 </AccordionItem>
               </Accordion>
             </div>

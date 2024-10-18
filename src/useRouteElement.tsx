@@ -11,6 +11,7 @@ import MovieList from './pages/MovieList'
 import PeopleList from './pages/PeopleList'
 import TVSeriesDetails from './pages/TVSeriesDetails'
 import SeasonDetails from './pages/SeasonDetails'
+import Episodes_Season from './pages/Episodes_Season/Episodes_Season'
 
 // function ProtectedRoute() {
 //   const { isAuthenticated } = useContext(AppContext)
@@ -237,6 +238,15 @@ export default function useRouteElement() {
       element: (
         <MainLayout>
           <SeasonDetails />
+        </MainLayout>
+      )
+    },
+    {
+      path: path.episodeDetails,
+      index: true,
+      element: (
+        <MainLayout>
+          <Episodes_Season />
         </MainLayout>
       )
     }
