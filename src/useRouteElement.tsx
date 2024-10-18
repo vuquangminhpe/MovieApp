@@ -10,6 +10,7 @@ import CollectionMovies from './pages/Collection'
 import MovieList from './pages/MovieList'
 import PeopleList from './pages/PeopleList'
 import TVSeriesDetails from './pages/TVSeriesDetails'
+import SeasonDetails from './pages/SeasonDetails'
 
 // function ProtectedRoute() {
 //   const { isAuthenticated } = useContext(AppContext)
@@ -227,6 +228,15 @@ export default function useRouteElement() {
       element: (
         <MainLayout>
           <PeopleList />
+        </MainLayout>
+      )
+    },
+    {
+      path: path.seasonDetails,
+      index: true,
+      element: (
+        <MainLayout>
+          <SeasonDetails />
         </MainLayout>
       )
     }

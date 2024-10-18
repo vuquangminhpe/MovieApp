@@ -13,7 +13,7 @@ interface Props {
 export default function Cast_CrewTVDetails({ dataImages, dataTrailerLatest }: Props) {
   const addDataRender = (dataRenders: DetailsImages[], isShow?: boolean) => {
     isShow = false
-    return (
+    return (dataRenders?.length as number) > 0 ? (
       <CustomScrollContainer height={400} width='100%'>
         <div className='flex gap-3 pr-4' style={{ width: 'max-content' }}>
           {dataRenders?.slice(0, 8).map((dataDetails: DetailsImages) => (
@@ -26,6 +26,8 @@ export default function Cast_CrewTVDetails({ dataImages, dataTrailerLatest }: Pr
           ))}
         </div>
       </CustomScrollContainer>
+    ) : (
+      <div>we don't have data images in here</div>
     )
   }
   const MapSet = [

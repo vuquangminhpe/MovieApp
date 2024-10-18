@@ -5,11 +5,12 @@ import Footer from '../../Components/pages/Footer'
 interface Props {
   children?: React.ReactNode
 }
+
 export default function MainLayout({ children }: Props) {
   return (
-    <div>
+    <div className='flex flex-col min-h-screen'>
       <Header />
-      {children}
+      <main className='flex-grow '>{children}</main>
       <Footer />
     </div>
   )

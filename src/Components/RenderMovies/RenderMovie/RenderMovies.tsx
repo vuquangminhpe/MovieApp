@@ -223,7 +223,7 @@ const RenderMovies = ({
             />
           </svg>
           <div className='absolute inset-0 flex items-center justify-center'>
-            <span className={`text-xs font-bold ${typeText}`}>{percentage}%</span>
+            <span className={`text-xs font-bold ${typeText}`}>{percentage > 0 ? `${percentage}%` : 'NR'}</span>
           </div>
         </div>
       )}

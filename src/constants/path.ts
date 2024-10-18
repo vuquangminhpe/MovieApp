@@ -16,6 +16,9 @@ const path = {
   on_tv: '/tv/On-the-air',
   tv_top_rated: '/tv/Top_Rated',
   collectionDetails: '/collection/:collection_id',
-  peopleList: '/person_list'
+  peopleList: '/person_list',
+  season: '/season',
+  seasonDetails: 'tv/:tv_ID/season/:season_ID/episode/:episode_ID',
+  episode: '/episode'
 }
 export default path
