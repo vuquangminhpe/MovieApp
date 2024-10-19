@@ -32,6 +32,7 @@ import {
   TVSeriesTrending
 } from '@/types/TVSeries.type'
 import RenderTVDetails from '@/Components/RenderMovies/RenderTVDetails'
+import { typeSearchKeyWord } from '@/types/Search.type'
 
 interface TVDetailData {
   colorLiker?: string
@@ -463,13 +464,13 @@ export default function TVSeriesDetails({ colorLiker = '#4CAF50' }: TVDetailData
             <div>Keywords</div>
             {dataKeywordsDetails?.length ? (
               <div className='grid  lg:grid-cols-3 md:grid-cols-1 text-center'>
-                {dataKeywordsDetails?.map((item: string) => (
+                {dataKeywordsDetails?.map((item: typeSearchKeyWord) => (
                   <Link
-                    to={''}
-                    key={item}
+                    to={`/keyword/${generateNameId({ name: item?.name as string, id: Number(item?.id) })}/tv`}
+                    key={item?.id}
                     className='bg-gray-300 text-sm mr-2 mb-2 text-black shadow-sm rounded-sm p-2 truncate'
                   >
-                    {item}
+                    {item?.name}
                   </Link>
                 ))}
               </div>

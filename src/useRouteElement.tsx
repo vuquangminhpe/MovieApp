@@ -12,6 +12,7 @@ import PeopleList from './pages/PeopleList'
 import TVSeriesDetails from './pages/TVSeriesDetails'
 import SeasonDetails from './pages/SeasonDetails'
 import Episodes_Season from './pages/Episodes_Season/Episodes_Season'
+import KeyWordsMovie_TV_All from './pages/KeyWordsMovie_TV_All'
 
 // function ProtectedRoute() {
 //   const { isAuthenticated } = useContext(AppContext)
@@ -247,6 +248,24 @@ export default function useRouteElement() {
       element: (
         <MainLayout>
           <Episodes_Season />
+        </MainLayout>
+      )
+    },
+    {
+      path: path.searchKeywords_Movie,
+      index: true,
+      element: (
+        <MainLayout>
+          <KeyWordsMovie_TV_All />
+        </MainLayout>
+      )
+    },
+    {
+      path: path.searchKeywords_TV,
+      index: true,
+      element: (
+        <MainLayout>
+          <KeyWordsMovie_TV_All />
         </MainLayout>
       )
     }

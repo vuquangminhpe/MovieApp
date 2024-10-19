@@ -20,6 +20,8 @@ const path = {
   season: '/season',
   seasonDetails: 'tv/:tv_ID/season/:season_ID/episode/:episode_ID',
   episode: '/episode',
-  episodeDetails: 'tv/:tv_ID/season/:season_ID/episode/:episode_ID/cast'
+  episodeDetails: 'tv/:tv_ID/season/:season_ID/episode/:episode_ID/cast',
+  searchKeywords_Movie: '/keyword/:keyword_id/movie',
+  searchKeywords_TV: '/keyword/:keyword_id/tv'
 }
 export default path

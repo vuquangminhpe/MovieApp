@@ -31,6 +31,7 @@ import { Expand } from 'lucide-react'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTrigger } from '@/Components/ui/dialog'
 import { toast } from 'react-toastify'
 import AddOwnerMovieDetails from './AddOwnerMovieDetails'
+import { typeSearchKeyWord } from '@/types/Search.type'
 
 interface MovieDetailData {
   colorLiker?: string
@@ -77,8 +78,11 @@ export default function MovieDetails({ colorLiker = '#4CAF50' }: MovieDetailData
     queryKey: ['keyWords_MovieDetails', id],
     queryFn: () => DetailsMovieApi.getKeywords(Number(id))
   })
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const dataKeywordsDetails = dataKeywords?.data.keywords.map((ele: any) => ele.name)
+  const dataKeywordsDetails = dataKeywords?.data.keywords
+  console.log(dataKeywords?.data.keywords)
+
   const dataImg: SuccessResponse<DetailsImages[]> | undefined = dataImages?.data
   const dataCredit = dataCredits?.data.cast
   const dataRecommendations = dataRecommendationsDetails?.data.results
@@ -380,9 +384,13 @@ export default function MovieDetails({ colorLiker = '#4CAF50' }: MovieDetailData
           <div className='mt-10'>
             <div>Keywords</div>
             <div className='grid  lg:grid-cols-3 md:grid-cols-1 text-center'>
-              {dataKeywordsDetails?.map((item: string) => (
-                <Link to={''} className='bg-gray-300 text-sm mr-2 mb-2 text-black shadow-sm rounded-sm p-2 truncate'>
-                  {item}
+              {dataKeywordsDetails?.map((item: typeSearchKeyWord) => (
+                <Link
+                  key={item?.id}
+                  to={`/keyword/${generateNameId({ name: item?.name as string, id: Number(item?.id) })}/movie`}
+                  className='bg-gray-300 text-sm mr-2 mb-2 text-black shadow-sm rounded-sm p-2 truncate'
+                >
+                  {item?.name}
                 </Link>
               ))}
             </div>
