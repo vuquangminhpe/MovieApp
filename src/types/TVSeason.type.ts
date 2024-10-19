@@ -1,6 +1,6 @@
 export interface CrewMember {
-  department: string
-  job: string
+  department?: string
+  job?: string
   credit_id: string
   adult: boolean
   gender: number

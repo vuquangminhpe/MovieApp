@@ -334,7 +334,7 @@ export default function TVSeriesDetails({ colorLiker = '#4CAF50' }: TVDetailData
           <div className='border-b-[1px] border-gray-300 my-5'></div>
           <div className='my-5'>
             <div className='font-bold capitalize'>current season</div>
-            <div className='mt-2 shadow-xl h-[312px] rounded-xl'>
+            <div className='mt-2 shadow-xl h-[330px] rounded-xl'>
               {dataTV?.seasons.map((itemSeason: Season) => (
                 <div className='flex gap-2'>
                   <img
@@ -345,7 +345,7 @@ export default function TVSeriesDetails({ colorLiker = '#4CAF50' }: TVDetailData
                   <div className='ml-2'>
                     <div className='font-bold text-xl'>{itemSeason.name}</div>
                     <div className='flex gap-1'>
-                      <div>{new Date(itemSeason.air_date).getFullYear()}</div>
+                      <div>{new Date(itemSeason?.air_date).getFullYear()}</div>
                       <div>•</div>
                       <div>{dataTV?.number_of_episodes} Episodes</div>
                     </div>
@@ -371,7 +371,7 @@ export default function TVSeriesDetails({ colorLiker = '#4CAF50' }: TVDetailData
                       >
                         {dataTV?.next_episode_to_air?.name || dataTV?.last_episode_to_air?.name}
                       </Link>
-                      <div>(1x2, {dataTV.last_episode_to_air.air_date})</div>
+                      <div>(1x2, {dataTV?.last_episode_to_air?.air_date})</div>
                     </div>
                   </div>
                 </div>

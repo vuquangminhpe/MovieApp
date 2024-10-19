@@ -2,14 +2,22 @@ import { TVSeasonsDetailsApi } from '@/Apis/TVSeasonsDetailsApi'
 import configBase from '@/constants/config'
 import { Episode, TVSeason } from '@/types/TVSeason.type'
 import { getIdFromNameId } from '@/utils/utils'
-import { useQuery } from '@tanstack/react-query'
-import { Link, useLocation, useParams } from 'react-router-dom'
-import { Popover, PopoverContent, PopoverTrigger } from '@/Components/ui/popover'
+import { useMutation, useQuery } from '@tanstack/react-query'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/Components/ui/accordion'
+import { Popover, PopoverContent, PopoverTrigger } from '@/Components/ui/popover'
+import RatingInputStarEpisode from './RatingInputStarEpisode'
+import EpisodesApi from '../Episodes_Season'
+import { useEffect, useState } from 'react'
+import { SuccessResponse } from '@/types/utils.type'
+import { AxiosResponse } from 'axios'
+import { toast } from 'react-toastify'
 
 export default function SeasonDetails() {
   const location = useLocation()
   const pathname = location.pathname.slice(0, location.pathname.length - 1)
+  const navigate = useNavigate()
+  const [episodeID, setEpisodeID] = useState<number>(1)
 
   const { season_ID, tv_ID } = useParams()
   const tvID = getIdFromNameId(tv_ID as string)
@@ -18,8 +26,38 @@ export default function SeasonDetails() {
     queryKey: ['dataSeason_Detail'],
     queryFn: () => TVSeasonsDetailsApi.getDetailsSeasons(Number(tvID), Number(season_ID))
   })
-  const dataSeasonDetail: TVSeason = dataSeason?.data as TVSeason
 
+  const dataSeasonDetail: TVSeason = dataSeason?.data as TVSeason
+  const { data: dataAccountState, refetch } = useQuery({
+    queryKey: ['dataAccountState', episodeID],
+    queryFn: () => EpisodesApi.getAccountState(Number(tvID), Number(season_ID), Number(episodeID))
+  })
+  const dataRated = dataAccountState?.data
+
+  const deletedRatingEpisodesMutation = useMutation({
+    mutationFn: () => EpisodesApi.DeletedRatingEpisodes(Number(tvID), Number(season_ID), Number(episodeID))
+  })
+  const handleEpisode = (episode_number: number) => {
+    navigate(`${pathname}${episode_number}/cast`, {
+      state: {
+        episodes_All_Season: dataSeasonDetail?.episodes.length
+      }
+    })
+  }
+  const handleDeletedRating = () => {
+    deletedRatingEpisodesMutation.mutate(undefined, {
+      onSuccess: (data: AxiosResponse<SuccessResponse<{ status_message: string }>>) => {
+        toast.success(`${data.data.status_message}`)
+        refetch()
+      },
+      onError: (error: AxiosResponse<SuccessResponse<{ status_message: string }>>) => {
+        toast.error(`${error.data.status_message}`)
+      }
+    })
+  }
+  useEffect(() => {
+    refetch()
+  }, [refetch, episodeID])
   return (
     <div className='flex flex-col w-full'>
       <div className='bg-gray-600 w-full'>
@@ -51,20 +89,7 @@ export default function SeasonDetails() {
       </div>
       <div className='container max-xl:mx-2 my-5'>
         <div className='flex justify-between mb-4'>
-          <div className='font-semibold text-sm'>Episodes {dataSeasonDetail?.episodes?.length}</div>
-          <Popover>
-            <PopoverTrigger>Sort</PopoverTrigger>
-            <PopoverContent className='flex flex-col'>
-              <Popover>
-                <PopoverTrigger>Open</PopoverTrigger>
-                <PopoverContent>Place content for the popover here.</PopoverContent>
-              </Popover>
-              <Popover>
-                <PopoverTrigger>Open</PopoverTrigger>
-                <PopoverContent>Place content for the popover here.</PopoverContent>
-              </Popover>
-            </PopoverContent>
-          </Popover>
+          <div className='font-bold text-xl'>Episodes {dataSeasonDetail?.episodes?.length}</div>
         </div>
         <div className='space-y-4'>
           {dataSeasonDetail?.episodes?.map((itemEpisodes: Episode) => (
@@ -105,7 +130,43 @@ export default function SeasonDetails() {
                           <div>{itemEpisodes.vote_average ? itemEpisodes.vote_average : '0'}%</div>
                         </div>
                       </div>
-                      <div className='bg-cyan-400 rounded-r-xl text-sm p-1 cursor-pointer text-white'>Rate</div>
+                      <Popover>
+                        <PopoverTrigger>
+                          {' '}
+                          <div
+                            onClick={() => setEpisodeID(itemEpisodes?.episode_number as number)}
+                            className='bg-cyan-400 rounded-r-xl text-sm p-1 cursor-pointer text-white'
+                          >
+                            Rate
+                          </div>
+                        </PopoverTrigger>
+                        <PopoverContent className='flex flex-col gap-2 bg-blue-950 shadow-xl rounded-xl'>
+                          <div className='text-white text-sm'>Rated on {new Date().toLocaleDateString()}</div>
+                          <div className='flex items-center gap-2'>
+                            <svg
+                              onClick={handleDeletedRating}
+                              xmlns='http://www.w3.org/2000/svg'
+                              fill='#fff'
+                              viewBox='0 0 24 24'
+                              strokeWidth={1.5}
+                              stroke='#000'
+                              className='size-6 cursor-pointer'
+                            >
+                              <path
+                                strokeLinecap='round'
+                                strokeLinejoin='round'
+                                d='m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z'
+                              />
+                            </svg>
+                            <RatingInputStarEpisode
+                              tvID={Number(tvID)}
+                              season_ID={Number(season_ID)}
+                              episodes_Id={Number(episodeID)}
+                              initialRating={Number(dataRated?.rated.value)}
+                            />
+                          </div>
+                        </PopoverContent>
+                      </Popover>
                     </div>
                     <div>{itemEpisodes?.air_date}</div>
                   </div>
@@ -124,9 +185,12 @@ export default function SeasonDetails() {
                     <div className='flex justify-between '>
                       <div className='flex text-black font-semibold'>Crew {itemEpisodes.crew.length}</div>
                       <div className='font-semibold'>Guest Stars {itemEpisodes.guest_stars.length}</div>
-                      <Link to={`${pathname}${itemEpisodes.episode_number}/cast`} className='capitalize font-semibold'>
+                      <div
+                        onClick={() => handleEpisode(itemEpisodes?.episode_number)}
+                        className='capitalize cursor-pointer font-semibold'
+                      >
                         full cast & crew
-                      </Link>
+                      </div>
                     </div>
                     <div className='border-b border-gray-200'></div>
                     <div className='mt-6'>
@@ -145,9 +209,6 @@ export default function SeasonDetails() {
                             />
                           </div>
                         </div>
-                        <Link to={''} className='capitalize'>
-                          view all episode images
-                        </Link>
                       </div>
                     </div>
                   </AccordionContent>
