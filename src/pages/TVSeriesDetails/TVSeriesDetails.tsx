@@ -85,7 +85,7 @@ export default function TVSeriesDetails({ colorLiker = '#4CAF50' }: TVDetailData
     queryFn: () => TVSeriesApi.getReviews(Number(id))
   })
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const dataKeywordsDetails = dataKeywords?.data.results.map((ele: any) => ele.name)
+  const dataKeywordsDetails = dataKeywords?.data.results
   const dataImg: SuccessResponse<BackdropImagesTVSeries[]> | undefined = dataImages?.data
   const dataCredit = dataCredits?.data.cast
   const data_Roles = dataCredit?.map((itemRole) => itemRole.roles)
@@ -287,7 +287,7 @@ export default function TVSeriesDetails({ colorLiker = '#4CAF50' }: TVDetailData
                 <div className='capitalize text-white font-semibold mt-3'>all creator</div>
                 <div className='mt-1 w-full grid grid-cols-4 max-lg:grid-cols-2 max-md:grid-cols-1'>
                   {(data_Roles?.length as number) > 0 ? (
-                    data_Roles?.map((AllRoles) =>
+                    data_Roles?.slice(0, 8).map((AllRoles) =>
                       AllRoles?.map((itemRoles) => (
                         <div className='flex gap-1 w-full' key={itemRoles.credits_id}>
                           <div>{itemRoles.character}</div>

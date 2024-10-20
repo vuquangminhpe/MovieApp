@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query'
+import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import MovieTrending from './MovieTrending'
 import { ListApi } from '../../Apis/ListApi'
 import MouseAnimate from '../../Components/Custom/MouseAnimate'
@@ -7,14 +7,20 @@ import { useState } from 'react'
 import MovieTrailer from './MovieTrailer'
 import { Movie, MovieTrendings } from '@/types/Movie'
 import { AccountApi } from '@/Apis/AccountApi'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/Components/ui/tabs'
+import TVTrending from './TVTrending'
 
 export default function HomeMovies() {
   const [movieId, setMovieId] = useState<number>()
-
+  const [trendingMovie, setTrendingMovie] = useState<string>('day')
   const [mouseHoverImages, setMouseHoverImages] = useState(
     'https://media.themoviedb.org/t/p/w1920_and_h600_multi_faces_filter(duotone,00192f,00baff)/SqAZjEqqBAYvyu3KSrWq1d0QLB.jpg'
   )
-  const { data: dataRated } = useQuery({ queryKey: ['dataTrending', []], queryFn: ListApi.TrendingData })
+  const { data: dataRated, refetch } = useQuery({
+    queryKey: ['dataTrending', trendingMovie],
+    queryFn: () => ListApi.TrendingDataMovie(`${trendingMovie}`, { language: 'en' }),
+    placeholderData: keepPreviousData
+  })
   const dataTrending = dataRated?.data.results
   console.log(dataTrending)
 
@@ -76,12 +82,74 @@ export default function HomeMovies() {
         </div>
       </div>
       <div className='container w-full'>
-        {' '}
-        <MovieTrending
-          setMovieId={setMovieId}
-          rating={extendedDataRated?.rating as number}
-          dataMoviesTrending={dataTrending}
-        />
+        <Tabs defaultValue='MV_TD' className='w-full mt-6'>
+          <TabsContent value='MV_TD'>
+            <Tabs defaultValue='MV_TD_DAY'>
+              <TabsList>
+                <TabsTrigger
+                  value='MV_TD_DAY'
+                  onClick={() => {
+                    setTrendingMovie('day')
+                    refetch()
+                  }}
+                >
+                  Movie Trending Day
+                </TabsTrigger>
+                <TabsTrigger
+                  value='MV_TD_WEEK'
+                  onClick={() => {
+                    setTrendingMovie('week')
+                    refetch()
+                  }}
+                >
+                  Movie Trending Week
+                </TabsTrigger>
+              </TabsList>
+              <TabsContent value='MV_TD_DAY'>
+                <MovieTrending
+                  setMovieId={setMovieId}
+                  rating={extendedDataRated?.rating as number}
+                  dataMoviesTrending={dataTrending}
+                />
+              </TabsContent>
+              <TabsContent value='MV_TD_WEEK'>
+                <div>
+                  {' '}
+                  <MovieTrending
+                    setMovieId={setMovieId}
+                    rating={extendedDataRated?.rating as number}
+                    dataMoviesTrending={dataTrending}
+                  />
+                </div>
+              </TabsContent>
+            </Tabs>
+          </TabsContent>
+
+          <TabsContent value='TV_TD'>
+            <Tabs defaultValue='MV_TD_DAY'>
+              <TabsList>
+                <TabsTrigger
+                  value='MV_TD_DAY'
+                  onClick={() => {
+                    setTrendingMovie('day')
+                    refetch()
+                  }}
+                >
+                  Movie Trending Day
+                </TabsTrigger>
+                <TabsTrigger
+                  value='MV_TD_WEEK'
+                  onClick={() => {
+                    setTrendingMovie('week')
+                    refetch()
+                  }}
+                >
+                  Movie Trending Week
+                </TabsTrigger>
+              </TabsList>
+            </Tabs>
+          </TabsContent>
+        </Tabs>
         <div className=' relative rounded-xl shadow-sm w-full'>
           <img
             src={mouseHoverImages}
