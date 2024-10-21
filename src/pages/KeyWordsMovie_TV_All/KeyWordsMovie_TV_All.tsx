@@ -3,17 +3,70 @@ import { ListApi } from '@/Apis/ListApi'
 import configBase from '@/constants/config'
 import path from '@/constants/path'
 import { MovieTrendings } from '@/types/Movie'
-import { TVSeries, TVSeriesTrending } from '@/types/TVSeries.type'
+import { TVSeries } from '@/types/TVSeries.type'
 import { generateNameId, getIdFromNameId } from '@/utils/utils'
 import { useInfiniteQuery } from '@tanstack/react-query'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { Link, useLocation, useParams } from 'react-router-dom'
-
+import { createSearchParams, Link, NavLink, useLocation, useNavigate, useParams } from 'react-router-dom'
+import { Popover, PopoverContent, PopoverTrigger } from '@/Components/ui/popover'
+import { SortBy, SortBy_TV } from '@/types/Discover.type'
+const SortKeyWords_Movie = [
+  {
+    name_Parent: 'Popularity',
+    contain: [
+      { name: 'popularity.asc', label: 'Ascending' },
+      { name: 'popularity.desc', label: 'Descending' }
+    ]
+  },
+  {
+    name_Parent: 'Rating',
+    contain: [
+      { name: 'vote_average.asc', label: 'Ascending' },
+      { name: 'vote_average.desc', label: 'Descending' }
+    ]
+  },
+  {
+    name_Parent: 'Release Date',
+    contain: [
+      { name: 'primary_release_date.asc', label: 'Ascending' },
+      { name: 'primary_release_date.desc', label: 'Descending' }
+    ]
+  }
+]
+const SortKeyWords_TV = [
+  {
+    name_Parent: 'Popularity',
+    contain: [
+      { name: 'popularity.asc', label: 'Ascending' },
+      { name: 'popularity.desc', label: 'Descending' }
+    ]
+  },
+  {
+    name_Parent: 'Rating',
+    contain: [
+      { name: 'vote_average.asc', label: 'Ascending' },
+      { name: 'vote_average.desc', label: 'Descending' }
+    ]
+  },
+  {
+    name_Parent: 'Release Date',
+    contain: [
+      { name: 'first_air_date.asc', label: 'Ascending' },
+      { name: 'first_air_date.desc', label: 'Descending' }
+    ]
+  }
+]
 export default function KeyWordsMovie_TV_All() {
   const observerRef = useRef<IntersectionObserver>()
+
   const location = useLocation()
+  const [sortBy, setSortBy] = useState<SortBy | SortBy_TV | string>('')
   const loadMoreRef = useRef<HTMLDivElement>(null)
   const [loading, setLoading] = useState(false)
+  const navigate = useNavigate()
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [locationValue, setLocationValue] = useState<string>(location.pathname.split('/')[3])
+  console.log(locationValue)
 
   const { keyword_id } = useParams()
   const KeyWordsID = getIdFromNameId(keyword_id as string)
@@ -39,17 +92,18 @@ export default function KeyWordsMovie_TV_All() {
     hasNextPage,
     isFetchingNextPage
   } = useInfiniteQuery({
-    queryKey: [location.pathname, KeyWordsID],
+    queryKey: [location.pathname, KeyWordsID, sortBy],
     queryFn: async ({ pageParam = 1 }) => {
       const result = getApiFunction()({
         page: pageParam,
         language: 'en-US',
-        with_keywords: KeyWordsID
+        with_keywords: KeyWordsID,
+        sort_by: sortBy || 'popularity.desc'
       })
       return result
     },
     getNextPageParam: (lastPage) => {
-      if (loading && Number(lastPage.data.page) < 5) {
+      if (loading && Number(lastPage.data.page) < 20) {
         return Number(lastPage.data.page) + 1
       }
       return undefined
@@ -93,6 +147,7 @@ export default function KeyWordsMovie_TV_All() {
       ) ?? [],
     [dataDiscover_Movie]
   )
+
   const allMovies = useMemo(
     () =>
       dataDiscover_Movie?.pages.flatMap(
@@ -100,8 +155,22 @@ export default function KeyWordsMovie_TV_All() {
       ) ?? [],
     [dataDiscover_Movie]
   )
-  console.log(allMovies)
 
+  const handleSortby = (valueSort: SortBy | SortBy_TV | string) => {
+    navigate({
+      pathname: location.pathname,
+      search: createSearchParams({
+        sort_by: valueSort
+      }).toString()
+    })
+    setSortBy(valueSort)
+  }
+
+  const clearSortBy = () => {
+    navigate({ pathname: location.pathname, search: createSearchParams('').toString() })
+    setSortBy('')
+    setLoading(false)
+  }
   return (
     <div className='flex flex-grow'>
       <div className='w-full'>
@@ -113,11 +182,131 @@ export default function KeyWordsMovie_TV_All() {
         <div className='flex -translate-y-16  justify-between mx-5'>
           <div className='text-white font-bold text-xl capitalize'>{nameKeyWord}</div>
           <div className='text-gray-400 font-bold text-xl'>
-            {countMovies as unknown as number} {location.pathname.includes('/movie') ? ' movies' : ' shows'}
+            {countMovies[0] as unknown as number[]} {location.pathname.includes('/movie') ? ' movies' : ' shows'}
+          </div>
+        </div>
+        <div className='flex justify-center gap-4'>
+          <Popover>
+            <PopoverTrigger className='flex rounded-sm items-center shadow-xl bg-blue-950 px-3 py-2 text-white'>
+              <div className='capitalize'>{locationValue}</div>
+              <svg
+                xmlns='http://www.w3.org/2000/svg'
+                fill='none'
+                viewBox='0 0 24 24'
+                strokeWidth={1.5}
+                stroke='currentColor'
+                className='size-4'
+              >
+                <path strokeLinecap='round' strokeLinejoin='round' d='m19.5 8.25-7.5 7.5-7.5-7.5' />
+              </svg>
+            </PopoverTrigger>
+            <PopoverContent>
+              <Popover>
+                <PopoverTrigger className='flex rounded-sm shadow-xl hover:bg-gray-200 px-3 py-2 text-black w-full'>
+                  <NavLink to={`/keyword/${keyword_id}/movie`}>Movie</NavLink>
+                </PopoverTrigger>
+                <PopoverTrigger className='flex rounded-sm shadow-xl hover:bg-gray-200 px-3 py-2 text-black w-full'>
+                  <NavLink to={`/keyword/${keyword_id}/tv`}>TV shows</NavLink>
+                </PopoverTrigger>
+              </Popover>
+            </PopoverContent>
+          </Popover>
+          <Popover>
+            <PopoverTrigger className='flex items-center rounded-sm shadow-xl bg-blue-950 px-3 py-2 text-white'>
+              Sort{' '}
+              <svg
+                xmlns='http://www.w3.org/2000/svg'
+                fill='none'
+                viewBox='0 0 24 24'
+                strokeWidth={1.5}
+                stroke='currentColor'
+                className='size-4'
+              >
+                <path strokeLinecap='round' strokeLinejoin='round' d='m19.5 8.25-7.5 7.5-7.5-7.5' />
+              </svg>
+            </PopoverTrigger>
+            <PopoverContent>
+              {location.pathname.includes('/movie') &&
+                SortKeyWords_Movie.map((itemListSort) => (
+                  <div key={itemListSort.name_Parent}>
+                    <Popover>
+                      <PopoverTrigger className='hover:bg-emerald-500 flex items-center rounded-sm shadow-xl  px-3 py-2 text-black w-full'>
+                        {itemListSort.name_Parent}
+                        <svg
+                          xmlns='http://www.w3.org/2000/svg'
+                          fill='none'
+                          viewBox='0 0 24 24'
+                          strokeWidth={1.5}
+                          stroke='currentColor'
+                          className='size-4 translate-y-[2px]'
+                        >
+                          <path strokeLinecap='round' strokeLinejoin='round' d='m8.25 4.5 7.5 7.5-7.5 7.5' />
+                        </svg>
+                      </PopoverTrigger>
+                      <PopoverContent className='translate-x-[290px] -translate-y-[61px]'>
+                        <Popover>
+                          <PopoverTrigger className='flex flex-col justify-start w-full'>
+                            {itemListSort.contain.map((itemNameParent) => (
+                              <div
+                                onClick={() => handleSortby(itemNameParent.name)}
+                                className='text-black flex gap-3 mt-3 rounded-xl shadow-xl p-2 bg-gray-100 hover:bg-emerald-400 w-full'
+                                key={itemNameParent.name}
+                              >
+                                {itemNameParent.label}
+                              </div>
+                            ))}
+                          </PopoverTrigger>
+                        </Popover>
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+                ))}
+              {location.pathname.includes('/tv') &&
+                SortKeyWords_TV.map((itemListSort) => (
+                  <div key={itemListSort.name_Parent}>
+                    <Popover>
+                      <PopoverTrigger className='hover:bg-emerald-500 flex items-center rounded-sm shadow-xl  px-3 py-2 text-black w-full'>
+                        {itemListSort.name_Parent}
+                        <svg
+                          xmlns='http://www.w3.org/2000/svg'
+                          fill='none'
+                          viewBox='0 0 24 24'
+                          strokeWidth={1.5}
+                          stroke='currentColor'
+                          className='size-4 translate-y-[2px]'
+                        >
+                          <path strokeLinecap='round' strokeLinejoin='round' d='m8.25 4.5 7.5 7.5-7.5 7.5' />
+                        </svg>
+                      </PopoverTrigger>
+                      <PopoverContent className='translate-x-[290px] -translate-y-[61px]'>
+                        <Popover>
+                          <PopoverTrigger className='flex flex-col justify-start w-full'>
+                            {itemListSort.contain.map((itemNameParent) => (
+                              <div
+                                onClick={() => handleSortby(itemNameParent.name)}
+                                className='text-black flex gap-3 mt-3 rounded-xl shadow-xl p-2 bg-gray-100 hover:bg-emerald-400 w-full'
+                                key={itemNameParent.name}
+                              >
+                                {itemNameParent.label}
+                              </div>
+                            ))}
+                          </PopoverTrigger>
+                        </Popover>
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+                ))}
+            </PopoverContent>
+          </Popover>
+          <div
+            className='bg-blue-950 items-center text-center flex p-3 cursor-pointer rounded-sm shadow-xl text-white hover:text-slate-300'
+            onClick={clearSortBy}
+          >
+            Clear Sort
           </div>
         </div>
 
-        <div className='mt-6 px-12'>
+        <div className='mt-6 px-12 container'>
           {location.pathname.includes('/movie') &&
             (allMovies as MovieTrendings[])?.map((itemMovie: MovieTrendings) => (
               <Link
@@ -132,7 +321,7 @@ export default function KeyWordsMovie_TV_All() {
                 />
                 <div className='py-2'>
                   <div className='flex text-black gap-2'>
-                    <div className='font-bold'>{itemMovie?.original_title}</div>
+                    <div className='font-bold hover:text-emerald-500'>{itemMovie?.original_title}</div>
                     <div className='text-gray-400'>({itemMovie?.original_title})</div>
                   </div>
                   <div className='text-gray-500'>{itemMovie?.release_date}</div>
@@ -141,7 +330,7 @@ export default function KeyWordsMovie_TV_All() {
               </Link>
             ))}
         </div>
-        <div className='mt-6 px-12'>
+        <div className='mt-6 px-12 container'>
           {location.pathname.includes('/tv') &&
             (allMovies as TVSeries[])?.map((itemMovie: TVSeries) => (
               <Link
@@ -156,7 +345,7 @@ export default function KeyWordsMovie_TV_All() {
                 />
                 <div className='py-2'>
                   <div className='flex text-black gap-2'>
-                    <div className='font-bold'>{itemMovie?.name}</div>
+                    <div className='font-bold hover:text-emerald-500'>{itemMovie?.name}</div>
                     <div className='text-gray-400'>({itemMovie?.original_name})</div>
                   </div>
                   <div className='text-gray-500'>{itemMovie?.first_air_date}</div>
