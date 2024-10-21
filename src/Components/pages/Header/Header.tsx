@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { createSearchParams, Link, useNavigate } from 'react-router-dom'
 import path from '../../../constants/path'
 import Popover from '../../Custom/Popover/Popover'
 import icons from '../../../Imgs/nonesp.webp'
@@ -9,6 +9,7 @@ import ModeToggle from '../../ModeToggle'
 import { useState } from 'react'
 import { Popover as Popovers, PopoverContent, PopoverTrigger } from '@/Components/ui/popover'
 export default function Header() {
+  const navigate = useNavigate()
   const [isMenuOpen_left, setIsMenuOpen_left] = useState(false)
   const [isMenuOpen_right, setIsMenuOpen_right] = useState(false)
   const { data: DataRated } = useQuery({
@@ -218,6 +219,12 @@ export default function Header() {
       </div>
     )
   }
+  const handleTabLink_CLear_Sort = () => {
+    navigate({
+      pathname: location.pathname,
+      search: createSearchParams('').toString()
+    })
+  }
   const customMenuLeft = (customClassName?: string) => {
     return (
       <div className={`${customClassName}`}>
@@ -226,16 +233,32 @@ export default function Header() {
           className='text-white w-[60px] mr-3 font-bold ml-2'
           renderPopover={
             <div className='shadow-sm max-w-52 w-40  text-sm font-sans gap-1 border rounded-xl border-gray-300 bg-white text-black flex flex-col justify-center text-left items-center'>
-              <Link to={`${path.movie_popular}`} className='hover:bg-gray-200 p-2 rounded-xl  w-full'>
+              <Link
+                onClick={() => handleTabLink_CLear_Sort()}
+                to={`${path.movie_popular}`}
+                className='hover:bg-gray-200 p-2 rounded-xl  w-full'
+              >
                 Popular
               </Link>
-              <Link to={`${path.movie_now_playing}`} className='hover:bg-gray-200 p-2  w-full'>
+              <Link
+                onClick={() => handleTabLink_CLear_Sort()}
+                to={`${path.movie_now_playing}`}
+                className='hover:bg-gray-200 p-2  w-full'
+              >
                 Now Playing
               </Link>
-              <Link to={`${path.movie_upcoming}`} className='hover:bg-gray-200 p-2 w-full'>
+              <Link
+                onClick={() => handleTabLink_CLear_Sort()}
+                to={`${path.movie_upcoming}`}
+                className='hover:bg-gray-200 p-2 w-full'
+              >
                 Upcoming
               </Link>
-              <Link to={`${path.movie_top_rated}`} className='hover:bg-gray-200 p-2 rounded-xl w-full'>
+              <Link
+                onClick={() => handleTabLink_CLear_Sort()}
+                to={`${path.movie_top_rated}`}
+                className='hover:bg-gray-200 p-2 rounded-xl w-full'
+              >
                 Top Rated
               </Link>
             </div>
@@ -246,16 +269,32 @@ export default function Header() {
           className='text-white w-[80px] mr-3 font-bold ml-2'
           renderPopover={
             <div className=' shadow-sm max-w-52 w-40  text-sm font-sans gap-1 border rounded-xl border-gray-300 bg-white text-black flex flex-col justify-center text-left items-center'>
-              <Link to={`${path.tv_popular}`} className='hover:bg-gray-200 p-2 rounded-xl  w-full'>
+              <Link
+                onClick={() => handleTabLink_CLear_Sort()}
+                to={`${path.tv_popular}`}
+                className='hover:bg-gray-200 p-2 rounded-xl  w-full'
+              >
                 Popular
               </Link>
-              <Link to={`${path.on_tv}`} className='hover:bg-gray-200 p-2  w-full'>
+              <Link
+                onClick={() => handleTabLink_CLear_Sort()}
+                to={`${path.on_tv}`}
+                className='hover:bg-gray-200 p-2  w-full'
+              >
                 On TV
               </Link>
-              <Link to={`${path.tv_airing_today}`} className='hover:bg-gray-200 p-2 w-full'>
+              <Link
+                onClick={() => handleTabLink_CLear_Sort()}
+                to={`${path.tv_airing_today}`}
+                className='hover:bg-gray-200 p-2 w-full'
+              >
                 Airing Today
               </Link>
-              <Link to={`${path.tv_top_rated}`} className='hover:bg-gray-200 p-2 rounded-xl w-full'>
+              <Link
+                onClick={() => handleTabLink_CLear_Sort()}
+                to={`${path.tv_top_rated}`}
+                className='hover:bg-gray-200 p-2 rounded-xl w-full'
+              >
                 Top Rated
               </Link>
             </div>
