@@ -4,6 +4,7 @@ import { formatNumberToSocialStyle, generateNameId, getIdFromNameId } from '../.
 import { useQuery } from '@tanstack/react-query'
 import { ListApi } from '../../Apis/ListApi'
 import configBase from '../../constants/config'
+import { v4 as uuidv4 } from 'uuid'
 import {
   BackdropImages,
   CastMember,
@@ -28,7 +29,14 @@ import RatingMovieDetails from './RatingMovieDetails'
 import Cast_CrewMovieDetails from './Cast_CrewMovieDetails'
 import { SuccessResponse } from '@/types/utils.type'
 import { Expand } from 'lucide-react'
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTrigger } from '@/Components/ui/dialog'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger
+} from '@/Components/ui/dialog'
 import { toast } from 'react-toastify'
 import AddOwnerMovieDetails from './AddOwnerMovieDetails'
 import { typeSearchKeyWord } from '@/types/Search.type'
@@ -40,7 +48,7 @@ interface MovieDetailData {
 export default function MovieDetails({ colorLiker = '#4CAF50' }: MovieDetailData) {
   const { movieId } = useParams()
   const navigate = useNavigate()
-
+  const randomKey = uuidv4()
   const [mouseHoverImages, setMouseHoverImages] = useState(
     'https://media.themoviedb.org/t/p/w1920_and_h600_multi_faces_filter(duotone,00192f,00baff)/SqAZjEqqBAYvyu3KSrWq1d0QLB.jpg'
   )
@@ -136,77 +144,93 @@ export default function MovieDetails({ colorLiker = '#4CAF50' }: MovieDetailData
 
   return (
     <div className='my-8'>
-      <div className='relative h-[520px] '>
+      <div className='relative h-[520px] max-sm:h-[950px]'>
         <DynamicMovieBackdrop imageUrl={imageUrl}>
           <div className='container'>
-            <div className=' grid grid-cols-12 z-20 relative'>
-              <div className='col-span-3 h-[450px]'>
-                <div className='relative group w-full h-full'>
+            <div className=' grid grid-cols-12 z-20 max-sm:h-[900px] max-sm:flex max-sm:flex-col relative'>
+              <div className='col-span-3 h-[450px] '>
+                <div className='relative w-full h-full'>
                   <Dialog>
-                    <DialogTrigger className='h-full w-full'>
-                      <img src={imageUrl} alt='' className='object-cover h-full w-full rounded-xl shadow-sm' />
+                    <DialogTrigger asChild>
+                      <div className='relative h-full w-full group'>
+                        <img
+                          src={imageUrl}
+                          alt='Movie poster'
+                          className='object-cover h-full w-full rounded-xl shadow-sm'
+                        />
 
-                      <div className='absolute inset-0 bg-[#001a1a]/80 backdrop-blur-[2px] group-hover:opacity-100 opacity-0 transition-all duration-300 rounded-xl flex items-center justify-center'>
-                        <button className='flex items-center gap-2 px-5 py-2.5 bg-[#001a1a]/60 backdrop-blur-sm rounded-lg border border-white/10 text-white/90 hover:text-white'>
-                          <Expand size={16} />
-                          <span>Expand</span>
-                        </button>
+                        <div className='absolute inset-0 bg-[#001a1a]/80 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl flex items-center justify-center'>
+                          <button className='flex items-center gap-2 px-5 py-2.5 bg-[#001a1a]/60 backdrop-blur-sm rounded-lg border border-white/10 text-white/90 hover:text-white transition-colors'>
+                            <Expand className='w-4 h-4' />
+                            <span>Expand</span>
+                          </button>
+                        </div>
                       </div>
                     </DialogTrigger>
-                    <DialogContent className='max-w-[900px] w-[80vw]'>
+
+                    <DialogContent className='max-w-[900px] w-[80vw] '>
                       <DialogHeader>
-                        <DialogDescription className='flex'>
-                          <Carousel className='w-[500px] h-[450px] mr-10'>
-                            <CarouselContent>
-                              {(dataImg?.posters as BackdropImages[])?.map((dataImages_item: BackdropImages) => (
-                                <CarouselItem key={dataImages_item.iso_639_1}>
-                                  <Card>
-                                    <CardContent>
-                                      {dataImages_item.file_path && (
-                                        <img
-                                          src={`${configBase.imageBaseUrl}${dataImages_item.file_path}`}
-                                          alt=''
-                                          className='h-[440px] w-[600px] object-cover object-center'
-                                        />
-                                      )}
-                                    </CardContent>
-                                  </Card>
-                                </CarouselItem>
-                              ))}
-                            </CarouselContent>
-                            <CarouselPrevious />
-                            <CarouselNext />
-                          </Carousel>
+                        <DialogTitle className='sr-only'>Movie Images</DialogTitle>
+                        <DialogDescription asChild>
+                          <div className='flex max-sm:flex max-sm:flex-col max-sm:w-[400px]'>
+                            <Carousel className='w-[500px] max-sm:w-full h-[450px] mr-10'>
+                              <CarouselContent>
+                                {(dataImg?.posters as BackdropImages[])?.map(
+                                  (dataImages_item: BackdropImages, index: number) => (
+                                    <CarouselItem key={`${randomKey}$$${index}`}>
+                                      <Card>
+                                        <CardContent className='p-0'>
+                                          {dataImages_item.file_path && (
+                                            <img
+                                              src={`${configBase.imageBaseUrl}${dataImages_item.file_path}`}
+                                              alt={`Movie poster ${index + 1}`}
+                                              className='h-[440px] w-full object-cover object-center'
+                                            />
+                                          )}
+                                        </CardContent>
+                                      </Card>
+                                    </CarouselItem>
+                                  )
+                                )}
+                              </CarouselContent>
+                              <CarouselPrevious />
+                              <CarouselNext />
+                            </Carousel>
 
-                          <div className='w-[70%] mt-[100px] ml-8'>
-                            <div className='flex w-full justify-between'>
-                              <img
-                                onClick={handleLikeImg}
-                                className=' size-8'
-                                src='https://www.themoviedb.org/assets/2/v4/glyphicons/basic/glyphicons-basic-452-hand-dislike-d97408deec38f6595c7b2e40eadb649ef2beee92df579b3f88095e9c183ca92e.svg'
-                                alt=''
-                              />
-                              <img
-                                onClick={handleLikeImg}
-                                className='size-8'
-                                src='https://www.themoviedb.org/assets/2/v4/glyphicons/basic/glyphicons-basic-451-hand-like-10db6816d1483cba3abf2e8a9e9133b3441882c804f6d3c2283aa946aca674a0.svg'
-                                alt=''
-                              />
-                            </div>
+                            <div className='w-[70%] mt-[100px] ml-8'>
+                              <div className='flex w-full justify-between'>
+                                <button onClick={handleLikeImg} className='p-2 hover:bg-gray-100 rounded-full'>
+                                  <img
+                                    className='size-8'
+                                    src='https://www.themoviedb.org/assets/2/v4/glyphicons/basic/glyphicons-basic-452-hand-dislike-d97408deec38f6595c7b2e40eadb649ef2beee92df579b3f88095e9c183ca92e.svg'
+                                    alt='Dislike'
+                                  />
+                                </button>
+                                <button onClick={handleLikeImg} className='p-2 hover:bg-gray-100 rounded-full'>
+                                  <img
+                                    className='size-8'
+                                    src='https://www.themoviedb.org/assets/2/v4/glyphicons/basic/glyphicons-basic-451-hand-like-10db6816d1483cba3abf2e8a9e9133b3441882c804f6d3c2283aa946aca674a0.svg'
+                                    alt='Like'
+                                  />
+                                </button>
+                              </div>
 
-                            <div className='flex mt-12 justify-between'>
-                              <div className='text-black font-semibold'>Info</div>
-                              <img
-                                src='https://www.themoviedb.org/assets/2/v4/glyphicons/basic/glyphicons-basic-218-lock-open-e3ddaaf88cb0c2f1c62bf0620eaaacd12522f0f589c77e523c659d7f3f2a1e89.svg'
-                                alt=''
-                                className='size-5'
-                              />
-                            </div>
-                            <div className='border-b-[1px] border-gray-200 mt-4'></div>
-                            <div className='mt-3'>Primary?</div>
-                            <div className='mt-3'>
-                              <div className='text-gray-400'>Added By</div>
-                              <div className='text-black font-semibold'>{}</div>
+                              <div className='mt-12'>
+                                <div className='flex justify-between items-center'>
+                                  <h3 className='text-black font-semibold'>Info</h3>
+                                  <img
+                                    src='https://www.themoviedb.org/assets/2/v4/glyphicons/basic/glyphicons-basic-218-lock-open-e3ddaaf88cb0c2f1c62bf0620eaaacd12522f0f589c77e523c659d7f3f2a1e89.svg'
+                                    alt='Unlock'
+                                    className='size-5'
+                                  />
+                                </div>
+                                <div className='border-b border-gray-200 mt-4' />
+                                <div className='mt-3'>Primary?</div>
+                                <div className='mt-3'>
+                                  <div className='text-gray-400'>Added By</div>
+                                  <div className='text-black font-semibold'></div>
+                                </div>
+                              </div>
                             </div>
                           </div>
                         </DialogDescription>
@@ -217,14 +241,14 @@ export default function MovieDetails({ colorLiker = '#4CAF50' }: MovieDetailData
               </div>
               <div className='col-span-9 ml-6 text-white'>
                 <div className='capitalize font-semibold text-2xl'>{dataMovie?.original_title}</div>
-                <div className='flex'>
+                <div className='flex max-sm:flex-col'>
                   {dataMovie?.release_date}({dataMovie?.origin_country[0]})<div className='ml-1 text-white'>{'•'}</div>
                   {dataMovie?.genres.map((item) => (
                     <div key={item.id} className='flex'>
                       <div className='cursor-pointer mx-1 '>{item.name}</div>,
                     </div>
                   ))}
-                  <div className='ml-2'> Time: {formatRuntime(dataMovie?.runtime as number)}</div>
+                  <div className='ml-2 max-sm:ml-1'>Time: {formatRuntime(dataMovie?.runtime as number)}</div>
                 </div>
                 <div className='w-[310px] h-20 flex mt-3 items-center text-center justify-center'>
                   <svg className='w-auto h-full hover:scale-150 transition-all cursor-pointer' viewBox='0 0 40 40'>
@@ -311,12 +335,15 @@ export default function MovieDetails({ colorLiker = '#4CAF50' }: MovieDetailData
               </div>
             </CustomScrollContainer>
           </div>
-          <Cast_CrewMovieDetails
-            setMouseHoverImages={setMouseHoverImages}
-            dataImages={dataImg}
-            dataTrailerLatest={dataTrailerLatest}
-          />
+          <div className='w-[90%] max-sm:px-0'>
+            <Cast_CrewMovieDetails
+              setMouseHoverImages={setMouseHoverImages}
+              dataImages={dataImg}
+              dataTrailerLatest={dataTrailerLatest}
+            />
+          </div>
           <div className='border-b-[1px] border-gray-300 my-5'></div>
+
           <div className='relative w-full h-[200px] bg-gray-400/50 rounded-xl shadow-sm text-start'>
             <img
               className='absolute w-full h-[200px] z-0 rounded-xl object-cover'
@@ -330,7 +357,7 @@ export default function MovieDetails({ colorLiker = '#4CAF50' }: MovieDetailData
                 {dataMovie?.belongs_to_collection && (
                   <div
                     onClick={handleViewCollection}
-                    className='bg-black text-white p-2 mt-3 w-[200px] text-center items-center uppercase rounded-2xl text-sm font-bold'
+                    className='bg-black cursor-pointer text-white p-2 mt-3 w-[200px] text-center items-center uppercase rounded-2xl text-sm font-bold'
                   >
                     view the collection
                   </div>

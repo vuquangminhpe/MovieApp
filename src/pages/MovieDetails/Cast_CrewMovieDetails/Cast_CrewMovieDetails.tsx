@@ -29,11 +29,6 @@ export default function Cast_CrewMovieDetails({ dataImages, setMouseHoverImages,
   }
   const MapSet = [
     {
-      id: 'videos',
-      name: 'Videos',
-      children: <MovieTrailer setMouseHoverImages={setMouseHoverImages} dataPopulars={dataTrailerLatest} />
-    },
-    {
       id: 'Most_Poplar',
       name: 'Most Poplar',
       children: addDataRender(dataImages?.backdrops as DetailsImages[])

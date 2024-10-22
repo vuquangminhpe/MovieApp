@@ -26,6 +26,7 @@ import { TVSeriesApi } from '@/Apis/TVSeriesApi'
 import {
   Aggregate_Credits,
   BackdropImagesTVSeries,
+  keywordsTVSeries,
   ReviewTVSeries,
   Season,
   TVSeries,
@@ -130,11 +131,11 @@ export default function TVSeriesDetails({ colorLiker = '#4CAF50' }: TVDetailData
 
   return (
     <div className='my-8'>
-      <div className='relative h-[520px] '>
+      <div className='relative h-[520px] max-md:h-[950px]'>
         <DynamicMovieBackdrop imageUrl={imageUrl}>
           <div className='container'>
-            <div className=' grid grid-cols-12 z-20 relative'>
-              <div className='col-span-3 h-[450px]'>
+            <div className=' grid grid-cols-12 z-20 max-md:h-[930px] relative max-sm:flex max-md:flex-col'>
+              <div className='col-span-3 h-[450px] '>
                 <div className='relative group w-full h-full'>
                   <Dialog>
                     <DialogTrigger className='h-full w-full'>
@@ -149,8 +150,8 @@ export default function TVSeriesDetails({ colorLiker = '#4CAF50' }: TVDetailData
                     </DialogTrigger>
                     <DialogContent className='max-w-[900px] w-[80vw]'>
                       <DialogHeader>
-                        <DialogDescription className='flex'>
-                          <Carousel className='w-[500px] h-[450px] mr-10'>
+                        <DialogDescription className='flex max-md:flex-col'>
+                          <Carousel className='w-[500px] max-md:w-[400px] h-[450px] mr-10'>
                             <CarouselContent>
                               {(dataImg?.posters as BackdropImages[])?.map((dataImages_item: BackdropImages) => (
                                 <CarouselItem key={dataImages_item.iso_639_1}>
@@ -160,7 +161,7 @@ export default function TVSeriesDetails({ colorLiker = '#4CAF50' }: TVDetailData
                                         <img
                                           src={`${configBase.imageBaseUrl}${dataImages_item.file_path}`}
                                           alt=''
-                                          className='h-[440px] w-[600px] object-cover object-center'
+                                          className='h-[440px] w-full object-cover object-center '
                                         />
                                       )}
                                     </CardContent>
@@ -335,9 +336,9 @@ export default function TVSeriesDetails({ colorLiker = '#4CAF50' }: TVDetailData
           <div className='border-b-[1px] border-gray-300 my-5'></div>
           <div className='my-5'>
             <div className='font-bold capitalize'>current season</div>
-            <div className='mt-2 shadow-xl h-[330px] rounded-xl'>
-              {dataTV?.seasons.map((itemSeason: Season) => (
-                <div className='flex gap-2'>
+            <div className='mt-2 shadow-xl h-auto rounded-xl'>
+              {dataTV?.seasons.slice(0, 5).map((itemSeason: Season) => (
+                <div className='flex max-md:flex-col gap-2 mb-4'>
                   <img
                     src={`${configBase.imageBaseUrl}${itemSeason.poster_path || dataTV.poster_path}`}
                     className='h-full w-52 rounded-l-xl'
@@ -388,19 +389,23 @@ export default function TVSeriesDetails({ colorLiker = '#4CAF50' }: TVDetailData
               <div className='mt-2'>
                 {(dataReviews_TV as ReviewTVSeries[])?.length > 0
                   ? dataReviews_TV?.map((itemReviews: ReviewTVSeries) => (
-                      <div className='w-full shadow-xl rounded-xl my-2 flex justify-between'>
+                      <div
+                        key={itemReviews.id}
+                        className='w-full mb-6 h-36 max-md:flex-col shadow-xl rounded-xl my-2 flex justify-between'
+                      >
                         <img
                           src={`${itemReviews?.author_details?.avatar_path}`}
                           className='size-6 rounded-full object-contain'
                           alt=''
                         />
-                        <Link to={itemReviews.url} className='text-sm line-clamp-1'>
+                        <Link to={itemReviews.url} className='text-sm line-clamp-2 max-w-[600px]'>
                           {itemReviews.content}
                         </Link>
                         <div>{itemReviews.author_details.rating}</div>
 
                         <div className='flex flex-col'>
-                          <div className='mr-2'>{itemReviews.updated_at}</div> <div>by {itemReviews.author}</div>by
+                          <div className='mr-2'>{new Date(itemReviews.updated_at).toLocaleDateString()}</div>{' '}
+                          <div>by {itemReviews.author}</div>
                         </div>
                       </div>
                     ))
@@ -464,7 +469,7 @@ export default function TVSeriesDetails({ colorLiker = '#4CAF50' }: TVDetailData
             <div>Keywords</div>
             {dataKeywordsDetails?.length ? (
               <div className='grid  lg:grid-cols-3 md:grid-cols-1 text-center'>
-                {dataKeywordsDetails?.map((item: typeSearchKeyWord) => (
+                {dataKeywordsDetails?.map((item: keywordsTVSeries) => (
                   <Link
                     to={`/keyword/${generateNameId({ name: item?.name as string, id: Number(item?.id) })}/tv`}
                     key={item?.id}

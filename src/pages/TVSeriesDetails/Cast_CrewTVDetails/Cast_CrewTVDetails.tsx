@@ -1,16 +1,14 @@
 import CustomScrollContainer from '@/Components/Custom/CustomScrollContainer'
 import TabsSet from '@/Components/Custom/TabsEnable/TabsSet'
 import RenderDetailsMovie from '@/Components/RenderMovies/RenderDetailsMovie'
-import MovieTrailer from '@/pages/HomeMovies/MovieTrailer'
 import { DetailsImages, MovieTrendings } from '@/types/Movie'
 import { BackdropImagesTVSeries } from '@/types/TVSeries.type'
 import { SuccessResponse } from '@/types/utils.type'
-import { SetStateAction } from 'react'
 interface Props {
   dataImages: SuccessResponse<BackdropImagesTVSeries[]> | undefined
   dataTrailerLatest: MovieTrendings[] | undefined
 }
-export default function Cast_CrewTVDetails({ dataImages, dataTrailerLatest }: Props) {
+export default function Cast_CrewTVDetails({ dataImages }: Props) {
   const addDataRender = (dataRenders: DetailsImages[], isShow?: boolean) => {
     isShow = false
     return (dataRenders?.length as number) > 0 ? (
@@ -31,19 +29,6 @@ export default function Cast_CrewTVDetails({ dataImages, dataTrailerLatest }: Pr
     )
   }
   const MapSet = [
-    {
-      id: 'videos',
-      name: 'Videos',
-      children: (
-        <MovieTrailer
-          dataPopulars={dataTrailerLatest}
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          setMouseHoverImages={function (value: SetStateAction<string>): void {
-            throw new Error('Function not implemented.')
-          }}
-        />
-      )
-    },
     {
       id: 'Most_Poplar',
       name: 'Most Poplar',

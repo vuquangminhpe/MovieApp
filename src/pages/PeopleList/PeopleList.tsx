@@ -73,7 +73,7 @@ export default function PeopleList() {
         })
   }
   return (
-    <div className='container py-7'>
+    <div className='container py-24 max-md:pr-2'>
       <div className='grid grid-cols-4 h-auto w-auto'>
         {dataAllPerson?.map((itemPerson) => (
           <Link
@@ -95,7 +95,9 @@ export default function PeopleList() {
           </Link>
         ))}
       </div>
-      <div className='text-white flex w-full justify-center items-center mt-20'>{renderPagination()}</div>
+      <div className='text-white flex flex-wrap justify-center gap-2 items-center mt-20 px-4 max-w-full overflow-x-auto'>
+        {renderPagination()}
+      </div>{' '}
     </div>
   )
 }
