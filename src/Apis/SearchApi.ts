@@ -10,10 +10,12 @@ export const SearchApi = {
   Search_AllMovie: (params: searchAll_Config) => http.get<SuccessResponse<Movie>>('search/movie', { params }),
   SearchCollection: (params: searchAll_Config) =>
     http.get<SuccessResponse<Collection>>('search/collection', { params }),
-  SearchCompany: (params: searchAll_Config) => http.get<SuccessResponse<companies>>('search/Company', { params }),
+  SearchCompany: (params: searchAll_Config) => http.get<SuccessResponse<companies>>('search/company', { params }),
   SearchMulti: (params: searchAll_Config) =>
     http.get<SuccessResponse<MovieTrendings | Movie>>('search/multi', { params }),
   SearchPerson: (params: searchAll_Config) => http.get<SuccessResponse<PersonDetail>>('search/person', { params }),
   SearchTV: (params: searchAll_Config) => http.get<SuccessResponse<TVSeries>>('search/tv', { params }),
-  SearchKeyWord: (params: { query: string }) => http.get<typeSearchKeyWord>('/search/keyword', { params })
+  SearchKeyWord: (params: { query: string }) => http.get<typeSearchKeyWord>('/search/keyword', { params }),
+  SearchKeyWord_ALL: (params: searchAll_Config) =>
+    http.get<SuccessResponse<typeSearchKeyWord>>('/search/keyword', { params })
 }

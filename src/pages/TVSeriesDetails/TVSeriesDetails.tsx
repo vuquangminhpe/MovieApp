@@ -33,7 +33,6 @@ import {
   TVSeriesTrending
 } from '@/types/TVSeries.type'
 import RenderTVDetails from '@/Components/RenderMovies/RenderTVDetails'
-import { typeSearchKeyWord } from '@/types/Search.type'
 
 interface TVDetailData {
   colorLiker?: string
