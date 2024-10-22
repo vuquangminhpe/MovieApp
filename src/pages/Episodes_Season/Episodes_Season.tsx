@@ -95,18 +95,18 @@ export default function Episodes_Season() {
         <div className='flex justify-around'>
           <div>
             {dataEpisodes_Details?.cast.map((itemCast: CastMember) => (
-              <div key={itemCast.id} className='flex flex-col'>
-                <div className='mb-5 w-60 h-40 flex'>
+              <div key={itemCast.id} className='flex flex-col h-auto'>
+                <div className='mb-5 w-60 h-full flex max-md:flex-col'>
                   <img
                     src={
                       itemCast?.profile_path
                         ? `${configBase.imageBaseUrl}${itemCast?.profile_path}`
                         : configBase.noImagesUser
                     }
-                    className='w-[70%] h-full object-contain rounded-sm'
+                    className='w-[60%] h-[60%] object-contain rounded-sm'
                     alt=''
                   />
-                  <div className='w-full ml-4'>
+                  <div className='w-full max-md:w-[56%] ml-4'>
                     <div className='font-bold'>{itemCast?.name}</div>
                     <div className='font-semibold'>{itemCast?.character}</div>
                   </div>
@@ -119,14 +119,14 @@ export default function Episodes_Season() {
             <div>
               {(dataEpisodes_Details?.guest_stars.length as number) > 0
                 ? dataEpisodes_Details?.guest_stars.map((itemCast: GuestStar) => (
-                    <div key={itemCast.id} className='flex flex-col'>
-                      <div className='mb-5 w-60 h-40 flex'>
+                    <div key={itemCast.id} className='flex flex-col  h-auto'>
+                      <div className='mb-5 w-60 h-40 flex max-md:flex-col'>
                         <img
                           src={`${configBase.imageBaseUrl}${itemCast?.profile_path}`}
-                          className='w-[70%] h-full object-contain rounded-sm'
+                          className='w-[60%] h-[60%] object-contain rounded-sm'
                           alt=''
                         />
-                        <div className='w-full ml-4'>
+                        <div className='w-full max-md:w-[56%] ml-4'>
                           <div className='font-bold'>{itemCast?.name}</div>
                           <div className='font-semibold'>{itemCast?.character}</div>
                         </div>
@@ -141,14 +141,14 @@ export default function Episodes_Season() {
             <div>
               {(dataEpisodes_Details?.crew.length as number) > 0
                 ? dataEpisodes_Details?.crew.map((itemCast: CrewMember) => (
-                    <div key={itemCast.credit_id} className='flex flex-col'>
-                      <div className='mb-5 w-60 h-40 flex'>
+                    <div key={itemCast.credit_id} className='flex flex-col h-auto'>
+                      <div className='mb-5 w-60 h-40 flex max-md:flex-col'>
                         <img
                           src={`${configBase.imageBaseUrl}${itemCast?.profile_path}`}
-                          className='w-[70%] h-full object-contain rounded-sm'
+                          className='w-[60%] h-[60%] object-contain rounded-sm'
                           alt=''
                         />
-                        <div className='w-full ml-4'>
+                        <div className='w-full max-md:w-[56%] ml-4'>
                           <div className='font-bold'>{itemCast?.name}</div>
                           <div className='font-semibold'>{itemCast?.department}</div>
                         </div>
