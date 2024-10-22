@@ -313,7 +313,7 @@ export default function MovieDetails({ colorLiker = '#4CAF50' }: MovieDetailData
           </div>{' '}
         </DynamicMovieBackdrop>
       </div>
-      <div className='grid grid-cols-12 container w-full'>
+      <div className='grid grid-cols-12 container max-sm:flex max-sm:flex-col w-full'>
         <div className='col-span-9 w-full'>
           <div className='w-full'>
             <div className='mt-9 mb-3 ml-1 font-bold text-2xl'>Top Billed Cast</div>
@@ -410,7 +410,7 @@ export default function MovieDetails({ colorLiker = '#4CAF50' }: MovieDetailData
           </div>
           <div className='mt-10'>
             <div>Keywords</div>
-            <div className='grid  lg:grid-cols-3 md:grid-cols-1 text-center'>
+            <div className='grid  lg:grid-cols-3 md:grid-cols-1 max-sm:grid-cols-4 text-center'>
               {dataKeywordsDetails?.map((item: typeSearchKeyWord) => (
                 <Link
                   key={item?.id}

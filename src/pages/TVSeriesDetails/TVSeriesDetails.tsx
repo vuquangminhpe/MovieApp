@@ -286,7 +286,7 @@ export default function TVSeriesDetails({ colorLiker = '#4CAF50' }: TVDetailData
                   <div className='text-wrap text-gray-300'>{dataTV?.overview}</div>
                 </div>
                 <div className='capitalize text-white font-semibold mt-3'>all creator</div>
-                <div className='mt-1 w-full grid grid-cols-4 max-lg:grid-cols-2 max-md:grid-cols-1'>
+                <div className='mt-1 w-full grid grid-cols-4 max-lg:grid-cols-2 max-md:grid-cols-4'>
                   {(data_Roles?.length as number) > 0 ? (
                     data_Roles?.slice(0, 8).map((AllRoles) =>
                       AllRoles?.map((itemRoles) => (
@@ -305,13 +305,13 @@ export default function TVSeriesDetails({ colorLiker = '#4CAF50' }: TVDetailData
           </div>{' '}
         </DynamicMovieBackdrop>
       </div>
-      <div className='grid grid-cols-12 container w-full'>
+      <div className='grid grid-cols-12 container w-full max-sm:flex max-sm:flex-col'>
         <div className='col-span-9 w-full'>
           <div className='w-full'>
-            <div className='mt-9 mb-3 ml-1 font-bold text-2xl'>Series Cast</div>
+            <div className='mt-9 mb-3 ml-1 font-bold text-2xl '>Series Cast</div>
             {(dataCredit?.length as number) > 0 ? (
               <CustomScrollContainer height={470} width='100%'>
-                <div className='flex gap-3 pr-4' style={{ width: 'max-content' }}>
+                <div className='max-md:px-3 flex gap-3 pr-4' style={{ width: 'max-content' }}>
                   {(dataCredit as Aggregate_Credits[])?.map((dataPerformerDetails: Aggregate_Credits) => (
                     <Link
                       to={`${path.person}/${generateNameId({ name: dataPerformerDetails?.name as string, id: dataPerformerDetails.id })}`}
@@ -336,7 +336,7 @@ export default function TVSeriesDetails({ colorLiker = '#4CAF50' }: TVDetailData
           <div className='border-b-[1px] border-gray-300 my-5'></div>
           <div className='my-5'>
             <div className='font-bold capitalize'>current season</div>
-            <div className='mt-2 shadow-xl h-auto rounded-xl'>
+            <div className='mt-2 shadow-xl max-sm:mx-3 h-auto rounded-xl'>
               {dataTV?.seasons.slice(0, 5).map((itemSeason: Season) => (
                 <div className='flex max-md:flex-col gap-2 mb-4'>
                   <img
@@ -418,7 +418,7 @@ export default function TVSeriesDetails({ colorLiker = '#4CAF50' }: TVDetailData
           <div className='border-b-[1px] border-gray-300 my-5'></div>
           <div className='text-xl font-bold text-black dark:text-white mb-2'>Recommendation</div>
           <CustomScrollContainer height={330} width='100%'>
-            <div className='flex gap-3 pr-4' style={{ width: 'max-content' }}>
+            <div className='flex gap-3 pr-4 max-sm:px-3' style={{ width: 'max-content' }}>
               {(dataRecommendations?.length as number) > 0 ? (
                 dataRecommendations_filter?.map((dataPerformerDetails: TVSeriesTrending) => (
                   <div key={dataPerformerDetails.id} className='max-w-full rounded-t-xl bg-white shadow-xl '>
@@ -468,7 +468,7 @@ export default function TVSeriesDetails({ colorLiker = '#4CAF50' }: TVDetailData
           <div className='mt-10'>
             <div>Keywords</div>
             {dataKeywordsDetails?.length ? (
-              <div className='grid  lg:grid-cols-3 md:grid-cols-1 text-center'>
+              <div className='grid  lg:grid-cols-3 md:grid-cols-1 max-sm:grid-cols-4 text-center'>
                 {dataKeywordsDetails?.map((item: keywordsTVSeries) => (
                   <Link
                     to={`/keyword/${generateNameId({ name: item?.name as string, id: Number(item?.id) })}/tv`}
