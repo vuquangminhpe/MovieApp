@@ -8,6 +8,7 @@ import { Movie } from '../../../types/Movie'
 import ModeToggle from '../../ModeToggle'
 import { useState } from 'react'
 import { Popover as Popovers, PopoverContent, PopoverTrigger } from '@/Components/ui/popover'
+import { generateNameId } from '@/utils/utils'
 export default function Header() {
   const navigate = useNavigate()
   const [isMenuOpen_left, setIsMenuOpen_left] = useState(false)
@@ -205,7 +206,11 @@ export default function Header() {
                           d='m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z'
                         />
                       </svg>
-                      <Link to={path.home} key={movies.id} className='text-black'>
+                      <Link
+                        to={`${path.movie}/${generateNameId({ name: movies?.original_title as string, id: movies?.id as number })}`}
+                        key={movies.id}
+                        className='text-black'
+                      >
                         {movies.title}
                       </Link>
                     </div>

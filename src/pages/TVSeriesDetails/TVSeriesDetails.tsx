@@ -4,7 +4,7 @@ import { generateNameId, getIdFromNameId } from '../../utils/utils'
 import { useQuery } from '@tanstack/react-query'
 import { ListApi } from '../../Apis/ListApi'
 import configBase from '../../constants/config'
-import { BackdropImages, CastMember, videosDetails } from '../../types/Movie'
+import { BackdropImages, videosDetails } from '../../types/Movie'
 
 import { useEffect, useState } from 'react'
 import DynamicMovieBackdrop from '../../Components/Custom/DynamicMovieBackdrop'

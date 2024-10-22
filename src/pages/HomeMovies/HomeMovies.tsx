@@ -8,9 +8,11 @@ import MovieTrailer from './MovieTrailer'
 import { Movie, MovieTrendings } from '@/types/Movie'
 import { AccountApi } from '@/Apis/AccountApi'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/Components/ui/tabs'
-import TVTrending from './TVTrending'
+import { createSearchParams, useNavigate } from 'react-router-dom'
+import path from '@/constants/path'
 
 export default function HomeMovies() {
+  const navigate = useNavigate()
   const [movieId, setMovieId] = useState<number>()
   const [trendingMovie, setTrendingMovie] = useState<string>('day')
   const [mouseHoverImages, setMouseHoverImages] = useState(
@@ -71,6 +73,14 @@ export default function HomeMovies() {
           </h1>
           <div className='w-full max-w-[80%] relative'>
             <input
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  navigate({
+                    pathname: path.searchAll,
+                    search: createSearchParams({ query: e.currentTarget.value }).toString()
+                  })
+                }
+              }}
               type='text'
               placeholder='Search for movie, tv show, person ...'
               className='w-full h-11 rounded-xl pl-4 pr-24'

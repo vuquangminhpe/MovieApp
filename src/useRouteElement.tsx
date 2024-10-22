@@ -13,101 +13,20 @@ import TVSeriesDetails from './pages/TVSeriesDetails'
 import SeasonDetails from './pages/SeasonDetails'
 import Episodes_Season from './pages/Episodes_Season/Episodes_Season'
 import KeyWordsMovie_TV_All from './pages/KeyWordsMovie_TV_All'
+import Search_All_Type from './pages/Search_All_Type'
 
-// function ProtectedRoute() {
-//   const { isAuthenticated } = useContext(AppContext)
-//   return isAuthenticated ? <Outlet /> : <Navigate to='/login' />
-// }
-// function RejectedRoute() {
-//   const { isAuthenticated } = useContext(AppContext)
-//   return !isAuthenticated ? <Outlet /> : <Navigate to='/' />
-// }
-// export default function useRouteElement() {
-//   const routeElements = useRoutes([
-//     {
-//       path: '/',
-//       element: <RejectedRoute />,
-//       children: [
-//         {
-//           path: path.login,
-//           element: (
-//             <RegisterLayout>
-//               <Login />
-//             </RegisterLayout>
-//           )
-//         }
-//       ]
-//     },
-//     {
-//       path: '',
-//       element: <ProtectedRoute />,
-//       children: [
-//         {
-//           path: path.cart,
-//           element: (
-//             <CartLayout>
-//               <Cart />
-//             </CartLayout>
-//           )
-//         },
-//         {
-//           path: path.user,
-//           element: (
-//             <MainLayout>
-//               <UserLayout />
-//             </MainLayout>
-//           ),
-//           children: [
-//             {
-//               path: path.profile,
-//               element: <Profile />
-//             },
-//             {
-//               path: path.changePassword,
-//               element: <ChangePassword />
-//             },
-//             {
-//               path: path.historyPurchase,
-//               element: <HistoryPurchase />
-//             }
-//           ]
-//         }
-//       ]
-//     },
-//     {
-//       path: path.productDetail,
-//       index: true,
-//       element: (
-//         <MainLayout>
-//           <ProductDetail />
-//         </MainLayout>
-//       )
-//     },
-//     {
-//       path: '',
-//       index: true,
-//       element: (
-//         <MainLayout>
-//           <ProductList />
-//         </MainLayout>
-//       )
-//     },
-//     {
-//       path: '*',
-//       element: (
-//         <MainLayout>
-//           <NotFound />
-//         </MainLayout>
-//       )
-//     }
-//   ])
-//   return routeElements
-// }
+const fixSearch = [
+  { name: 'tv' },
+  { name: 'movie' },
+  { name: 'company' },
+  { name: 'person' },
+  { name: 'collection' },
+  { name: 'network' },
+  { name: 'keyword' }
+]
+
 export default function useRouteElement() {
-  // const location = useLocation()
-  // const dataLink = location.pathname
-
-  const routeElements = useRoutes([
+  const baseRoutes = [
     {
       path: path.home,
       element: (
@@ -268,7 +187,31 @@ export default function useRouteElement() {
           <KeyWordsMovie_TV_All />
         </MainLayout>
       )
+    },
+    {
+      path: path.searchAll,
+      index: true,
+      element: (
+        <MainLayout>
+          <Search_All_Type />
+        </MainLayout>
+      )
     }
-  ])
+  ]
+
+  const searchRoutes = fixSearch.map(({ name }) => ({
+    path: `${path.searchAll}/${name}`,
+    index: true,
+    element: (
+      <MainLayout>
+        <Search_All_Type />
+      </MainLayout>
+    )
+  }))
+
+  const allRoutes = [...baseRoutes, ...searchRoutes]
+
+  const routeElements = useRoutes(allRoutes)
+
   return routeElements
 }
