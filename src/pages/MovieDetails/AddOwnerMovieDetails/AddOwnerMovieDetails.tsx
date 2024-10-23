@@ -142,7 +142,6 @@ export default function AddOwnerMovieDetails({ dataMovieDetails_Videos, dataMovi
       />
       <Dialog>
         <DialogTrigger>
-          {' '}
           <div className='hover:opacity-50 cursor-pointer flex justify-center items-center'>
             <svg
               xmlns='http://www.w3.org/2000/svg'
@@ -165,12 +164,18 @@ export default function AddOwnerMovieDetails({ dataMovieDetails_Videos, dataMovi
           <DialogHeader>
             <DialogDescription>
               <div className='fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50'>
-                <div className='bg-white p-4 rounded-lg items-center text-center'>
+                <div className='bg-white p-4 rounded-lg text-center max-w-4xl w-full'>
                   {dataMovieDetails_Videos?.key && (
-                    <YouTubePlayer
-                      key={dataMovieDetails_Videos?.key}
-                      videoId={getYouTubeId(dataMovieDetails_Videos?.key as string) || ''}
-                    />
+                    <div className='relative w-full overflow-hidden'>
+                      <iframe
+                        className='w-full h-[360px] sm:h-[480px] md:h-[640px] lg:h-[720px]'
+                        src={`https://www.youtube.com/embed/${getYouTubeId(dataMovieDetails_Videos?.key as string)}`}
+                        title='YouTube video player'
+                        frameBorder='0'
+                        allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture'
+                        allowFullScreen
+                      ></iframe>
+                    </div>
                   )}
                 </div>
               </div>

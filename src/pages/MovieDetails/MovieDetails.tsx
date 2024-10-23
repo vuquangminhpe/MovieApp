@@ -158,7 +158,6 @@ export default function MovieDetails({ colorLiker = '#4CAF50' }: MovieDetailData
                           alt='Movie poster'
                           className='object-cover h-full w-full rounded-xl shadow-sm'
                         />
-
                         <div className='absolute inset-0 bg-[#001a1a]/80 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl flex items-center justify-center'>
                           <button className='flex items-center gap-2 px-5 py-2.5 bg-[#001a1a]/60 backdrop-blur-sm rounded-lg border border-white/10 text-white/90 hover:text-white transition-colors'>
                             <Expand className='w-4 h-4' />
@@ -168,67 +167,74 @@ export default function MovieDetails({ colorLiker = '#4CAF50' }: MovieDetailData
                       </div>
                     </DialogTrigger>
 
-                    <DialogContent className='max-w-[900px] w-[80vw] '>
+                    <DialogContent className='w-[95vw] h-[90vh] max-w-7xl p-4 md:p-6'>
                       <DialogHeader>
                         <DialogTitle className='sr-only'>Movie Images</DialogTitle>
-                        <DialogDescription asChild>
-                          <div className='flex max-sm:flex max-sm:flex-col max-sm:w-[400px]'>
-                            <Carousel className='w-[500px] max-sm:w-full h-[450px] mr-10'>
-                              <CarouselContent>
-                                {(dataImg?.posters as BackdropImages[])?.map(
-                                  (dataImages_item: BackdropImages, index: number) => (
-                                    <CarouselItem key={`${randomKey}$$${index}`}>
-                                      <Card>
-                                        <CardContent className='p-0'>
-                                          {dataImages_item.file_path && (
-                                            <img
-                                              src={`${configBase.imageBaseUrl}${dataImages_item.file_path}`}
-                                              alt={`Movie poster ${index + 1}`}
-                                              className='h-[440px] w-full object-cover object-center'
-                                            />
-                                          )}
-                                        </CardContent>
-                                      </Card>
-                                    </CarouselItem>
-                                  )
-                                )}
-                              </CarouselContent>
-                              <CarouselPrevious />
-                              <CarouselNext />
-                            </Carousel>
+                        <DialogDescription className='h-full'>
+                          <div className='flex flex-col md:flex-row h-full gap-4'>
+                            <div className='flex-none w-full md:w-2/3 lg:w-2/3'>
+                              <div className='relative h-[40vh] md:h-[65vh] lg:h-[70vh] mb-4'>
+                                <Carousel className='absolute inset-0'>
+                                  <CarouselContent>
+                                    {(dataImg?.posters as BackdropImages[])?.map(
+                                      (dataImages_item: BackdropImages, index: number) => (
+                                        <CarouselItem key={`${randomKey}$$${index}`}>
+                                          <Card className='h-[65%]'>
+                                            <CardContent className='p-0 h-full'>
+                                              {dataImages_item.file_path && (
+                                                <img
+                                                  src={`${configBase.imageBaseUrl}${dataImages_item.file_path}`}
+                                                  alt={`Movie poster ${index + 1}`}
+                                                  className='w-full h-full object-contain'
+                                                />
+                                              )}
+                                            </CardContent>
+                                          </Card>
+                                        </CarouselItem>
+                                      )
+                                    )}
+                                  </CarouselContent>
+                                  <CarouselPrevious />
+                                  <CarouselNext />
+                                </Carousel>
+                              </div>
 
-                            <div className='w-[70%] mt-[100px] ml-8'>
-                              <div className='flex w-full justify-between'>
+                              <div className='flex justify-between items-center px-4 mb-4 max-sm:translate-y-10'>
                                 <button onClick={handleLikeImg} className='p-2 hover:bg-gray-100 rounded-full'>
                                   <img
-                                    className='size-8'
+                                    className='size-6 md:size-8'
                                     src='https://www.themoviedb.org/assets/2/v4/glyphicons/basic/glyphicons-basic-452-hand-dislike-d97408deec38f6595c7b2e40eadb649ef2beee92df579b3f88095e9c183ca92e.svg'
                                     alt='Dislike'
                                   />
                                 </button>
                                 <button onClick={handleLikeImg} className='p-2 hover:bg-gray-100 rounded-full'>
                                   <img
-                                    className='size-8'
+                                    className='size-6 md:size-8'
                                     src='https://www.themoviedb.org/assets/2/v4/glyphicons/basic/glyphicons-basic-451-hand-like-10db6816d1483cba3abf2e8a9e9133b3441882c804f6d3c2283aa946aca674a0.svg'
                                     alt='Like'
                                   />
                                 </button>
                               </div>
+                            </div>
 
-                              <div className='mt-12'>
-                                <div className='flex justify-between items-center'>
-                                  <h3 className='text-black font-semibold'>Info</h3>
+                            <div className='flex-1 md:max-w-[33%] lg:max-w-[33%]'>
+                              <div className='h-full bg-white rounded-lg p-4'>
+                                <div className='flex justify-between items-center mb-4'>
+                                  <h3 className='text-black font-semibold text-lg'>Info</h3>
                                   <img
                                     src='https://www.themoviedb.org/assets/2/v4/glyphicons/basic/glyphicons-basic-218-lock-open-e3ddaaf88cb0c2f1c62bf0620eaaacd12522f0f589c77e523c659d7f3f2a1e89.svg'
                                     alt='Unlock'
                                     className='size-5'
                                   />
                                 </div>
-                                <div className='border-b border-gray-200 mt-4' />
-                                <div className='mt-3'>Primary?</div>
-                                <div className='mt-3'>
-                                  <div className='text-gray-400'>Added By</div>
-                                  <div className='text-black font-semibold'></div>
+
+                                <div className='space-y-4'>
+                                  <div className='border-b border-gray-200' />
+                                  <div className='text-gray-700'>Primary?</div>
+                                  <div>
+                                    <div className='text-gray-400'>Added By</div>
+                                    <div className='text-black font-semibold'></div>
+                                  </div>
                                 </div>
                               </div>
                             </div>

@@ -13,18 +13,28 @@ interface TypeItem {
 export default function TabsSet({ ItemProps }: Props) {
   return (
     <Tabs defaultValue={ItemProps[0]?.id} className='w-full'>
-      <TabsList className='flex gap-1 max-w-[340px] ml-10'>
+      <div className='w-full overflow-x-auto px-4 md:px-0'>
+        <TabsList className='flex whitespace-nowrap md:max-w-[340px] md:ml-10 mb-4'>
+          {ItemProps.map((item) => (
+            <TabsTrigger
+              key={item.id}
+              value={item.id}
+              className='px-3 py-2 mx-1 md:mx-2 text-black font-semibold text-sm hover:bg-gray-100 transition-colors
+                        data-[state=active]:bg-primary/10 data-[state=active]:text-primary'
+            >
+              {item.name}
+            </TabsTrigger>
+          ))}
+        </TabsList>
+      </div>
+
+      <div className='px-4 md:px-0'>
         {ItemProps.map((item) => (
-          <TabsTrigger className='ml-5 mr-2 text-black font-semibold text-sm' key={item.id} value={item.id}>
-            {item.name}
-          </TabsTrigger>
+          <TabsContent key={item.id} value={item.id} className='mt-4 focus-visible:outline-none focus-visible:ring-0'>
+            {item.children}
+          </TabsContent>
         ))}
-      </TabsList>
-      {ItemProps.map((item) => (
-        <TabsContent key={item.id} value={item.id}>
-          {item.children}
-        </TabsContent>
-      ))}
+      </div>
     </Tabs>
   )
 }

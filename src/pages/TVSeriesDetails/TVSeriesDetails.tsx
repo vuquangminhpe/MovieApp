@@ -147,60 +147,64 @@ export default function TVSeriesDetails({ colorLiker = '#4CAF50' }: TVDetailData
                         </button>
                       </div>
                     </DialogTrigger>
-                    <DialogContent className='max-w-[900px] w-[80vw]'>
+                    <DialogContent className='w-[40vw] max-sm:w-[95vw] max-w-7xl max-h-[90vh] overflow-y-auto'>
                       <DialogHeader>
-                        <DialogDescription className='flex max-md:flex-col'>
-                          <Carousel className='w-[500px] max-md:w-[400px] h-[450px] mr-10'>
-                            <CarouselContent>
-                              {(dataImg?.posters as BackdropImages[])?.map((dataImages_item: BackdropImages) => (
-                                <CarouselItem key={dataImages_item.iso_639_1}>
-                                  <Card>
-                                    <CardContent>
-                                      {dataImages_item.file_path && (
-                                        <img
-                                          src={`${configBase.imageBaseUrl}${dataImages_item.file_path}`}
-                                          alt=''
-                                          className='h-[440px] w-full object-cover object-center '
-                                        />
-                                      )}
-                                    </CardContent>
-                                  </Card>
-                                </CarouselItem>
-                              ))}
-                            </CarouselContent>
-                            <CarouselPrevious />
-                            <CarouselNext />
-                          </Carousel>
+                        <DialogDescription className='flex flex-col md:flex-row gap-6'>
+                          <div className='w-full md:w-[60%] lg:w-[70%]'>
+                            <Carousel className='w-full h-auto aspect-[3/4] md:aspect-[3/2]'>
+                              <CarouselContent>
+                                {(dataImg?.posters as BackdropImages[])?.map((dataImages_item: BackdropImages) => (
+                                  <CarouselItem key={dataImages_item.iso_639_1}>
+                                    <Card>
+                                      <CardContent className='p-0'>
+                                        {dataImages_item.file_path && (
+                                          <img
+                                            src={`${configBase.imageBaseUrl}${dataImages_item.file_path}`}
+                                            alt=''
+                                            className='w-full h-full object-cover object-center'
+                                          />
+                                        )}
+                                      </CardContent>
+                                    </Card>
+                                  </CarouselItem>
+                                ))}
+                              </CarouselContent>
+                              <CarouselPrevious className='left-2' />
+                              <CarouselNext className='right-2' />
+                            </Carousel>
+                          </div>
 
-                          <div className='w-[70%] mt-[100px] ml-8'>
-                            <div className='flex w-full justify-between'>
+                          <div className='w-full md:w-[40%] lg:w-[30%] space-y-6 mt-20'>
+                            <div className='flex justify-between'>
                               <img
                                 onClick={handleLikeImg}
-                                className=' size-8'
+                                className='w-8 h-8 cursor-pointer'
                                 src='https://www.themoviedb.org/assets/2/v4/glyphicons/basic/glyphicons-basic-452-hand-dislike-d97408deec38f6595c7b2e40eadb649ef2beee92df579b3f88095e9c183ca92e.svg'
-                                alt=''
+                                alt='dislike'
                               />
                               <img
                                 onClick={handleLikeImg}
-                                className='size-8'
+                                className='w-8 h-8 cursor-pointer'
                                 src='https://www.themoviedb.org/assets/2/v4/glyphicons/basic/glyphicons-basic-451-hand-like-10db6816d1483cba3abf2e8a9e9133b3441882c804f6d3c2283aa946aca674a0.svg'
-                                alt=''
+                                alt='like'
                               />
                             </div>
 
-                            <div className='flex mt-12 justify-between'>
-                              <div className='text-black font-semibold'>Info</div>
-                              <img
-                                src='https://www.themoviedb.org/assets/2/v4/glyphicons/basic/glyphicons-basic-218-lock-open-e3ddaaf88cb0c2f1c62bf0620eaaacd12522f0f589c77e523c659d7f3f2a1e89.svg'
-                                alt=''
-                                className='size-5'
-                              />
-                            </div>
-                            <div className='border-b-[1px] border-gray-200 mt-4'></div>
-                            <div className='mt-3'>Primary?</div>
-                            <div className='mt-3'>
-                              <div className='text-gray-400'>Added By</div>
-                              <div className='text-black font-semibold'>{}</div>
+                            <div className='space-y-4'>
+                              <div className='flex justify-between items-center'>
+                                <div className='text-black font-semibold'>Info</div>
+                                <img
+                                  src='https://www.themoviedb.org/assets/2/v4/glyphicons/basic/glyphicons-basic-218-lock-open-e3ddaaf88cb0c2f1c62bf0620eaaacd12522f0f589c77e523c659d7f3f2a1e89.svg'
+                                  alt='lock'
+                                  className='w-5 h-5'
+                                />
+                              </div>
+                              <div className='border-b border-gray-200' />
+                              <div>Primary?</div>
+                              <div>
+                                <div className='text-gray-400'>Added By</div>
+                                <div className='text-black font-semibold'>{}</div>
+                              </div>
                             </div>
                           </div>
                         </DialogDescription>

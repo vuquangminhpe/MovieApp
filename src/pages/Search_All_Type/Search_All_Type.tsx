@@ -38,7 +38,7 @@ export default function SearchAllType() {
 
   const searchCategories: SearchCategory[] = [
     {
-      name: 'TV Shows',
+      name: 'TV',
       link: 'tv',
       queryKey: 'dataSearchTV',
       searchFn: (query) => SearchApi.SearchTV({ query, language: 'en', page: page })
@@ -233,12 +233,12 @@ export default function SearchAllType() {
       </Popover>
       <div className='border-b border-gray-300' />
 
-      <div className='mt-7 mx-44 max-md:mx-12 max-sm:mx-2 max-lg:mx-32 flex'>
-        <div className='flex flex-col mr-4 w-56'>
+      <div className='mt-7 mx-44 max-md:mx-12 max-sm:mx-2 max-lg:mx-32 flex max-sm:flex-col'>
+        <div className='flex flex-col mr-4 w-56 max-sm:w-full'>
           <div className='rounded-t-xl bg-[#00bcd4] capitalize h-14 font-semibold text-sm text-start items-center p-4'>
             Search Results
           </div>
-          <div className='flex flex-col shadow-xl mt-1 rounded-b-xl'>
+          <div className='flex flex-col shadow-xl mt-1 rounded-b-xl max-sm:flex-row max-sm:overflow-x-auto max-sm:w-full'>
             {searchResults.map((category) => (
               <NavLink
                 key={category.name}
@@ -254,7 +254,7 @@ export default function SearchAllType() {
           </div>
         </div>
 
-        <div className='w-full'>
+        <div className='w-full max-sm:mt-8'>
           {currentPath === 'keyword' || currentPath === 'company'
             ? currentResults?.dataAll?.map((item: SearchResult, index: number) => (
                 <Link
@@ -274,7 +274,9 @@ export default function SearchAllType() {
               ))}
         </div>
       </div>
-      <div className='flex py-5 p-7 gap-2 justify-center'>{renderPagination(currentResults?.data_results)}</div>
+      <div className='md:flex py-5 p-7 gap-2 justify-center max-sm:grid-cols-4 max-sm:grid'>
+        {renderPagination(currentResults?.data_results)}
+      </div>
     </div>
   )
 }

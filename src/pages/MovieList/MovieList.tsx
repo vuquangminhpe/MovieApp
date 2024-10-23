@@ -174,7 +174,7 @@ export default function MovieList() {
   useEffect(() => setLoading(false), [pathname])
   if (status === 'pending') {
     return (
-      <div className='flex w-full container'>
+      <div className='flex  w-full container'>
         <div
           role='status'
           className='max-w-md p-4 space-y-4 border border-gray-200 divide-y divide-gray-200 rounded shadow animate-pulse dark:divide-gray-700 md:p-6 dark:border-gray-700'
@@ -251,9 +251,9 @@ export default function MovieList() {
   }
   return (
     <div className='container py-5'>
-      <div className='flex'>
-        <div className='min-w-[300px] max-md:min-w-[50px] max-md:translate-x-2 max-w-[300px] w-[300px]'>
-          <div className='font-bold text-xl capitalize'>{nameLocation} movies</div>
+      <div className='flex max-sm:flex-col '>
+        <div className='min-w-[300px] max-sm:w-[90%] max-md:min-w-[50px] max-md:translate-x-2 max-sm:translate-x-5 md:max-w-[300px] md:w-[300px]'>
+          <div className='font-bold text-xl capitalize'>{nameLocation}</div>
           <div className='shadow-xl rounded-xl'>
             <Accordion type='single' collapsible>
               <AccordionItem value='item-1'>
