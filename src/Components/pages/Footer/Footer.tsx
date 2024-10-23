@@ -22,12 +22,6 @@ export default function Footer() {
             <li>System Status</li>
           </ul>
         </div>
-        <div className='p-4'>
-          <ul className='text-white text-start'>
-            <li>Add New Movie</li>
-            <li>Add New TV Show</li>
-          </ul>
-        </div>
 
         <div className='p-4'>
           <ul className='text-white text-start top-[100%]'>

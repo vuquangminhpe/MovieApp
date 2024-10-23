@@ -66,12 +66,6 @@ export default function SearchAllType() {
       link: 'keyword',
       queryKey: 'dataSearchKeywords',
       searchFn: (query) => SearchApi.SearchKeyWord_ALL({ query, language: 'en', page: page })
-    },
-    {
-      name: 'Networks',
-      link: 'network',
-      queryKey: 'dataSearchNetworks',
-      searchFn: (query) => SearchApi.SearchMulti({ query, language: 'en', page: page })
     }
   ]
 
