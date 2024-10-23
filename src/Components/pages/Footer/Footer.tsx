@@ -24,20 +24,11 @@ export default function Footer() {
         </div>
         <div className='p-4'>
           <ul className='text-white text-start'>
-            <li className='font-bold'>Get Involved</li>
-            <li>Contribution Bible</li>
             <li>Add New Movie</li>
             <li>Add New TV Show</li>
           </ul>
         </div>
-        <div className='p-4'>
-          <ul className='text-white text-start'>
-            <li className='font-bold'>Community</li>
-            <li>Guidelines</li>
-            <li>Discussions</li>
-            <li>Leaderboard</li>
-          </ul>
-        </div>
+
         <div className='p-4'>
           <ul className='text-white text-start top-[100%]'>
             <li className='font-bold'>Legal</li>

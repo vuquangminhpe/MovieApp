@@ -172,6 +172,14 @@ export default function Header() {
                   />
                 </svg>
                 <input
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      navigate({
+                        pathname: path.searchAll,
+                        search: createSearchParams({ query: e.currentTarget.value }).toString()
+                      })
+                    }
+                  }}
                   type='text'
                   placeholder='Search for a movie, tv show, person....'
                   className='flex-grow p-2 border border-black rounded-sm shadow-sm rounded-l-md focus:outline-none'

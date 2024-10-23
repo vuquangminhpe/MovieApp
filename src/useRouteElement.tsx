@@ -14,6 +14,7 @@ import SeasonDetails from './pages/SeasonDetails'
 import Episodes_Season from './pages/Episodes_Season/Episodes_Season'
 import KeyWordsMovie_TV_All from './pages/KeyWordsMovie_TV_All'
 import Search_All_Type from './pages/Search_All_Type'
+import CompanyDetails from './pages/CompanyDetails'
 
 const fixSearch = [
   { name: 'tv' },
@@ -194,6 +195,15 @@ export default function useRouteElement() {
       element: (
         <MainLayout>
           <Search_All_Type />
+        </MainLayout>
+      )
+    },
+    {
+      path: path.companyDetail,
+      index: true,
+      element: (
+        <MainLayout>
+          <CompanyDetails />
         </MainLayout>
       )
     }
