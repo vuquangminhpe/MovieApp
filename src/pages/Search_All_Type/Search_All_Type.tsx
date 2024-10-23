@@ -1,142 +1,130 @@
-import { Key, useMemo, useState } from 'react'
-import { NavLink, useLocation, useNavigate } from 'react-router-dom'
+import { useMemo, useState } from 'react'
+import { Link, NavLink, useLocation } from 'react-router-dom'
 import { Popover, PopoverContent, PopoverTrigger } from '@/Components/ui/popover'
-import { useQuery } from '@tanstack/react-query'
+import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import { SearchApi } from '@/Apis/SearchApi'
 import configBase from '@/constants/config'
-import { companies, typeSearchKeyWord } from '@/types/Search.type'
-import { Movie, MovieTrendings } from '@/types/Movie'
-import { PersonDetail } from '@/types/Person'
-import { TVSeries } from '@/types/TVSeries.type'
-import { Collection } from '@/types/Collection.type'
-type ActiveLinkDataType = {
-  [x: string]: any
+
+interface SearchResult {
+  overview?: string
+  name?: string
+  original_title?: string
+  backdrop_path?: string
+  logo_path?: string
+  profile_path?: string
+  known_for?: any[]
+  first_air_date?: string
+  release_date?: string
+}
+
+interface SearchCategory {
   name: string
   link: string
-  data_results?: number
-  dataAll?: Movie | Collection | companies | MovieTrendings | PersonDetail | TVSeries
+  queryKey: string
+  searchFn: (query: string) => Promise<any>
 }
-export default function Search_All_Type() {
-  const navigate = useNavigate()
+
+export default function SearchAllType() {
   const location = useLocation()
-  const [suggest, setSuggest] = useState<boolean>(false)
+  const [suggest, setSuggest] = useState(false)
   const querySearch = location.search.split('=')[1]
-  const { data: dataSearchMovie } = useQuery({
-    queryKey: ['dataSearchMovie', querySearch],
-    queryFn: () =>
-      SearchApi.Search_AllMovie({
-        query: querySearch,
-        language: 'en',
-        page: 1
-      })
-  })
-  const { data: dataSearchCollection } = useQuery({
-    queryKey: ['dataSearchCollection', querySearch],
-    queryFn: () =>
-      SearchApi.SearchCollection({
-        query: querySearch,
-        language: 'en',
-        page: 1
-      })
-  })
-  const { data: dataSearchCompany } = useQuery({
-    queryKey: ['dataSearchCompany', querySearch],
-    queryFn: () =>
-      SearchApi.SearchCompany({
-        query: querySearch,
-        language: 'en',
-        page: 1
-      })
-  })
-  const { data: dataSearchNetWorks } = useQuery({
-    queryKey: ['dataSearchNetWorks', querySearch],
-    queryFn: () =>
-      SearchApi.SearchMulti({
-        query: querySearch,
-        language: 'en',
-        page: 1
-      })
-  })
-  const { data: dataSearchPerson } = useQuery({
-    queryKey: ['dataSearchPerson', querySearch],
-    queryFn: () =>
-      SearchApi.SearchPerson({
-        query: querySearch,
-        language: 'en',
-        page: 1
-      })
-  })
-  const { data: dataSearchTV } = useQuery({
-    queryKey: ['dataSearchTV', querySearch],
-    queryFn: () =>
-      SearchApi.SearchTV({
-        query: querySearch,
-        language: 'en',
-        page: 1
-      })
-  })
-  const { data: dataSearchKeywords } = useQuery({
-    queryKey: ['dataSearchKeywords', querySearch],
-    queryFn: () =>
-      SearchApi.SearchKeyWord_ALL({
-        query: querySearch,
-        language: 'en',
-        page: 1
-      })
-  })
-  const dataS_MV = dataSearchMovie?.data
-  const dataS_CLT = dataSearchCollection?.data
-  const dataS_CPN = dataSearchCompany?.data
-  const dataS_NW = dataSearchNetWorks?.data
-  const dataS_PS = dataSearchPerson?.data
-  const dataS_TV = dataSearchTV?.data
-  const dataS_KW = dataSearchKeywords?.data
-  const activeLink = [
+  const currentPath = location.pathname.split('/')[2]
+
+  const searchCategories: SearchCategory[] = [
     {
       name: 'TV Shows',
       link: 'tv',
-      data_results: dataS_TV?.total_results,
-      dataAll: dataS_TV?.results
+      queryKey: 'dataSearchTV',
+      searchFn: (query) => SearchApi.SearchTV({ query, language: 'en', page: 1 })
     },
     {
       name: 'People',
       link: 'person',
-      data_results: dataS_PS?.total_results,
-      dataAll: dataS_PS?.results
+      queryKey: 'dataSearchPerson',
+      searchFn: (query) => SearchApi.SearchPerson({ query, language: 'en', page: 1 })
     },
     {
       name: 'Movies',
       link: 'movie',
-      data_results: dataS_MV?.total_results,
-      dataAll: dataS_MV?.results
+      queryKey: 'dataSearchMovie',
+      searchFn: (query) => SearchApi.Search_AllMovie({ query, language: 'en', page: 1 })
     },
     {
       name: 'Collections',
       link: 'collection',
-      data_results: dataS_CLT?.total_results,
-      dataAll: dataS_CLT?.results
+      queryKey: 'dataSearchCollection',
+      searchFn: (query) => SearchApi.SearchCollection({ query, language: 'en', page: 1 })
     },
-    { name: 'Companies', link: 'company', data: dataS_CPN?.total_results, dataAll: dataS_CPN?.results },
+    {
+      name: 'Companies',
+      link: 'company',
+      queryKey: 'dataSearchCompany',
+      searchFn: (query) => SearchApi.SearchCompany({ query, page: 1 })
+    },
     {
       name: 'Keywords',
       link: 'keyword',
-      data_results: dataS_KW?.total_results,
-      dataAll: dataS_KW?.results
+      queryKey: 'dataSearchKeywords',
+      searchFn: (query) => SearchApi.SearchKeyWord_ALL({ query, language: 'en', page: 1 })
     },
-    { name: 'Networks', link: 'network', data_results: dataS_NW?.total_results, dataAll: dataS_NW?.results }
+    {
+      name: 'Networks',
+      link: 'network',
+      queryKey: 'dataSearchNetworks',
+      searchFn: (query) => SearchApi.SearchMulti({ query, language: 'en', page: 1 })
+    }
   ]
-  const currentPath = location.pathname.split('/')[2]
 
-  const filteredLinks = useMemo(() => {
-    return activeLink.filter((item: any) => item.link === currentPath)
-  }, [currentPath])
-  console.log(filteredLinks)
+  const searchResults = searchCategories.map((category) => {
+    const { data } = useQuery({
+      queryKey: [category.queryKey, querySearch],
+      queryFn: () => category.searchFn(querySearch),
+      placeholderData: keepPreviousData,
+      enabled: !!querySearch
+    })
+    return {
+      ...category,
+      data_results: data?.data?.total_results || 0,
+      dataAll: data?.data?.results || []
+    }
+  })
+
+  const currentResults = useMemo(() => {
+    return searchResults.find((item) => item.link === currentPath)
+  }, [currentPath, searchResults])
+
+  const renderSearchResult = (item: SearchResult) => {
+    if (!item) return null
+
+    const imageUrl =
+      `${configBase.imageBaseUrl}${
+        item.backdrop_path || item.logo_path || item.profile_path || item.known_for?.[0]?.poster_path
+      }` || configBase.noImagesPoster
+
+    return (
+      <Link to='' className='flex mb-5 rounded-xl shadow-xl h-32 w-full'>
+        <img
+          src={imageUrl}
+          alt={item.name || item.original_title || ''}
+          className='h-full w-36 object-cover rounded-l-xl'
+        />
+        <div className='ml-4 flex flex-col w-full'>
+          <div className='font-bold text-xl hover:text-[#00bcd4]'>{item.name || item.original_title}</div>
+          <div className='text-gray-400'>
+            {item.first_air_date ||
+              item.release_date ||
+              item.known_for?.map((known, index) => <div key={index}>{known.name}</div>)}
+          </div>
+          <div className='line-clamp-2'>{item.overview}</div>
+        </div>
+      </Link>
+    )
+  }
 
   return (
     <div className='flex flex-col'>
       <Popover>
         <PopoverTrigger>
-          {' '}
           <div className='flex w-full justify-around pt-4'>
             <svg
               xmlns='http://www.w3.org/2000/svg'
@@ -144,7 +132,7 @@ export default function Search_All_Type() {
               viewBox='0 0 24 24'
               strokeWidth={1.5}
               stroke='currentColor'
-              className='size-5 w-[10%] lg:translate-x-[90px] lg:translate-y-3 '
+              className='size-5 w-[10%] lg:translate-x-[90px] lg:translate-y-3'
             >
               <path
                 strokeLinecap='round'
@@ -152,61 +140,54 @@ export default function Search_All_Type() {
                 d='m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z'
               />
             </svg>
-
             <input
               onChange={() => setSuggest(true)}
               type='text'
               placeholder={`${querySearch}...`}
-              className='w-[90%]  p-3'
+              className='w-[90%] p-3'
             />
           </div>
         </PopoverTrigger>
         {suggest && <PopoverContent>Place content for the popover here.</PopoverContent>}
       </Popover>
 
-      <div className='border-b border-gray-300'></div>
+      <div className='border-b border-gray-300' />
 
-      <div className='mt-7 container flex'>
-        <div className='flex flex-col ml-3 w-56'>
+      <div className='mt-7 mx-44 max-md:mx-12 max-sm:mx-2 max-lg:mx-32 flex'>
+        <div className='flex flex-col mr-4 w-56'>
           <div className='rounded-t-xl bg-[#00bcd4] capitalize h-14 font-semibold text-sm text-start items-center p-4'>
             Search Results
           </div>
           <div className='flex flex-col shadow-xl mt-1 rounded-b-xl'>
-            {activeLink.map((itemActive: any) => (
+            {searchResults.map((category) => (
               <NavLink
-                key={itemActive.name}
-                to={`/search/${itemActive.link}?query=${querySearch}`}
+                key={category.name}
+                to={`/search/${category.link}?query=${querySearch}`}
                 className={({ isActive }) =>
                   `flex justify-between p-3 gap-3 ${isActive ? 'bg-gray-200 text-black font-bold' : ''}`
                 }
               >
-                <div>{itemActive.name}</div>
-                <div className='text-end bg-gray-100 rounded-sm px-3'>
-                  {itemActive.data_results as unknown as number}
-                </div>
+                <div className='hover:text-[#00bcd4]'>{category.name}</div>
+                <div className='text-end bg-gray-100 rounded-sm px-3'>{category.data_results}</div>
               </NavLink>
             ))}
           </div>
         </div>
-        <div className=''>
-          {(filteredLinks[0]?.dataAll as any)?.map((itemActive: any) => {
-            return (
-              <div className='flex rounded-xl shadow-xl h-32 w-full' key={itemActive.name}>
-                (
-                <img
-                  src={`${configBase.imageBaseUrl}${
-                    itemActive?.backdrop_path ||
-                    itemActive?.logo_path ||
-                    itemActive?.profile_path ||
-                    itemActive.known_for.poster_path ||
-                    itemActive?.known_for[0].poster_path
-                  }`}
-                  alt=''
-                />
-                )
-              </div>
-            )
-          })}
+
+        <div className='w-full'>
+          {currentPath === 'keyword' || currentPath === 'company'
+            ? currentResults?.dataAll?.map((item: SearchResult, index: number) => (
+                <Link
+                  key={index}
+                  to=''
+                  className='flex hover:text-[#00bcd4] flex-col gap-2 border-b-[1px] border-gray-300'
+                >
+                  {item.name}
+                </Link>
+              ))
+            : currentResults?.dataAll?.map((item: SearchResult, index: number) => (
+                <div key={index}>{renderSearchResult(item)}</div>
+              ))}
         </div>
       </div>
     </div>
