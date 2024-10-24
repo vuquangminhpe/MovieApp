@@ -13,24 +13,24 @@ export default function Footer() {
           </div>
         </div>
         <div className='p-4'>
-          <ul className='text-white text-start'>
-            <li className='font-bold'>The Basics</li>
-            <li>Giới thiệu về TMDB</li>
-            <li>Contact Us</li>
-            <li>Support Forums</li>
-            <li>API</li>
-            <li>System Status</li>
-          </ul>
+          <div className='text-white text-start'>
+            <div className='font-bold'>The Basics</div>
+            <div>Giới thiệu về TMDB</div>
+            <div>Contact Us</div>
+            <div>Support Forums</div>
+            <div>API</div>
+            <div>System Status</div>
+          </div>
         </div>
 
         <div className='p-4'>
-          <ul className='text-white text-start top-[100%]'>
-            <li className='font-bold'>Legal</li>
-            <li>Terms of Use</li>
-            <li>API Terms of Use</li>
-            <li>Privacy Policy</li>
-            <li>DMCA Policy</li>
-          </ul>
+          <div className='text-white text-start top-[100%]'>
+            <div className='font-bold'>Legal</div>
+            <div>Terms of Use</div>
+            <div>API Terms of Use</div>
+            <div>Privacy Policy</div>
+            <div>DMCA Policy</div>
+          </div>
         </div>
       </div>
     </div>
