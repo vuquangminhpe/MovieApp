@@ -25,7 +25,7 @@ const All_ICONS = [
 
 const All_Profiles = [{ icons: icon_profile2 }, { icons: icon_profile1 }, { icons: icon_profile3 }]
 export default function ContactDeveloper() {
-  const stringNames = `Hi, I am Minh, Web Developer`
+  const stringNames = `Hi, I'm Minh,a Web Developer`
   const [displayedText, setDisplayedText] = useState('')
   const [currentIconIndex, setCurrentIconIndex] = useState(0)
   const [isVisible, setIsVisible] = useState(true)
