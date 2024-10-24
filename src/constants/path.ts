@@ -24,6 +24,7 @@ const path = {
   searchKeywords_Movie: '/keyword/:keyword_id/movie',
   searchKeywords_TV: '/keyword/:keyword_id/tv',
   companyDetail: '/company/:company_id',
-  searchAll: '/search'
+  searchAll: '/search',
+  contactDeveloper: '/contact/developer/Minh'
 }
 export default path

@@ -104,16 +104,21 @@ export default function MovieTrailer({ dataPopulars, setMouseHoverImages }: Prop
       </div>
 
       {isModalOpen && dataMoviesVideos && (
-        <div className='fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50'>
-          <div className='bg-white p-4 rounded-lg items-center text-center'>
+        <div className='fixed inset-0 bg-black/50 flex justify-center items-center z-50'>
+          <div className='bg-black rounded-lg w-[90vw] max-w-3xl'>
             {playerError ? (
               <div className='text-red-500'>{playerError}</div>
             ) : (
-              <YouTubePlayer key={dataMoviesVideos.key} videoId={getYouTubeId(dataMoviesVideos.key as string) || ''} />
+              <div className='relative'>
+                <YouTubePlayer
+                  key={dataMoviesVideos.key}
+                  videoId={getYouTubeId(dataMoviesVideos.key as string) || ''}
+                />
+              </div>
             )}
             <button
               onClick={closeModal}
-              className='mt-4 px-4 py-2 bg-red-500 hover:bg-red-950 text-white text-center items-center rounded'
+              className='mt-4 px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded w-full'
             >
               Close
             </button>

@@ -7,7 +7,6 @@ import { ListApi } from '../../../Apis/ListApi'
 import { Movie } from '../../../types/Movie'
 import ModeToggle from '../../ModeToggle'
 import { useState } from 'react'
-import { Popover as Popovers, PopoverContent, PopoverTrigger } from '@/Components/ui/popover'
 import { generateNameId } from '@/utils/utils'
 export default function Header() {
   const navigate = useNavigate()
@@ -84,8 +83,9 @@ export default function Header() {
             renderPopover={
               <div className=' shadow-sm max-w-48 text-sm font-sans gap-1 border rounded-xl border-gray-300 bg-white text-black flex flex-col justify-center text-left items-start'>
                 <div className='p-4 border-b-[1px] border-b-gray-200'>
-                  <p className=' text-sm'>minhDevFE120304</p>
-                  <p className='text-gray-400'>Xem hồ sơ</p>
+                  <Link to={''} className=' text-sm'>
+                    minhDevFE120304
+                  </Link>
                 </div>
 
                 <div className='text-gray-500 p-4 border-b-[1px] border-b-gray-300'>
@@ -295,6 +295,7 @@ export default function Header() {
             </div>
           }
         />
+
         <Popover
           children='More'
           className='text-white w-[60px] mr-3 font-bold ml-2'
@@ -302,6 +303,17 @@ export default function Header() {
             <div className=' shadow-sm max-w-52 w-40  text-sm font-sans gap-1 border rounded-xl border-gray-300 bg-white text-black flex flex-col justify-center text-left items-center'>
               <Link to='' className='hover:bg-gray-200 p-2 rounded-xl w-full'>
                 API
+              </Link>
+            </div>
+          }
+        />
+        <Popover
+          children='Contact'
+          className='text-white w-[60px] mr-3 font-bold ml-2'
+          renderPopover={
+            <div className=' shadow-sm max-w-52 w-40  text-sm font-sans gap-1 border rounded-xl border-gray-300 bg-white text-black flex flex-col justify-center text-left items-center'>
+              <Link to={`${path.contactDeveloper}`} className='hover:bg-gray-200 p-2 rounded-xl w-full'>
+                Developer
               </Link>
             </div>
           }
