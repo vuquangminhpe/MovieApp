@@ -4,9 +4,9 @@ import { generateNameId, getIdFromNameId } from '../../utils/utils'
 import { useQuery } from '@tanstack/react-query'
 import { ListApi } from '../../Apis/ListApi'
 import configBase from '../../constants/config'
-import { BackdropImages, videosDetails } from '../../types/Movie'
+import { BackdropImages, MovieTrendings } from '../../types/Movie'
 
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import DynamicMovieBackdrop from '../../Components/Custom/DynamicMovieBackdrop'
 import CustomScrollContainer from '../../Components/Custom/CustomScrollContainer'
 
@@ -15,7 +15,6 @@ import path from '@/constants/path'
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/Components/ui/carousel'
 import { Card, CardContent } from '@/Components/ui/card'
 
-import { SuccessResponse } from '@/types/utils.type'
 import { Expand } from 'lucide-react'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTrigger } from '@/Components/ui/dialog'
 import { toast } from 'react-toastify'
@@ -23,33 +22,27 @@ import RatingTVDetails from './RatingTVDetails'
 import AddOwnerTVDetails from './AddOwnerTVDetails'
 import Cast_CrewTVDetails from './Cast_CrewTVDetails'
 import { TVSeriesApi } from '@/Apis/TVSeriesApi'
-import {
-  Aggregate_Credits,
-  BackdropImagesTVSeries,
-  keywordsTVSeries,
-  ReviewTVSeries,
-  Season,
-  TVSeries,
-  TVSeriesTrending
-} from '@/types/TVSeries.type'
+import { Aggregate_Credits, keywordsTVSeries, ReviewTVSeries, Season, TVSeriesTrending } from '@/types/TVSeries.type'
 import RenderTVDetails from '@/Components/RenderMovies/RenderTVDetails'
 
 interface TVDetailData {
   colorLiker?: string
 }
-
 export default function TVSeriesDetails({ colorLiker = '#4CAF50' }: TVDetailData) {
+  const [tvIds, setTVIds] = useState<number>()
   const { tvID } = useParams()
   const navigate = useNavigate()
-
   const [mouseHoverImages, setMouseHoverImages] = useState(
     'https://media.themoviedb.org/t/p/w1920_and_h600_multi_faces_filter(duotone,00192f,00baff)/SqAZjEqqBAYvyu3KSrWq1d0QLB.jpg'
   )
-  const id = getIdFromNameId(tvID as string)
+
+  const id = useMemo(() => getIdFromNameId(tvID as string), [tvID])
+
   const { data: dataImages } = useQuery({
     queryKey: ['IMG_TVDetail', id],
     queryFn: () => TVSeriesApi.getIMG(Number(id))
   })
+
   const { data: dataTrailer } = useQuery({
     queryKey: ['dataTrailerLatest', []],
     queryFn: () =>
@@ -57,16 +50,20 @@ export default function TVSeriesDetails({ colorLiker = '#4CAF50' }: TVDetailData
         language: 'en'
       })
   })
-  const dataTrailerLatest = dataTrailer?.data.results
+
+  const dataTrailerLatest = useMemo(() => dataTrailer?.data.results, [dataTrailer])
+
   const { data: dataTVDetails, isLoading } = useQuery({
     queryKey: ['dataTVDetail', id],
     queryFn: () => TVSeriesApi.getTVSeriesDetails(Number(id))
   })
+
   const { data: dataYoutube_MovieDetails } = useQuery({
     queryKey: ['videosDetails_TVDetail', id],
     queryFn: () => ListApi.getVideosList(Number(id)),
     staleTime: 0
   })
+
   const { data: dataCredits } = useQuery({
     queryKey: ['credit_TVDetail', id],
     queryFn: () => TVSeriesApi.getAggregateCredits(Number(id))
@@ -76,57 +73,83 @@ export default function TVSeriesDetails({ colorLiker = '#4CAF50' }: TVDetailData
     queryKey: ['Recommendations_TVDetails', id],
     queryFn: () => TVSeriesApi.getRecommendation(Number(id))
   })
+
   const { data: dataKeywords } = useQuery({
     queryKey: ['keyWords_TVDetails', id],
     queryFn: () => TVSeriesApi.getKeyWords(Number(id))
   })
+
   const { data: dataReviewsTV } = useQuery({
     queryKey: ['ReviewsTV_TVDetails', id],
     queryFn: () => TVSeriesApi.getReviews(Number(id))
   })
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const dataKeywordsDetails = dataKeywords?.data.results
-  const dataImg: SuccessResponse<BackdropImagesTVSeries[]> | undefined = dataImages?.data
-  const dataCredit = dataCredits?.data.cast
-  const data_Roles = dataCredit?.map((itemRole) => itemRole.roles)
 
-  const dataReviews_TV = dataReviewsTV?.data.results
+  const dataKeywordsDetails = useMemo(() => dataKeywords?.data.results, [dataKeywords])
 
-  const dataRecommendations = dataRecommendationsDetails?.data.results
-  const dataRecommendations_filter = dataRecommendations?.filter(
-    (items: TVSeriesTrending) => items.backdrop_path !== null
+  const dataImg = useMemo(() => dataImages?.data, [dataImages])
+
+  const dataCredit = useMemo(() => dataCredits?.data.cast, [dataCredits])
+
+  const data_Roles = useMemo(() => dataCredit?.map((itemRole) => itemRole.roles), [dataCredit])
+
+  const dataReviews_TV = useMemo(() => dataReviewsTV?.data.results, [dataReviewsTV])
+
+  const dataRecommendations = useMemo(() => dataRecommendationsDetails?.data.results, [dataRecommendationsDetails])
+
+  const dataRecommendations_filter = useMemo(
+    () => dataRecommendations?.filter((items: TVSeriesTrending) => items.backdrop_path !== null),
+    [dataRecommendations]
   )
 
-  const dataMovieDetails_Videos: videosDetails | undefined = dataYoutube_MovieDetails?.data.results[0]
+  const dataMovieDetails_Videos = useMemo(() => dataYoutube_MovieDetails?.data.results[0], [dataYoutube_MovieDetails])
 
-  const dataTV: TVSeries | undefined = dataTVDetails?.data
-  console.log(dataTV)
+  const dataTV = useMemo(() => dataTVDetails?.data, [dataTVDetails])
 
-  const percentage = Math.round((dataTV?.vote_average as number) * 10)
+  const percentage = useMemo(() => Math.round((dataTV?.vote_average as number) * 10), [dataTV?.vote_average])
+
   const radius = 18
   const circumference = 2 * Math.PI * radius
-  const strokeDashoffset = circumference - (percentage / 100) * circumference
 
-  if (percentage < 70 && percentage >= 30) {
-    colorLiker = '#b9d13f'
-  } else if (percentage < 30) {
-    colorLiker = '#ed2133'
-  }
-  const formatRuntime = (runtime: number) => {
+  const strokeDashoffset = useMemo(() => circumference - (percentage / 100) * circumference, [percentage])
+
+  colorLiker = useMemo(() => {
+    if (percentage < 70 && percentage >= 30) {
+      return '#b9d13f'
+    } else if (percentage < 30) {
+      return '#ed2133'
+    }
+    return '#00e600'
+  }, [percentage])
+
+  const formatRuntime = useCallback((runtime: number) => {
     const hours = Math.floor(runtime / 60)
     const minutes = runtime % 60
     return `${hours}h ${minutes}m`
-  }
-  const handleLikeImg = () => {
-    toast.success('You have successfully rated the image.')
-  }
+  }, [])
 
-  const imageUrl = `${configBase.imageBaseUrl}${dataTV?.backdrop_path || dataTV?.poster_path}`
+  const handleLikeImg = useCallback(() => {
+    toast.success('You have successfully rated the image.')
+  }, [])
+
+  const extendedDataRated = useMemo(
+    () => dataRecommendations?.find((item: MovieTrendings) => (item.id as number | undefined) === tvIds),
+    [dataRecommendations, tvIds]
+  )
+
+  const imageUrl = useMemo(
+    () => `${configBase.imageBaseUrl}${dataTV?.backdrop_path || dataTV?.poster_path}`,
+    [dataTV?.backdrop_path, dataTV?.poster_path]
+  )
+
   useEffect(() => {
     if (isLoading) {
       return
     }
-  }, [dataTV])
+  }, [isLoading])
+
+  if (isLoading) {
+    return null
+  }
 
   return (
     <div className='my-8'>
@@ -426,6 +449,10 @@ export default function TVSeriesDetails({ colorLiker = '#4CAF50' }: TVDetailData
                 dataRecommendations_filter?.map((dataPerformerDetails: TVSeriesTrending) => (
                   <div key={dataPerformerDetails.id} className='max-w-full rounded-t-xl bg-white shadow-xl '>
                     <RenderMovies
+                      media_type='tv'
+                      setMovieId={setTVIds}
+                      voteRate={dataPerformerDetails?.vote_average}
+                      movie_id={dataPerformerDetails?.id}
                       CustomIMG='object-top'
                       typeText='text-teal-500'
                       key={dataPerformerDetails.id}

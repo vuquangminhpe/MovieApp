@@ -39,6 +39,7 @@ const RenderMovies = ({
   media_type
 }: RenderMoviesProps) => {
   const [mediaType, setMediaType] = useState<string>(media_type || 'movie')
+
   const percentage = Math.round((dataTrending as MovieTrendings).vote_average * 10)
   const radius = 18
   const circumference = 2 * Math.PI * radius

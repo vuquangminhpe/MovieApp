@@ -1,6 +1,8 @@
 const configBase = {
   baseIdName: 21525545,
+  account_object_id: '66ea76e85168a896e11f3fd5',
   baseURL: 'https://api.themoviedb.org/3',
+  baseURL_V4: 'https://api.themoviedb.org/4',
   imageBaseUrl: 'https://image.tmdb.org/t/p/w500',
   baseURLVideos: 'https://www.youtube.com/watch?v=',
   noImagesUser:

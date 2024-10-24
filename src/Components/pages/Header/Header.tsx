@@ -79,31 +79,6 @@ export default function Header() {
           show={true}
         />
 
-        <Popovers>
-          <PopoverTrigger>
-            <img
-              className='w-[65px] -translate-x-2'
-              src='https://www.themoviedb.org/assets/2/v4/glyphicons/basic/glyphicons-basic-441-bell-9cd2af257b98c4af3460078777d8e38a5e12bca89704eeac2f39273afcbd06ff.svg'
-              alt=''
-            />
-          </PopoverTrigger>
-          <PopoverContent>
-            <Link
-              to={`${path.movie}`}
-              className=' shadow-sm p-4 max-w-64 text-sm font-sans gap-1 border rounded-xl border-gray-300 bg-white text-black flex flex-col justify-center text-left items-center'
-            >
-              <div>
-                <p className='font-bold text-xl'>Unread Notifications 0</p>
-                <p className='text-sm'>
-                  Good job! Looks like you're all caught up.{' '}
-                  <Link className='text-white/40' to={path.home}>
-                    View All
-                  </Link>
-                </p>
-              </div>
-            </Link>
-          </PopoverContent>
-        </Popovers>
         <div>
           <Popover
             renderPopover={
@@ -114,15 +89,11 @@ export default function Header() {
                 </div>
 
                 <div className='text-gray-500 p-4 border-b-[1px] border-b-gray-300'>
-                  <div className='mb-2'>Thảo luận</div>
                   <div className='mb-2'>Danh sách</div>
                   <div className='mb-2'>Xếp hạng</div>
                   <div>Danh sách theo dõi</div>
                 </div>
-                <div className='text-gray-500 p-4 border-b-[1px] border-b-gray-300'>
-                  <div className='mb-2'>Chỉnh sửa hồ sơ</div>
-                  <div className='mb-2'>Cài đặt</div>
-                </div>
+
                 <div className='w-full text-gray-500 p-4 '>
                   <div className='mb-2'>Đăng xuất</div>
                 </div>
@@ -228,7 +199,7 @@ export default function Header() {
             </div>
           }
         />
-        <ModeToggle classNameConfig='-translate-x-20 items-center' />
+        <ModeToggle classNameConfig='-translate-x-10 items-center' />
       </div>
     )
   }
