@@ -177,3 +177,72 @@ export interface ownerGenres {
 export interface typeGenres {
   genres: ownerGenres[]
 }
+export type MovieInfo = {
+  account_object_id: string
+  adult: number
+  average_rating: number
+  backdrop_path: string
+  created_at: string
+  description: string
+  featured: number
+  id: number
+  iso_639_1: string
+  iso_3166_1: string
+  name: string
+  number_of_items: number
+  poster_path: string | null
+  public: number
+  revenue: number
+  runtime: string
+  sort_by: number
+  updated_at: string
+}
+
+export interface MovieResult {
+  backdrop_path: string
+  id: number
+  title: string
+  original_title: string
+  overview: string
+  poster_path: string | null
+  media_type: string
+  adult: boolean
+  original_language: string
+  genre_ids: number[]
+  popularity: number
+  release_date: string
+  video: boolean
+  vote_average: number
+  vote_count: number
+}
+
+export interface CreatedBy {
+  avatar_path: string | null
+  gravatar_hash: string
+  id: string
+  name: string
+  username: string
+}
+
+export interface MovieData_List {
+  average_rating: number
+  backdrop_path: string
+  results: MovieResult[]
+  comments: Record<string, any | null>
+  created_by: CreatedBy
+  description: string
+  id: number
+  iso_3166_1: string
+  iso_639_1: string
+  item_count: number
+  name: string
+  object_ids: Record<string, unknown>
+  page: number
+  poster_path: string | null
+  public: boolean
+  revenue: number
+  runtime: number
+  sort_by: string
+  total_pages: number
+  total_results: number
+}

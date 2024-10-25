@@ -18,6 +18,9 @@ import CompanyDetails from './pages/CompanyDetails'
 import ContactDeveloper from './pages/ContactDeveloper'
 import UserHome from './pages/UserHome'
 import UserLayout from './Layouts/UserLayout'
+import UserList from './pages/UserActionAll/UserList'
+import UserActionAll from './pages/UserActionAll'
+import UserListDetails from './pages/UserActionAll/UserListDetails'
 
 const fixSearch = [
   { name: 'tv' },
@@ -229,11 +232,20 @@ export default function useRouteElement() {
       )
     },
     {
+      path: path.userLists,
+      index: true,
+      element: (
+        <UserLayout>
+          <UserList />
+        </UserLayout>
+      )
+    },
+    {
       path: path.userHome_Rating_movie,
       index: true,
       element: (
         <UserLayout>
-          <UserHome />
+          <UserActionAll />
         </UserLayout>
       )
     },
@@ -242,7 +254,7 @@ export default function useRouteElement() {
       index: true,
       element: (
         <UserLayout>
-          <UserHome />
+          <UserActionAll />
         </UserLayout>
       )
     },
@@ -251,7 +263,7 @@ export default function useRouteElement() {
       index: true,
       element: (
         <UserLayout>
-          <UserHome />
+          <UserActionAll />
         </UserLayout>
       )
     },
@@ -260,7 +272,7 @@ export default function useRouteElement() {
       index: true,
       element: (
         <UserLayout>
-          <UserHome />
+          <UserActionAll />
         </UserLayout>
       )
     },
@@ -269,7 +281,7 @@ export default function useRouteElement() {
       index: true,
       element: (
         <UserLayout>
-          <UserHome />
+          <UserActionAll />
         </UserLayout>
       )
     },
@@ -278,8 +290,35 @@ export default function useRouteElement() {
       index: true,
       element: (
         <UserLayout>
-          <UserHome />
+          <UserActionAll />
         </UserLayout>
+      )
+    },
+    {
+      path: path.userHome_recommendationsMovie,
+      index: true,
+      element: (
+        <UserLayout>
+          <UserActionAll />
+        </UserLayout>
+      )
+    },
+    {
+      path: path.userHome_recommendationsTV,
+      index: true,
+      element: (
+        <UserLayout>
+          <UserActionAll />
+        </UserLayout>
+      )
+    },
+    {
+      path: path.userListsDetails,
+      index: true,
+      element: (
+        <MainLayout>
+          <UserListDetails />
+        </MainLayout>
       )
     }
   ]

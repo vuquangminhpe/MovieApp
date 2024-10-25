@@ -33,8 +33,6 @@ export default function UserLayout({ children }: Props) {
 
   const dataPersent = (array: AccountRating[] | AccountTVRating[]) => {
     const percentage: number = array?.reduce((result, total) => {
-      console.log('value', total?.account_rating?.value)
-
       return result + Number(total?.account_rating?.value)
     }, 0)
     let colorLiker = '#4CAF50'
@@ -52,7 +50,6 @@ export default function UserLayout({ children }: Props) {
   const { colorLiker: colorLikerMovie } = dataPersent(ratedMovie as AccountRating[])
   const { persents: percentageTV, Circumference: circumferenceTV } = dataPersent(ratedTV as AccountTVRating[])
   const { colorLiker: colorLikerTV } = dataPersent(ratedTV as AccountTVRating[])
-  console.log(percentageTV)
 
   const persentPrint = (circumferences: number, percentages: number, colorAdjust: string) => {
     return (
@@ -101,12 +98,12 @@ export default function UserLayout({ children }: Props) {
             className='absolute z-0 object-cover h-[250px] max-sm:h-[340px] w-full bg-emerald-950'
             alt=''
           />
-          <div className='flex max-sm:flex-col translate-y-10 items-center container'>
+          <div className='flex max-sm:flex-col  max-sm:ml-0 translate-y-10 items-center container'>
             <div className='w-[160px] z-50 text-7xl h-[160px] rounded-full text-white text-center bg-emerald-400 items-center flex justify-center font-semibold'>
               M
             </div>
-            <div className='flex flex-col'>
-              <div className='text-white max-sm:text-center max-sm:my-4 font-bold text-3xl max-md:text-xl z-50'>
+            <div className='flex flex-col ml-10 max-sm:ml-0'>
+              <div className='mb-7 max-sm:mb-1 text-white max-sm:text-center max-sm:my-4 font-bold text-3xl max-md:text-xl z-50'>
                 minhDevFE120304
               </div>
               <div className='flex'>
@@ -122,12 +119,14 @@ export default function UserLayout({ children }: Props) {
           </div>
         </div>
         <div className='mt-32 flex justify-center gap-9 items-center text-black'>
-          <NavLink className='text-black' to={''}>
+          <NavLink className='text-black' to={`/${path.userHome}`}>
             Overview
           </NavLink>
-          <NavLink to={`/${path.userHome_Rating_movie}`}>Lists</NavLink>
-          <NavLink to={''}>Rating</NavLink>
-          <NavLink to={''}>WatchList</NavLink>
+          <NavLink to={`/${path.userLists}`}>Lists</NavLink>
+          <NavLink to={`/${path.userHome_favoriteMovie}`}>Favorite</NavLink>
+          <NavLink to={`/${path.userHome_Rating_movie}`}>Rating</NavLink>
+          <NavLink to={`/${path.userHome_watchListMovie}`}>WatchList</NavLink>
+          <NavLink to={`/${path.userHome_recommendationsMovie}`}>Recommendation</NavLink>
         </div>
         <div className='border-b-[1px] border-gray-300'></div>
       </div>

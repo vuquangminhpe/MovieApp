@@ -26,12 +26,16 @@ const path = {
   companyDetail: '/company/:company_id',
   searchAll: '/search',
   contactDeveloper: '/contact/developer/Minh',
-  userHome: 'u/minhDevFE120304/lists',
+  userHome: '/u/minhDevFE120304/overview',
+  userLists: 'u/minhDevFE120304/lists',
   userHome_favoriteMovie: 'u/minhDevFE120304/favorite/movie',
   userHome_favoriteTV: 'u/minhDevFE120304/favorite/tv',
   userHome_Rating_movie: 'u/minhDevFE120304/rating/movie',
   userHome_Rating_tv: 'u/minhDevFE120304/rating/tv',
   userHome_watchListMovie: 'u/minhDevFE120304/watchlists/movie',
-  userHome_watchListTV: 'u/minhDevFE120304/watchlists/tv'
+  userHome_watchListTV: 'u/minhDevFE120304/watchlists/tv',
+  userHome_recommendationsTV: 'u/minhDevFE120304/recommendations/tv',
+  userHome_recommendationsMovie: 'u/minhDevFE120304/recommendations/movie',
+  userListsDetails: '/list/:listID'
 }
 export default path

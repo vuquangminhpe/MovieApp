@@ -1,13 +1,13 @@
 import configBase from '@/constants/config'
 import { AccountRating, AccountTVRating } from '@/types/Account.type'
-import { Movie } from '@/types/Movie'
+import { MovieData_List, MovieInfo } from '@/types/Movie'
 import { typeParams } from '@/types/reference.type'
 import { SuccessResponse } from '@/types/utils.type'
 import http_v4 from '@/utils/http_v4'
 
 export const AccountApi_V4 = {
   getListAll: (params: typeParams) =>
-    http_v4.get<SuccessResponse<Movie | AccountTVRating>>(`account/${configBase.account_object_id}/lists`, {
+    http_v4.get<SuccessResponse<MovieInfo[]>>(`account/${configBase.account_object_id}/lists`, {
       params
     }),
   getFavoriteMovies: (params: typeParams) =>
@@ -25,5 +25,6 @@ export const AccountApi_V4 = {
   getWatchListMovie: (params: typeParams) =>
     http_v4.get<SuccessResponse<AccountRating>>(`account/${configBase.account_object_id}/movie/watchlist`, { params }),
   getWatchListTV: (params: typeParams) =>
-    http_v4.get<SuccessResponse<AccountTVRating>>(`account/${configBase.account_object_id}/tv/watchlist`, { params })
+    http_v4.get<SuccessResponse<AccountTVRating>>(`account/${configBase.account_object_id}/tv/watchlist`, { params }),
+  getListsDetails: (params: typeParams, list_ID: number) => http_v4.get<MovieData_List>(`list/${list_ID}`, { params })
 }
