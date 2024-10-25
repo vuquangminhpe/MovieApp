@@ -16,6 +16,8 @@ import KeyWordsMovie_TV_All from './pages/KeyWordsMovie_TV_All'
 import Search_All_Type from './pages/Search_All_Type'
 import CompanyDetails from './pages/CompanyDetails'
 import ContactDeveloper from './pages/ContactDeveloper'
+import UserHome from './pages/UserHome'
+import UserLayout from './Layouts/UserLayout'
 
 const fixSearch = [
   { name: 'tv' },
@@ -215,6 +217,69 @@ export default function useRouteElement() {
         <MainLayout>
           <ContactDeveloper />
         </MainLayout>
+      )
+    },
+    {
+      path: path.userHome,
+      index: true,
+      element: (
+        <UserLayout>
+          <UserHome />
+        </UserLayout>
+      )
+    },
+    {
+      path: path.userHome_Rating_movie,
+      index: true,
+      element: (
+        <UserLayout>
+          <UserHome />
+        </UserLayout>
+      )
+    },
+    {
+      path: path.userHome_Rating_tv,
+      index: true,
+      element: (
+        <UserLayout>
+          <UserHome />
+        </UserLayout>
+      )
+    },
+    {
+      path: path.userHome_favoriteMovie,
+      index: true,
+      element: (
+        <UserLayout>
+          <UserHome />
+        </UserLayout>
+      )
+    },
+    {
+      path: path.userHome_favoriteTV,
+      index: true,
+      element: (
+        <UserLayout>
+          <UserHome />
+        </UserLayout>
+      )
+    },
+    {
+      path: path.userHome_watchListMovie,
+      index: true,
+      element: (
+        <UserLayout>
+          <UserHome />
+        </UserLayout>
+      )
+    },
+    {
+      path: path.userHome_watchListTV,
+      index: true,
+      element: (
+        <UserLayout>
+          <UserHome />
+        </UserLayout>
       )
     }
   ]

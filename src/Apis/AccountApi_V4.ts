@@ -1,23 +1,29 @@
 import configBase from '@/constants/config'
-import { Movie, MovieTrendings } from '@/types/Movie'
-import { TVSeries } from '@/types/TVSeries.type'
+import { AccountRating, AccountTVRating } from '@/types/Account.type'
+import { Movie } from '@/types/Movie'
+import { typeParams } from '@/types/reference.type'
 import { SuccessResponse } from '@/types/utils.type'
 import http_v4 from '@/utils/http_v4'
 
 export const AccountApi_V4 = {
-  getListAll: () =>
-    http_v4.get<SuccessResponse<Movie | TVSeries>>(`account/${configBase.account_object_id}/movie/lists`),
-  getFavoriteMovies: () =>
-    http_v4.get<SuccessResponse<MovieTrendings>>(`account/${configBase.account_object_id}/movie/favorites`),
-  getFavoriteTV: () => http_v4.get<SuccessResponse<TVSeries>>(`account/${configBase.account_object_id}/tv/favorites`),
-  getRatedMovie: () =>
-    http_v4.get<SuccessResponse<MovieTrendings>>(`account/${configBase.account_object_id}/movie/rated`),
-  getRatedTV: () => http_v4.get<SuccessResponse<TVSeries>>(`account/${configBase.account_object_id}/tv/rated`),
+  getListAll: (params: typeParams) =>
+    http_v4.get<SuccessResponse<Movie | AccountTVRating>>(`account/${configBase.account_object_id}/lists`, {
+      params
+    }),
+  getFavoriteMovies: (params: typeParams) =>
+    http_v4.get<SuccessResponse<AccountRating>>(`account/${configBase.account_object_id}/movie/favorites`, { params }),
+  getFavoriteTV: (params: typeParams) =>
+    http_v4.get<SuccessResponse<AccountTVRating[]>>(`account/${configBase.account_object_id}/tv/favorites`, { params }),
+  getRatedMovie: (params: typeParams) =>
+    http_v4.get<SuccessResponse<AccountRating[]>>(`account/${configBase.account_object_id}/movie/rated`, { params }),
+  getRatedTV: (params: typeParams) =>
+    http_v4.get<SuccessResponse<AccountTVRating[]>>(`account/${configBase.account_object_id}/tv/rated`, { params }),
   getRecommendationsMovie: () =>
-    http_v4.get<SuccessResponse<MovieTrendings>>(`account/${configBase.account_object_id}/movie/recommendations`),
+    http_v4.get<SuccessResponse<AccountRating>>(`account/${configBase.account_object_id}/movie/recommendations`),
   getRecommendationsTV: () =>
-    http_v4.get<SuccessResponse<TVSeries>>(`account/${configBase.account_object_id}/tv/recommendations`),
-  getWatchListMovie: () =>
-    http_v4.get<SuccessResponse<MovieTrendings>>(`account/${configBase.account_object_id}/movie/watchlist`),
-  getWatchListTV: () => http_v4.get<SuccessResponse<TVSeries>>(`account/${configBase.account_object_id}/tv/watchlist`)
+    http_v4.get<SuccessResponse<AccountTVRating>>(`account/${configBase.account_object_id}/tv/recommendations`),
+  getWatchListMovie: (params: typeParams) =>
+    http_v4.get<SuccessResponse<AccountRating>>(`account/${configBase.account_object_id}/movie/watchlist`, { params }),
+  getWatchListTV: (params: typeParams) =>
+    http_v4.get<SuccessResponse<AccountTVRating>>(`account/${configBase.account_object_id}/tv/watchlist`, { params })
 }

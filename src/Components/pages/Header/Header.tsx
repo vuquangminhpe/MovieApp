@@ -83,7 +83,7 @@ export default function Header() {
             renderPopover={
               <div className=' shadow-sm max-w-48 text-sm font-sans gap-1 border rounded-xl border-gray-300 bg-white text-black flex flex-col justify-center text-left items-start'>
                 <div className='p-4 border-b-[1px] border-b-gray-200'>
-                  <Link to={''} className=' text-sm'>
+                  <Link to={path.userHome} className=' text-sm'>
                     minhDevFE120304
                   </Link>
                 </div>

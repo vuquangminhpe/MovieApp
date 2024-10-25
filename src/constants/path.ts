@@ -25,6 +25,13 @@ const path = {
   searchKeywords_TV: '/keyword/:keyword_id/tv',
   companyDetail: '/company/:company_id',
   searchAll: '/search',
-  contactDeveloper: '/contact/developer/Minh'
+  contactDeveloper: '/contact/developer/Minh',
+  userHome: 'u/minhDevFE120304/lists',
+  userHome_favoriteMovie: 'u/minhDevFE120304/favorite/movie',
+  userHome_favoriteTV: 'u/minhDevFE120304/favorite/tv',
+  userHome_Rating_movie: 'u/minhDevFE120304/rating/movie',
+  userHome_Rating_tv: 'u/minhDevFE120304/rating/tv',
+  userHome_watchListMovie: 'u/minhDevFE120304/watchlists/movie',
+  userHome_watchListTV: 'u/minhDevFE120304/watchlists/tv'
 }
 export default path

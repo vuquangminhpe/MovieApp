@@ -54,7 +54,7 @@ export default function HomeMovies() {
   return (
     <div className='flex flex-col'>
       <div className='relative h-[350px] max-sm:h-[600px] overflow-hidden'>
-        <MouseAnimate className='absolute inset-0 z-10' />
+        <MouseAnimate className='h-full object-contain z-10' />
 
         <div className='absolute inset-0 bg-gradient-to-r from-black/70 to-transparent z-20'></div>
 
