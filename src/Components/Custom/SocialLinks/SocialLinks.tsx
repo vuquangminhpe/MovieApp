@@ -21,12 +21,12 @@ const SocialLinks = () => {
     {
       icon: <FaLinkedin />,
       hoverBg: '#0077b5',
-      link: 'https://linkedin.com'
+      link: 'https://www.linkedin.com/in/vu-quang-minh-vu-2a9404334/'
     }
   ]
 
   return (
-    <div>
+    <div className='translate-y-8'>
       <ul>
         {socialMedias.map((media, index) => (
           <li key={index}>

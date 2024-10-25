@@ -68,7 +68,7 @@ export default function ContactDeveloper() {
           <div className='flex justify-between max-lg:flex-col  lg:flex-row items-start lg:items-center lg:gap-16 max-w-7xl mx-auto'>
             <div className='w-full lg:w-2/3 pt-12 lg:pt-20'>
               <h1 className='text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-white '>
-                <div className='flex flex-col space-y-6 lg:space-y-8'>
+                <div className='flex flex-col  space-y-6 lg:space-y-10'>
                   {textLines.map((line, index) => (
                     <div key={index} className='flex flex-wrap z-[9999] cursor-pointer'>
                       {line.split('').map((item, letterIndex) => (
@@ -103,7 +103,7 @@ export default function ContactDeveloper() {
                 </div>
               </h1>
             </div>
-            <div className='w-full lg:w-1/2 mt-12 lg:mt-0'>
+            <div className='w-full lg:w-1/2 mt-12 lg:mt-0 max-sm:translate-y-20 max-md:translate-y-56'>
               <div className='relative w-full max-w-md mx-auto lg:ml-16'>
                 <img
                   src={All_ICONS[currentIconIndex].icon}
@@ -128,7 +128,7 @@ export default function ContactDeveloper() {
               trong lập trình và sự đam mê với thể thao đã giúp tôi duy trì sự cân bằng và động lực trong cuộc sống hàng
               ngày.
             </div>
-            <Carousel className='max-w-[400px] max-md:max-w-[80%] max-md:translate-x-8 h-[450px]'>
+            <Carousel className='max-w-[400px] mb-7 max-md:max-w-[80%] max-md:translate-x-8 h-[450px]'>
               <CarouselContent>
                 {All_Profiles.map((item: { icons: string }) => (
                   <CarouselItem>
