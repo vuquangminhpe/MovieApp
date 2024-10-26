@@ -15,7 +15,7 @@ import { Link, useParams, useSearchParams } from 'react-router-dom'
 export default function CastDetails() {
   const [filterActing, setFilterActing] = useState<string>('desc')
   const { personId } = useParams()
-
+  const [readMore, setReadMore] = useState<boolean>(true)
   const [searchParams, setSearchParams] = useSearchParams()
   const mediaType = searchParams.get('credit_media_type')
   const personIdCast = getIdFromNameId(personId as string)
@@ -182,8 +182,13 @@ export default function CastDetails() {
           <div className='text-3xl font-bold '>{dataPerson?.name}</div>
           <div className=' mt-6'>
             <div className='capitalize text-xl mb-2 font-semibold'>biography</div>
-            <div className='line-clamp-6'>{dataPerson?.biography}</div>
-            <div className='text-right text-customeBlue font-bold cursor-pointer hover:text-green-300'>Read More</div>
+            <div className={`${readMore ? 'line-clamp-6' : ''}`}>{dataPerson?.biography}</div>
+            <div
+              onClick={() => setReadMore(!readMore)}
+              className='text-right text-customeBlue font-bold cursor-pointer hover:text-green-300'
+            >
+              {readMore ? 'Read More' : 'Less More'}
+            </div>
           </div>
           <div className='mt-4'>
             <div className='capitalize font-semibold text-xl'>known for</div>

@@ -1,6 +1,5 @@
 import { AccountApi } from '@/Apis/AccountApi'
 import Popover from '@/Components/Custom/Popover'
-import YouTubePlayer from '@/Components/Custom/YouTubePlayerProps'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTrigger } from '@/Components/ui/dialog'
 import { getYouTubeId } from '@/constants/regex'
 import { movieDetail, videosDetails } from '@/types/Movie'
@@ -11,11 +10,13 @@ interface Props {
   dataMovie: movieDetail | undefined
 }
 export default function AddOwnerMovieDetails({ dataMovieDetails_Videos, dataMovie }: Props) {
+  console.log(dataMovie)
+
   const addWatchListMutation = useMutation({
     mutationFn: () =>
       AccountApi.addWatchList({
         media_type: 'movie',
-        media_id: dataMovie?.production_companies[0].id as number,
+        media_id: dataMovie?.id as number,
         watchlist: true
       })
   })
@@ -24,7 +25,7 @@ export default function AddOwnerMovieDetails({ dataMovieDetails_Videos, dataMovi
     mutationFn: () =>
       AccountApi.addFavorite({
         media_type: 'movie',
-        media_id: dataMovie?.production_companies[0].id as number,
+        media_id: dataMovie?.id as number,
         favorite: true
       })
   })

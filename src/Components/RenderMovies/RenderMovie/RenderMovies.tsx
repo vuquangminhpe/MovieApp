@@ -24,6 +24,7 @@ interface RenderMoviesProps {
   setMovieId: React.Dispatch<React.SetStateAction<number | undefined>>
   voteRate: number
   media_type?: string
+  isActive?: boolean
 }
 
 const RenderMovies = ({
@@ -36,7 +37,8 @@ const RenderMovies = ({
   CustomIMG = '',
   setMovieId,
   voteRate,
-  media_type
+  media_type,
+  isActive = true
 }: RenderMoviesProps) => {
   const [mediaType, setMediaType] = useState<string>(media_type || 'movie')
 
@@ -67,118 +69,120 @@ const RenderMovies = ({
     >
       <div className='absolute top-2 right-2 z-10'>
         <div className='w-6 h-6 flex items-center justify-center cursor-pointer'>
-          <Pops>
-            <PopoverTrigger>
-              {' '}
-              <span onClick={() => setMovieId(movie_id)} className='text-gray-400 text-xl'>
-                ⋮
-              </span>
-            </PopoverTrigger>
-            <PopoverContent>
-              <div className='max-w-56  bg-white h-auto shadow-xl rounded-sm'>
-                <div className='flex justify-start items-center text-center px-4 py-2 my-2'>
-                  <svg
-                    xmlns='http://www.w3.org/2000/svg'
-                    fill='black'
-                    viewBox='0 0 24 24'
-                    strokeWidth={1.5}
-                    stroke='currentColor'
-                    className='size-5 mr-2'
-                  >
-                    <path
-                      strokeLinecap='round'
-                      strokeLinejoin='round'
-                      d='M3.75 5.25h16.5m-16.5 4.5h16.5m-16.5 4.5h16.5m-16.5 4.5h16.5'
-                    />
-                  </svg>
-                  Add to List
-                </div>
-                <div className='border-b-[1px]'></div>
-                <div className='flex justify-start items-center text-center  px-4 py-2 my-2'>
-                  <svg
-                    xmlns='http://www.w3.org/2000/svg'
-                    fill='#B22222'
-                    viewBox='0 0 24 24'
-                    strokeWidth={1.5}
-                    stroke='#B22222'
-                    className='size-5 mr-2'
-                  >
-                    <path
-                      strokeLinecap='round'
-                      strokeLinejoin='round'
-                      d='M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z'
-                    />
-                  </svg>
-                  Favorite
-                </div>
-                <div className='border-b-[1px]'></div>
-                <div className='flex justify-start items-center text-center  px-4 py-2 my-2'>
-                  <svg
-                    xmlns='http://www.w3.org/2000/svg'
-                    fill='black'
-                    viewBox='0 0 24 24'
-                    strokeWidth={1.5}
-                    stroke='currentColor'
-                    className='size-5 mr-2'
-                  >
-                    <path
-                      strokeLinecap='round'
-                      strokeLinejoin='round'
-                      d='M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z'
-                    />
-                  </svg>
-                  Watchlist
-                </div>
-                <div className='border-b-[1px]'></div>
+          {isActive && (
+            <Pops>
+              <PopoverTrigger>
+                {' '}
+                <span onClick={() => setMovieId(movie_id)} className='text-gray-400 text-xl'>
+                  ⋮
+                </span>
+              </PopoverTrigger>
+              <PopoverContent>
+                <div className='max-w-56  bg-white h-auto shadow-xl rounded-sm'>
+                  <div className='flex justify-start items-center text-center px-4 py-2 my-2'>
+                    <svg
+                      xmlns='http://www.w3.org/2000/svg'
+                      fill='black'
+                      viewBox='0 0 24 24'
+                      strokeWidth={1.5}
+                      stroke='currentColor'
+                      className='size-5 mr-2'
+                    >
+                      <path
+                        strokeLinecap='round'
+                        strokeLinejoin='round'
+                        d='M3.75 5.25h16.5m-16.5 4.5h16.5m-16.5 4.5h16.5m-16.5 4.5h16.5'
+                      />
+                    </svg>
+                    Add to List
+                  </div>
+                  <div className='border-b-[1px]'></div>
+                  <div className='flex justify-start items-center text-center  px-4 py-2 my-2'>
+                    <svg
+                      xmlns='http://www.w3.org/2000/svg'
+                      fill='#B22222'
+                      viewBox='0 0 24 24'
+                      strokeWidth={1.5}
+                      stroke='#B22222'
+                      className='size-5 mr-2'
+                    >
+                      <path
+                        strokeLinecap='round'
+                        strokeLinejoin='round'
+                        d='M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z'
+                      />
+                    </svg>
+                    Favorite
+                  </div>
+                  <div className='border-b-[1px]'></div>
+                  <div className='flex justify-start items-center text-center  px-4 py-2 my-2'>
+                    <svg
+                      xmlns='http://www.w3.org/2000/svg'
+                      fill='black'
+                      viewBox='0 0 24 24'
+                      strokeWidth={1.5}
+                      stroke='currentColor'
+                      className='size-5 mr-2'
+                    >
+                      <path
+                        strokeLinecap='round'
+                        strokeLinejoin='round'
+                        d='M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z'
+                      />
+                    </svg>
+                    Watchlist
+                  </div>
+                  <div className='border-b-[1px]'></div>
 
-                <Pops>
-                  <PopoverTrigger>
-                    {' '}
-                    <div className='flex justify-start items-center text-center  px-4 py-2 my-2'>
-                      <svg
-                        xmlns='http://www.w3.org/2000/svg'
-                        fill='orange'
-                        viewBox='0 0 24 24'
-                        strokeWidth={1.5}
-                        stroke='orange'
-                        className='size-5 mr-2'
-                      >
-                        <path
-                          strokeLinecap='round'
-                          strokeLinejoin='round'
-                          d='M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z'
-                        />
-                      </svg>
-                      Your Rating
-                    </div>
-                  </PopoverTrigger>
-                  <PopoverContent>
-                    <div className='bg-blue-950 inline-block p-3 rounded-xl shadow-sm translate-x-20'>
-                      <div className='text-white text-sm'>Rated on {date}</div>
-                      <div className='flex justify-start items-center text-center'>
+                  <Pops>
+                    <PopoverTrigger>
+                      {' '}
+                      <div className='flex justify-start items-center text-center  px-4 py-2 my-2'>
                         <svg
-                          onClick={handleDeletedRatingMovies}
                           xmlns='http://www.w3.org/2000/svg'
-                          fill='#fff'
+                          fill='orange'
                           viewBox='0 0 24 24'
                           strokeWidth={1.5}
-                          stroke='#000'
-                          className='size-6 mr-2'
+                          stroke='orange'
+                          className='size-5 mr-2'
                         >
                           <path
                             strokeLinecap='round'
                             strokeLinejoin='round'
-                            d='m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z'
+                            d='M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z'
                           />
                         </svg>
-                        <InputStar initialRating={voteRate} id={movie_id as number} />
+                        Your Rating
                       </div>
-                    </div>
-                  </PopoverContent>
-                </Pops>
-              </div>
-            </PopoverContent>
-          </Pops>
+                    </PopoverTrigger>
+                    <PopoverContent>
+                      <div className='bg-blue-950 inline-block p-3 rounded-xl shadow-sm translate-x-20'>
+                        <div className='text-white text-sm'>Rated on {date}</div>
+                        <div className='flex justify-start items-center text-center'>
+                          <svg
+                            onClick={handleDeletedRatingMovies}
+                            xmlns='http://www.w3.org/2000/svg'
+                            fill='#fff'
+                            viewBox='0 0 24 24'
+                            strokeWidth={1.5}
+                            stroke='#000'
+                            className='size-6 mr-2'
+                          >
+                            <path
+                              strokeLinecap='round'
+                              strokeLinejoin='round'
+                              d='m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z'
+                            />
+                          </svg>
+                          <InputStar initialRating={voteRate} id={movie_id as number} />
+                        </div>
+                      </div>
+                    </PopoverContent>
+                  </Pops>
+                </div>
+              </PopoverContent>
+            </Pops>
+          )}
         </div>
       </div>
       <Link

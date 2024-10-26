@@ -2,7 +2,7 @@ import { MovieTrendings } from './Movie'
 import { TVSeries } from './TVSeries.type'
 
 export interface addListAccount {
-  media_type?: 'movie' | 'tv'
+  media_type?: 'movie' | 'tv' | string
   media_id: number
   favorite?: true
   watchlist?: true

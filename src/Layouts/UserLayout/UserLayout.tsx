@@ -108,18 +108,18 @@ export default function UserLayout({ children }: Props) {
               </div>
               <div className='flex'>
                 <div className='flex items-center gap-1 text-white'>
-                  {persentPrint(circumferenceMovie, percentageMovie, colorLikerMovie)} Trung bình điểm phim
+                  {persentPrint(circumferenceMovie, Math.floor(percentageMovie), colorLikerMovie)} Trung bình điểm phim
                 </div>
                 <div className=' text-4xl w-1 text-white mx-12'>|</div>
                 <div className='flex items-center gap-1 text-white'>
-                  {persentPrint(circumferenceTV, percentageTV, colorLikerTV)} Trung bình điểm TV
+                  {persentPrint(circumferenceTV, Math.floor(percentageTV), colorLikerTV)} Trung bình điểm TV
                 </div>
               </div>
             </div>{' '}
           </div>
         </div>
-        <div className='mt-32 flex justify-center gap-9 items-center text-black'>
-          <NavLink className='text-black' to={`/${path.userHome}`}>
+        <div className='mt-32 flex max-sm:overflow-x-auto justify-center gap-9 items-center text-black'>
+          <NavLink className='text-black' to={`${path.userHome}`}>
             Overview
           </NavLink>
           <NavLink to={`/${path.userLists}`}>Lists</NavLink>

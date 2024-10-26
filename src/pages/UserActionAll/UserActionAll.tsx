@@ -1,4 +1,4 @@
-import { useInfiniteQuery } from '@tanstack/react-query'
+import { useInfiniteQuery, useMutation, useQueries, useQuery } from '@tanstack/react-query'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
 import UseFilteredMovies from '../MovieList/UseFilteredMovies'
@@ -13,6 +13,12 @@ import { Check, ChevronsUpDown } from 'lucide-react'
 import useQueryConfig from '@/hooks/useQueryConfig'
 import configBase from '@/constants/config'
 import InputStar from '@/Components/Custom/InputStar'
+import { TVSeries } from '@/types/TVSeries.type'
+import DetailsMovieApi from '@/Apis/DetailsMovieApi'
+import { TVSeriesApi } from '@/Apis/TVSeriesApi'
+
+import { toast } from 'react-toastify'
+import { AccountApi } from '@/Apis/AccountApi'
 
 const filterSort = [
   { value: 'popularity.desc', label: 'Popularity Descending' },
@@ -28,6 +34,8 @@ export default function UserActionAll() {
   const [loading, setLoading] = useState(false)
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { setQueryParams, queryConfig } = useQueryConfig()
+  const [idRating, setIdRating] = useState<number>()
+  console.log(idRating)
 
   const [open, setOpen] = useState(false)
   const [value, setValue] = useState('')
@@ -56,13 +64,48 @@ export default function UserActionAll() {
       case pathname.includes('u/minhDevFE120304/recommendations/tv'):
         return AccountApi_V4.getRecommendationsTV
       default:
-        return
+        return AccountApi_V4.getFavoriteMovies
     }
   }, [pathname])
-  useEffect(() => {
-    setLoading(false)
-    setQueryParams({ sort: undefined })
+  const getAPIRating = useCallback(() => {
+    switch (true) {
+      case pathname.includes('/movie'):
+        return DetailsMovieApi.deleteRating
+      case pathname.includes('/tv'):
+        return TVSeriesApi.DeletedRatingTV
+      default:
+        return DetailsMovieApi.deleteRating
+    }
   }, [pathname])
+  const getRating = useCallback(() => {
+    switch (true) {
+      case pathname.includes('/movie'):
+        return DetailsMovieApi.getAccount_States
+      case pathname.includes('/tv'):
+        return TVSeriesApi.GetAccountStates
+      default:
+        return DetailsMovieApi.getAccount_States
+    }
+  }, [pathname])
+
+  const addFavoriteMutation = useMutation({
+    mutationFn: () =>
+      AccountApi.addFavorite({
+        media_id: idRating as number,
+        media_type: pathname.split('/')[4],
+        favorite: true
+      })
+  })
+  const addWatchListMutation = useMutation({
+    mutationFn: () =>
+      AccountApi.addWatchList({
+        media_id: idRating as number,
+        media_type: pathname.split('/')[4],
+        watchlist: true
+      })
+  })
+  console.log(pathname.split('/')[4])
+
   const {
     data: PopularData,
     fetchNextPage,
@@ -71,14 +114,14 @@ export default function UserActionAll() {
   } = useInfiniteQuery({
     queryKey: [pathname],
     queryFn: async ({ pageParam = 1 }) => {
-      const apiFunction = getApiFunction()
-      if (apiFunction) {
-        return apiFunction({ page: pageParam })
-      }
-      throw new Error('No API function matched the pathname')
+      const result = await getApiFunction()({
+        page: pageParam,
+        language: 'en-US'
+      })
+      return result
     },
     getNextPageParam: (lastPage) => {
-      if (loading && Number(lastPage.data.page) < 4) {
+      if (loading && lastPage.data.page < lastPage.data.total_pages) {
         return Number(lastPage.data.page) + 1
       }
       return undefined
@@ -114,13 +157,36 @@ export default function UserActionAll() {
       }
     }
   }, [handleObserver])
-
+  useEffect(() => {
+    setLoading(false)
+    setQueryParams({ sort: undefined })
+  }, [pathname])
   const allMovies = useMemo(
     () => PopularData?.pages.flatMap((page) => page.data.results as MovieTrendings | readonly MovieTrendings[]) ?? [],
     [PopularData]
   )
+  const deletedRatingMutation = useMutation({
+    mutationFn: () => getAPIRating()(Number(idRating))
+  })
+  const handleDeletedRating = () => {
+    deletedRatingMutation.mutate(undefined, {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      onSuccess: (data: any) => {
+        toast.success(`${data.data.status_message}`)
+      },
+      onError: (error: Error) => {
+        toast.error(`${error.message}`)
+      }
+    })
+  }
+  const { data: dataRatingAll } = useQuery({
+    queryKey: ['dataRatingAll', idRating],
+    queryFn: () => getRating()(idRating as number)
+  })
+  const dataRating_ITEM = dataRatingAll?.data
+  console.log(dataRating_ITEM)
+
   const filteredMovies = UseFilteredMovies(allMovies)
-  console.log(filteredMovies)
   const persentPrint = (circumferences: number, percentages: number, colorAdjust: string) => {
     return (
       <div className='w-12 h-12'>
@@ -169,27 +235,51 @@ export default function UserActionAll() {
 
     return persentPrint(Circumference, vote, colorLiker)
   }
+  const handleAddFavorite = () => {
+    addFavoriteMutation.mutate(undefined, {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      onSuccess: (data: any) => {
+        toast.success(`${data.data.status_message}`)
+      },
+      onError: (error: Error) => {
+        toast.error(`${error.message}`)
+      }
+    })
+  }
+  const handleAddWatchList = () => {
+    addWatchListMutation.mutate(undefined, {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      onSuccess: (data: any) => {
+        toast.success(`${data.data.status_message}`)
+      },
+      onError: (error: Error) => {
+        toast.error(`${error.message}`)
+      }
+    })
+  }
   return (
     <div className='mt-5 flex flex-col'>
       <div className='flex justify-around'>
-        <div className='flex gap-4 items-center'>
-          <div className='mb-12 -translate-x-10 capitalize font-bold text-xl'>my {pathname.split('/')[3]}</div>
-          <NavLink
-            to={`/${pathname.split('/').slice(1, 4).join('/')}/movie`}
-            className={({ isActive }) =>
-              `flex justify-between p-3 gap-3 ${isActive ? 'border-b-4 border-emerald-600 text-black font-bold' : ''}`
-            }
-          >
-            Movie
-          </NavLink>
-          <NavLink
-            to={`/${pathname.split('/').slice(1, 4).join('/')}/tv`}
-            className={({ isActive }) =>
-              `flex justify-between p-3 gap-3 ${isActive ? 'border-b-4 border-emerald-600 text-black font-bold' : ''}`
-            }
-          >
-            TV
-          </NavLink>
+        <div className='flex gap-4 max-sm:flex-col items-center'>
+          <div className='mb-12  -translate-x-10 capitalize font-bold text-xl'>my {pathname.split('/')[3]}</div>
+          <div className='flex gap-3'>
+            <NavLink
+              to={`/${pathname.split('/').slice(1, 4).join('/')}/movie`}
+              className={({ isActive }) =>
+                `flex justify-between p-3 gap-3 ${isActive ? 'border-b-4 border-emerald-600 text-black font-bold' : ''}`
+              }
+            >
+              Movie
+            </NavLink>
+            <NavLink
+              to={`/${pathname.split('/').slice(1, 4).join('/')}/tv`}
+              className={({ isActive }) =>
+                `flex justify-between p-3 gap-3 ${isActive ? 'border-b-4 border-emerald-600 text-black font-bold' : ''}`
+              }
+            >
+              TV
+            </NavLink>
+          </div>
         </div>
         <Accordion type='single' collapsible>
           <AccordionItem value='item-1'>
@@ -245,10 +335,14 @@ export default function UserActionAll() {
         </Accordion>
       </div>
       <div className='w-full container mt-12 flex flex-col'>
-        {filteredMovies?.slice(0, 14).map((itemMovies: MovieTrendings) => (
-          <div className='w-full border border-gray-200 rounded-xl flex gap-2 shadow-xl mb-4' key={itemMovies?.id}>
+        {filteredMovies?.map((itemMovies: MovieTrendings | TVSeries) => (
+          <div
+            className='w-full max-sm:flex-col border border-gray-200 rounded-xl flex gap-2 shadow-xl mb-4'
+            key={itemMovies?.id}
+            onClick={() => setIdRating(itemMovies?.id)}
+          >
             <img
-              className='max-w-[200px] h-[230px] object-cover rounded-l-xl shadow-xl object-center'
+              className='max-w-[200px] h-[230px] max-sm:max-w-full max-sm:rounded-xl object-cover rounded-l-xl shadow-xl object-center'
               src={`${configBase.imageBaseUrl}${itemMovies?.backdrop_path}`}
               alt=''
             />
@@ -256,12 +350,16 @@ export default function UserActionAll() {
               <div className='flex gap-3'>
                 <div className='mt-3 ml-2 translate-x-1'>{dataPersent(Math.round(itemMovies?.vote_average))}</div>
                 <div className='flex flex-col'>
-                  <div className='text-black font-bold my-2'>{itemMovies?.original_title}</div>
-                  <div className='text-gray-400'>{itemMovies?.release_date}</div>
-                  <div className='md:-translate-x-16 mt-3'>{itemMovies?.overview}</div>
+                  <div className='text-black font-bold my-2'>
+                    {(itemMovies as MovieTrendings)?.original_title || itemMovies?.original_name}
+                  </div>
+                  <div className='text-gray-400'>
+                    {(itemMovies as MovieTrendings)?.release_date || itemMovies?.first_air_date}
+                  </div>
+                  <div className='-translate-x-16 mt-3'>{itemMovies?.overview}</div>
                   <div className=' flex gap-3'>
                     <Popover>
-                      <PopoverTrigger className='flex gap-3 items-center md:-translate-x-16 mt-4'>
+                      <PopoverTrigger className='flex gap-3 items-center -translate-x-16 mt-4'>
                         <svg
                           xmlns='http://www.w3.org/2000/svg'
                           fill='none'
@@ -279,13 +377,43 @@ export default function UserActionAll() {
 
                         <div>Rate it!</div>
                       </PopoverTrigger>
-                      <PopoverContent className='bg-blue-950 flex gap-3 items-center'>
-                        <div className='text-white capitalize font-bold'>rating? </div>
-                        <InputStar id={itemMovies?.id} />
+                      <PopoverContent className='bg-blue-950 flex gap-6 items-center'>
+                        <div
+                          onClick={handleDeletedRating}
+                          className='text-white text-sm cursor-pointer rounded-sm hover:text-black hover:bg-blue-700 text-center items-center capitalize font-bold bg-gray-400/60'
+                        >
+                          Clear rating?{' '}
+                        </div>
+                        <div className='cursor-pointer'>
+                          <InputStar
+                            pathName={pathname}
+                            initialRating={dataRating_ITEM?.rated.value}
+                            id={itemMovies?.id}
+                          />
+                        </div>
                       </PopoverContent>
                     </Popover>
-                    <Popover>
-                      <PopoverTrigger className='flex gap-3 items-center md:-translate-x-16 mt-4'>
+                    {pathname.includes('favorite') ? (
+                      <div onClick={handleAddFavorite} className='flex gap-3 items-center -translate-x-16 mt-4'>
+                        {' '}
+                        <svg
+                          xmlns='http://www.w3.org/2000/svg'
+                          fill='none'
+                          viewBox='0 0 24 24'
+                          strokeWidth={1.5}
+                          stroke='currentColor'
+                          className='size-6'
+                        >
+                          <path
+                            strokeLinecap='round'
+                            strokeLinejoin='round'
+                            d='M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z'
+                          />
+                        </svg>
+                        <div>Favorite</div>
+                      </div>
+                    ) : (
+                      <div onClick={handleAddWatchList} className='flex gap-3 items-center -translate-x-16 mt-4'>
                         <svg
                           xmlns='http://www.w3.org/2000/svg'
                           fill='none'
@@ -301,11 +429,11 @@ export default function UserActionAll() {
                           />
                         </svg>
 
-                        <div>Favorite</div>
-                      </PopoverTrigger>
-                    </Popover>
+                        <div>WatchList</div>
+                      </div>
+                    )}
                     <Popover>
-                      <PopoverTrigger className='flex gap-3 items-center md:-translate-x-16 mt-4'>
+                      <PopoverTrigger className='flex gap-3 items-center -translate-x-16 mt-4'>
                         <svg
                           xmlns='http://www.w3.org/2000/svg'
                           fill='none'
@@ -333,7 +461,7 @@ export default function UserActionAll() {
         ))}
       </div>
       {filteredMovies.length > 14 && (
-        <div ref={loadMoreRef} className='w-full py-4 text-center flex justify-center items-center'>
+        <div ref={loadMoreRef} className='w-full my-12 py-4 text-center flex justify-center items-center'>
           <div
             onClick={() => setLoading(true)}
             className={`text-white font-semibold cursor-pointer leading-7 capitalize h-8 bg-blue-400/90 w-80 items-center rounded-xl shadow-xl text-center ${loading ? 'hidden' : 'inline-block'}`}

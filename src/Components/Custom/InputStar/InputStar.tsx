@@ -1,21 +1,33 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useEffect, useCallback } from 'react'
 import { Star } from 'lucide-react'
 import { useMutation } from '@tanstack/react-query'
 import DetailsMovieApi from '@/Apis/DetailsMovieApi'
 import { toast } from 'react-toastify'
+import { TVSeriesApi } from '@/Apis/TVSeriesApi'
 
 interface StarRatingProps {
   id: number
   initialRating?: number
   onChange?: (rating: number) => void
+  pathName: string
 }
 
-export default function InputStar({ id, initialRating, onChange }: StarRatingProps) {
+export default function InputStar({ id, initialRating, onChange, pathName = 'movie' }: StarRatingProps) {
   const [rating, setRating] = useState<number>((initialRating as number) / 2 || 0)
   const [hover, setHover] = useState<number>(0)
   const ratingContainerRef = useRef<HTMLDivElement>(null)
+  const getAPIRating = useCallback(() => {
+    switch (true) {
+      case pathName.includes('/movie'):
+        return DetailsMovieApi.addRatingMovieDetails
+      case pathName.includes('/tv'):
+        return TVSeriesApi.AddRatingTV
+      default:
+        return DetailsMovieApi.addRatingMovieDetails
+    }
+  }, [pathName])
+  const ratingMoviesMutation = useMutation({ mutationFn: () => getAPIRating()(id, rating * 2) })
 
-  const ratingMoviesMutation = useMutation({ mutationFn: () => DetailsMovieApi.addRatingMovieDetails(id, rating * 2) })
   const calculateRating = (clientX: number) => {
     if (!ratingContainerRef.current) return 0
     const containerRect = ratingContainerRef.current.getBoundingClientRect()

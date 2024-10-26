@@ -18,10 +18,14 @@ export const AccountApi_V4 = {
     http_v4.get<SuccessResponse<AccountRating[]>>(`account/${configBase.account_object_id}/movie/rated`, { params }),
   getRatedTV: (params: typeParams) =>
     http_v4.get<SuccessResponse<AccountTVRating[]>>(`account/${configBase.account_object_id}/tv/rated`, { params }),
-  getRecommendationsMovie: () =>
-    http_v4.get<SuccessResponse<AccountRating>>(`account/${configBase.account_object_id}/movie/recommendations`),
-  getRecommendationsTV: () =>
-    http_v4.get<SuccessResponse<AccountTVRating>>(`account/${configBase.account_object_id}/tv/recommendations`),
+  getRecommendationsMovie: (params: typeParams) =>
+    http_v4.get<SuccessResponse<AccountRating>>(`account/${configBase.account_object_id}/movie/recommendations`, {
+      params
+    }),
+  getRecommendationsTV: (params: typeParams) =>
+    http_v4.get<SuccessResponse<AccountTVRating>>(`account/${configBase.account_object_id}/tv/recommendations`, {
+      params
+    }),
   getWatchListMovie: (params: typeParams) =>
     http_v4.get<SuccessResponse<AccountRating>>(`account/${configBase.account_object_id}/movie/watchlist`, { params }),
   getWatchListTV: (params: typeParams) =>
