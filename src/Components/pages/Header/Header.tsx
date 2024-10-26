@@ -31,36 +31,6 @@ export default function Header() {
     return (
       <div className={`${customClassName} items-center flex ml-7 mt-1`}>
         <Popover
-          children={
-            <div className='text-white '>
-              <svg
-                xmlns='http://www.w3.org/2000/svg'
-                fill='none'
-                viewBox='0 0 24 24'
-                strokeWidth={1.5}
-                stroke='currentColor'
-                className='size-6'
-              >
-                <path strokeLinecap='round' strokeLinejoin='round' d='M12 4.5v15m7.5-7.5h-15' />
-              </svg>
-            </div>
-          }
-          show={true}
-          onEvent='onClick'
-          renderPopover={
-            <div className=' shadow-sm max-w-52 w-40  text-sm font-sans gap-1 border rounded-xl border-gray-300 bg-white text-black flex flex-col justify-center text-left items-center'>
-              {' '}
-              <Link to='' className='hover:bg-blue-950 p-2 w-full rounded-xl hover:text-white'>
-                Add New Movie
-              </Link>
-              <Link to='' className='hover:hover:bg-blue-950 hover:text-white p-2 rounded-xl w-full'>
-                Add New TV Show
-              </Link>
-            </div>
-          }
-        />
-
-        <Popover
           children='VI'
           className='border border-white w-7 text-center text-white font-bold mx-6 hover:text-black hover:bg-white cursor-pointer'
           renderPopover={
@@ -199,7 +169,7 @@ export default function Header() {
             </div>
           }
         />
-        <ModeToggle classNameConfig='-translate-x-10 items-center' />
+        {/* <ModeToggle classNameConfig='-translate-x-10 items-center' /> */}
       </div>
     )
   }

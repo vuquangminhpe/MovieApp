@@ -36,6 +36,7 @@ const path = {
   userHome_watchListTV: 'u/minhDevFE120304/watchlists/tv',
   userHome_recommendationsTV: 'u/minhDevFE120304/recommendations/tv',
   userHome_recommendationsMovie: 'u/minhDevFE120304/recommendations/movie',
-  userListsDetails: '/list/:listID'
+  userListsDetails: '/list/:listID',
+  ListCreated: '/list/new'
 }
 export default path

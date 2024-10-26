@@ -21,6 +21,8 @@ import UserLayout from './Layouts/UserLayout'
 import UserList from './pages/UserActionAll/UserList'
 import UserActionAll from './pages/UserActionAll'
 import UserListDetails from './pages/UserActionAll/UserListDetails'
+import NotFound from './pages/404NotFound'
+import CreatedList_User from './pages/CreatedList_User'
 
 const fixSearch = [
   { name: 'tv' },
@@ -319,6 +321,24 @@ export default function useRouteElement() {
         <MainLayout>
           <UserListDetails />
         </MainLayout>
+      )
+    },
+    {
+      path: '*',
+      index: true,
+      element: (
+        <MainLayout>
+          <NotFound />
+        </MainLayout>
+      )
+    },
+    {
+      path: path.ListCreated,
+      index: true,
+      element: (
+        <UserLayout>
+          <CreatedList_User />
+        </UserLayout>
       )
     }
   ]

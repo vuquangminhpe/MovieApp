@@ -1,5 +1,6 @@
 import { AccountApi_V4 } from '@/Apis/AccountApi_V4'
 import configBase from '@/constants/config'
+import path from '@/constants/path'
 import { MovieInfo } from '@/types/Movie'
 import { generateNameId } from '@/utils/utils'
 import { useQuery } from '@tanstack/react-query'
@@ -21,7 +22,9 @@ export default function UserList() {
     <div className='flex flex-col my-5 container'>
       <div className='flex justify-between '>
         <div className='capitalize text-xl font-bold text-black dark:text-white'>my lists</div>
-        <div className='bg-emerald-400 text-white p-4 rounded-sm capitalize cursor-pointer'>create list</div>
+        <Link to={`${path.ListCreated}`} className='bg-emerald-400 text-white p-4 rounded-sm capitalize cursor-pointer'>
+          create list
+        </Link>
       </div>
       <div>
         {(dataMyList?.length as number) === 0

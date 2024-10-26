@@ -22,3 +22,7 @@ export interface AccountTVRating extends TVSeries {
     value: number
   }
 }
+
+export interface listAction {
+  items: [{ media_type?: 'movie' | 'tv' | string; media_id: number }]
+}
