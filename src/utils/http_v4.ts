@@ -21,7 +21,6 @@ class Http {
     this.instance.interceptors.request.use(
       (config) => {
         if (this.accessToken && config.headers) {
-          // Add authorization header
           config.headers.Authorization = this.accessToken
         }
         return config
