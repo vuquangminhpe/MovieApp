@@ -108,10 +108,10 @@ export default function UserListDetails() {
             <div className='capitalize text-white font-semibold'>average rating</div>
           </div>
           <div className='flex ml-20 pt-7 flex-col text-white'>
-            {actionTime(dataDetails?.runtime as number)} <div className='capitalize'>total runtime</div>
+            {actionTime(dataDetails?.runtime as number) || 0} <div className='capitalize'>total runtime</div>
           </div>
           <div className='flex ml-20 pt-7 flex-col text-white'>
-            {formatNumber(dataDetails?.revenue as number)} <div className='capitalize'>total revenue</div>
+            {formatNumber(dataDetails?.revenue as number) || 0} <div className='capitalize'>total revenue</div>
           </div>
         </div>
 

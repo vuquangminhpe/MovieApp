@@ -5,7 +5,7 @@ class Http {
   private accessToken: string
   constructor() {
     this.accessToken =
-      'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJkMTQ1ODM0ZTA1N2JkNWZiNDkxMTdhNGFjNDA3YWNlNSIsIm5iZiI6MTcyNjY0MjM1NS4wODcwNTksInN1YiI6IjY2ZWE3NmU4NTE2OGE4OTZlMTFmM2ZkNSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.hAMS-x-u-hRaP9-kBdOS9TqTmywDHBXY5Gzfzx9VSEw'
+      'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI2MmU3MGVlNDNlYzdhZDc4ZDY2MzNiNGZmZDU4MWQ2NyIsIm5iZiI6MTczMDAxMzQ3Ny4yOTU5OTgsInN1YiI6IjY2ZWE3NmU4NTE2OGE4OTZlMTFmM2ZkNSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.qZQXSosq1iw29FeiyOxdakKx3a6pHx73y5fj_pvPiwg'
     this.instance = axios.create({
       baseURL: configBase.baseURL,
       timeout: 10000

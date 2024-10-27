@@ -33,3 +33,10 @@ export interface ListMovieSearch extends Movie {
 export interface ListTVSearch extends TVSeries {
   media_type: 'tv'
 }
+
+export interface Type_Created_List {
+  status_message: string
+  id: number
+  success: true
+  status_code: number
+}

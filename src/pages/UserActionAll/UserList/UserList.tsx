@@ -17,7 +17,20 @@ export default function UserList() {
   useEffect(() => {
     refetch()
   }, [refetch, dataMyList])
+  const getTimeAgo = (updatedAt: string) => {
+    const timeDiff = new Date().getTime() - new Date(updatedAt).getTime()
+    const minutes = Math.floor(timeDiff / (1000 * 60))
+    const hours = Math.floor(timeDiff / (1000 * 60 * 60))
+    const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24))
 
+    if (days > 0) {
+      return `${days} ngày trước`
+    } else if (hours > 0) {
+      return `${hours} giờ trước`
+    } else {
+      return `${minutes} phút trước`
+    }
+  }
   return (
     <div className='flex flex-col my-5 container'>
       <div className='flex justify-between '>
@@ -26,34 +39,28 @@ export default function UserList() {
           create list
         </Link>
       </div>
-      <div>
+      <div className='flex gap-2 justify-around max-sm:flex-col'>
         {(dataMyList?.length as number) === 0
           ? `You havent't created any lists`
           : dataMyList?.map((itemMyList: MovieInfo) => (
               <Link
                 to={`/list/${generateNameId({ name: itemMyList?.name as string, id: itemMyList?.id as number })}`}
                 key={itemMyList.poster_path}
-                className='relative text-center mt-5 flex items-center'
+                className='relative max-sm:w-[350px] text-center mt-5 w-[500px] flex items-center'
               >
                 <img
                   src={`${configBase.imageBaseUrl}${itemMyList?.backdrop_path}`}
-                  className='h-60 rounded-xl shadow-xl w-[500px]'
+                  className='h-60 rounded-xl shadow-xl w-full'
                   alt=''
                 />
-                <div className='h-60 rounded-xl shadow-xl w-[500px] bg-black/85 absolute'></div>
-                <div className='absolute w-[500px] text-white font-bold text-2xl font-serif'>
+                <div className='h-60 rounded-xl shadow-xl w-full bg-black/85 absolute'></div>
+                <div className='absolute w-full text-white font-bold text-2xl font-serif'>
                   <div className='text-center capitalize'>{itemMyList?.name}</div>
                   <div className='flex gap-4 text-center items-center w-full translate-x-[37%]'>
-                    <div className='text-center text-sm'>{dataMyList?.length} item</div>
+                    <div className='text-center text-sm'>{itemMyList?.number_of_items} item</div>
                     <div className='p-2 uppercase text-sm bg-gray-400/40 rounded-xl'>public</div>
                   </div>
-                  <div className='text-gray-400 text-sm mt-2'>
-                    Updated{' '}
-                    {new Date(
-                      Number(new Date().getTime()) - Number(new Date(itemMyList?.updated_at).getTime())
-                    ).getMinutes()}{' '}
-                    minutes ago
-                  </div>
+                  <div className='text-gray-400 text-sm mt-2'>Updated {getTimeAgo(itemMyList.updated_at)}</div>
                 </div>
               </Link>
             ))}
