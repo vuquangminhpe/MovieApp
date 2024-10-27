@@ -31,6 +31,7 @@ export default function UserList() {
       return `${minutes} phút trước`
     }
   }
+
   return (
     <div className='flex flex-col my-5 container'>
       <div className='flex justify-between '>
@@ -39,14 +40,14 @@ export default function UserList() {
           create list
         </Link>
       </div>
-      <div className='flex gap-2 justify-around max-sm:flex-col'>
+      <div className='grid grid-cols-2 max-sm:grid-cols-1 max-sm:w-full gap-2 justify-around '>
         {(dataMyList?.length as number) === 0
           ? `You havent't created any lists`
           : dataMyList?.map((itemMyList: MovieInfo) => (
               <Link
                 to={`/list/${generateNameId({ name: itemMyList?.name as string, id: itemMyList?.id as number })}`}
                 key={itemMyList.poster_path}
-                className='relative max-sm:w-[350px] text-center mt-5 w-[500px] flex items-center'
+                className='relative  max-sm:w-[90%] max-sm:ml-7 max-md:w-[100%] max-lg:w-[100%] text-center mt-5 w-[600px] flex items-center'
               >
                 <img
                   src={`${configBase.imageBaseUrl}${itemMyList?.backdrop_path}`}

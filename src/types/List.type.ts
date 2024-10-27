@@ -4,9 +4,7 @@ import { TVSeries } from './TVSeries.type'
 export interface ListInfo {
   description: string
   name: string
-  iso_3166_1: string
-  iso_639_1: string
-  public: boolean
+  language: 'en' | string
 }
 type SortByOptions =
   | 'original_order.asc'

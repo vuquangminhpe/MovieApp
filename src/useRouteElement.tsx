@@ -23,6 +23,8 @@ import UserActionAll from './pages/UserActionAll'
 import UserListDetails from './pages/UserActionAll/UserListDetails'
 import NotFound from './pages/404NotFound'
 import CreatedList_User from './pages/CreatedList_User'
+import AddItem from './pages/CreatedList_User/AddItem'
+import DeleteList from './pages/CreatedList_User/DeleteList'
 
 const fixSearch = [
   { name: 'tv' },
@@ -338,6 +340,24 @@ export default function useRouteElement() {
       element: (
         <UserLayout>
           <CreatedList_User />
+        </UserLayout>
+      )
+    },
+    {
+      path: path.addItemList,
+      index: true,
+      element: (
+        <UserLayout>
+          <AddItem />
+        </UserLayout>
+      )
+    },
+    {
+      path: path.deletedItemList,
+      index: true,
+      element: (
+        <UserLayout>
+          <DeleteList />
         </UserLayout>
       )
     }

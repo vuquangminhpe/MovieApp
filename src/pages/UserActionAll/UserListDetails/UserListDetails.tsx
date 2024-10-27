@@ -2,20 +2,49 @@ import { AccountApi_V4 } from '@/Apis/AccountApi_V4'
 import configBase from '@/constants/config'
 import path from '@/constants/path'
 import { MovieInfo, MovieResult } from '@/types/Movie'
-import { useQuery } from '@tanstack/react-query'
-import { Link, useParams } from 'react-router-dom'
-import { getIdFromNameId } from '@/utils/utils'
-
+import { useMutation, useQuery } from '@tanstack/react-query'
+import { Link, useNavigate, useParams } from 'react-router-dom'
+import { generateNameId, getIdFromNameId } from '@/utils/utils'
+import { ActionListV3Api } from '@/Apis/ActionListV3Api'
+import { toast } from 'react-toastify'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger
+} from '@/Components/ui/alert-dialog'
+import { useEffect, useState } from 'react'
+import DetailsMovieApi from '@/Apis/DetailsMovieApi'
 const radius = 18
 const circumference = 2 * Math.PI * radius
 
 export default function UserListDetails() {
+  const [idMV, setIdMV] = useState<number[]>([])
+
   const { listID } = useParams()
   const listIDs = getIdFromNameId(listID as string)
+  const navigate = useNavigate()
   const { data } = useQuery({
     queryKey: ['dataList'],
     queryFn: () => AccountApi_V4.getListAll({ page: 1 })
   })
+  const deletedListMutation = useMutation({
+    mutationFn: () => ActionListV3Api.deletedList(Number(listIDs))
+  })
+  const handleDeletedList = () => {
+    deletedListMutation.mutate(undefined, {
+      onSuccess: () => {
+        toast.success('Delete success')
+        navigate({
+          pathname: path.userHome
+        })
+      }
+    })
+  }
 
   const dataMyList = data?.data.results
 
@@ -27,8 +56,13 @@ export default function UserListDetails() {
   console.log(dataDetails)
 
   const actionTime = (time: number) => {
-    if (time > 60) return `${Math.floor(time / 60)}h ${time - 60}m`
+    if (time >= 60) {
+      return `${Math.floor(time / 60)}h ${time % 60}m`
+    } else {
+      return `${time}m`
+    }
   }
+
   const formatNumber = (num: number) => {
     return `$${(num / 1000000).toFixed(1)}`
   }
@@ -68,6 +102,24 @@ export default function UserListDetails() {
       </div>
     )
   }
+  useEffect(() => {
+    if (dataListDetails?.data?.results) {
+      const movieIds = dataListDetails.data.results.map((item) => item.id)
+      setIdMV(movieIds)
+    }
+  }, [dataListDetails])
+
+  const { data: moviesDetails } = useQuery({
+    queryKey: ['dataMoviesDetails', idMV],
+    queryFn: async () => {
+      if (idMV.length === 0) return []
+
+      const promises = idMV.map((id: number) => DetailsMovieApi.getDetailsMovie(id))
+
+      return Promise.all(promises)
+    },
+    enabled: idMV.length > 0
+  })
   const dataPersent = (array: MovieResult) => {
     const percentage = array?.vote_average
     let colorLiker = '#4CAF50'
@@ -85,7 +137,7 @@ export default function UserListDetails() {
       <div className='relative w-full h-[350px]'>
         <div className='bg-[#0D2C3F]/80 w-full h-full absolute'></div>
         <div className='absolute'>
-          <div className='flex ml-20 mt-12 flex-col'>
+          <div className='flex ml-20  mt-12 flex-col'>
             <div className='text-white text-xl font-bold capitalize cursor-pointer mb-3'>{dataDetails?.name}</div>
             <div className='text-white text-xl font-semibold mb-3'>{dataDetails?.description}</div>
             <div className='flex gap-3 items-center'>
@@ -96,12 +148,26 @@ export default function UserListDetails() {
                 A list by <Link to={`${path.userHome}`}>minhDevFE120304</Link>
               </div>
             </div>
+            <AlertDialog>
+              <AlertDialogTrigger className='text-center w-[140px] my-1 cursor-pointer hover:bg-blue-950 bg-[#06b6d4] text-white font-bold p-2 text-xl rounded-sm shadow-sm'>
+                Deleted list
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Are you sure deleted list?</AlertDialogTitle>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction onClick={handleDeletedList}>Continue</AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </div>
         </div>
 
         <div className='absolute font-bold text-2xl bottom-0 h-32 w-full bg-black/55 flex gap-4'>
           <div className='flex  ml-20 pt-7 flex-col text-white'>
-            {dataMyList?.length} <div>Item on this list</div>
+            {dataDetails?.results?.length} <div>Item on this list</div>
           </div>
           <div className='flex ml-20 pt-7 flex-col text-white'>
             {(dataDetails?.average_rating as number) * 10} %{' '}
@@ -123,26 +189,45 @@ export default function UserListDetails() {
           />
         )}
       </div>
-      <div className='mx-40 mt-20'>
+      <div className='mx-40 max-sm:mx-0 mt-20'>
         <div className='w-full flex flex-col'>
           {dataDetails?.results?.map((itemMyList: MovieResult, index) => (
-            <div key={itemMyList?.overview} className='flex gap-3 items-center'>
+            <Link
+              to={`/${itemMyList?.media_type}/${generateNameId({ name: itemMyList?.original_title, id: itemMyList?.id })}`}
+              key={itemMyList?.overview}
+              className='flex gap-3 items-center mb-4'
+            >
               <div className='text-gray-400'>{index + 1}</div>
               <div className='flex justify-between rounded-xl shadow-xl border border-gray-300 w-full items-center p-4'>
-                <div>{itemMyList?.original_title}</div>
-                <div className='flex gap-4 items-center'>
+                <div className='line-clamp-1 max-sm:hidden'>{itemMyList?.original_title}</div>
+                <div className='flex gap-4 max-sm:gap-2 max-sm:flex-wrap items-center'>
+                  {' '}
                   <div>{dataPersent(itemMyList)}</div>
-                  <span className='px-2 py-1 text-sm font-medium rounded-full text-white bg-gradient-to-r from-[#FF6B6B] via-[#FF8C5F] to-[#FF5F95]'>
+                  <span className='px-2  py-1 text-sm font-medium rounded-full text-white bg-gradient-to-r from-[#FF6B6B] via-[#FF8C5F] to-[#FF5F95]'>
                     {itemMyList?.media_type}
                   </span>
                   <div className='bg-blue-950 rounded-2xl p-1 text-sm items-center text-center text-white'>
                     {itemMyList?.release_date}
                   </div>
-                  <div className='text-gray-400 text-sm'> {actionTime(dataDetails?.runtime as number)}</div>
-                  <div className='text-gray-400 text-sm'> {formatNumber(dataDetails?.revenue as number)}M</div>
+                  {moviesDetails?.map(({ data: movieData }, index_movie) =>
+                    index_movie === index ? (
+                      <div className='flex gap-3 max-sm:hidden' key={movieData.id}>
+                        <div className='text-gray-400 text-sm w-[60px] text-center'>
+                          {' '}
+                          {actionTime(movieData?.runtime as number) || '0h 0p'}
+                        </div>
+                        <div className='text-gray-400 text-sm w-[60px] text-center'>
+                          {' '}
+                          {formatNumber(movieData?.revenue as number)}M
+                        </div>
+                      </div>
+                    ) : (
+                      ''
+                    )
+                  )}
                 </div>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </div>

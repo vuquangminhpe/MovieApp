@@ -5,10 +5,14 @@ class Http {
   private accessToken: string
   constructor() {
     this.accessToken =
-      'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI2MmU3MGVlNDNlYzdhZDc4ZDY2MzNiNGZmZDU4MWQ2NyIsIm5iZiI6MTczMDAxMzQ3Ny4yOTU5OTgsInN1YiI6IjY2ZWE3NmU4NTE2OGE4OTZlMTFmM2ZkNSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.qZQXSosq1iw29FeiyOxdakKx3a6pHx73y5fj_pvPiwg'
+      'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI2MmU3MGVlNDNlYzdhZDc4ZDY2MzNiNGZmZDU4MWQ2NyIsIm5iZiI6MTczMDAxNDQ0Ni42NTE1MzIsImp0aSI6IjY3MWRlYzRiYTdkMzUzNjI4YjhiNmY0MSIsInN1YiI6IjY2ZWE3NmU4NTE2OGE4OTZlMTFmM2ZkNSIsInNjb3BlcyI6WyJhcGlfcmVhZCIsImFwaV93cml0ZSJdLCJ2ZXJzaW9uIjoyfQ.79UsiMBnZ99ynKqijXUC1AIc46riC3ihXsUibzn9BD0'
     this.instance = axios.create({
       baseURL: configBase.baseURL,
-      timeout: 10000
+      timeout: 10000,
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      }
     })
     this.instance.interceptors.request.use(
       (config) => {

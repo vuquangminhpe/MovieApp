@@ -24,5 +24,11 @@ export interface AccountTVRating extends TVSeries {
 }
 
 export interface listAction {
-  items: [{ media_type?: 'movie' | 'tv' | string; media_id: number }]
+  items: { media_type?: 'movie' | 'tv' | string; media_id: number }[]
+}
+export interface listActions {
+  items: { media_type?: 'movie' | 'tv' | string; media_id: number }
+}
+export interface listActionV3 {
+  media_id: number
 }
