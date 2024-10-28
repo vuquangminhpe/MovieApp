@@ -29,7 +29,7 @@ const MovieTrending = ({ dataMoviesTrending, setMovieId, rating }: MovieTrending
                   dataTrending={dataTrending}
                 />
                 <div className='text-sm font-semibold max-w-[220px]'>
-                  {dataTrending.original_name || dataTrending.original_title}
+                  {dataTrending.original_name || dataTrending.title}
                 </div>
                 <div className='text-gray-300'>
                   {dataTrending.first_air_date || (dataTrending as Movie).release_date}

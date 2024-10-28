@@ -86,7 +86,7 @@ export default function MovieTrailer({ dataPopulars, setMouseHoverImages }: Prop
                   voteRate={0}
                 />
                 <div className='text-sm text-white font-semibold max-w-[220px] truncate'>
-                  {dataTrending.original_name || dataTrending.original_title}
+                  {dataTrending.original_name || dataTrending.title}
                 </div>
 
                 <div

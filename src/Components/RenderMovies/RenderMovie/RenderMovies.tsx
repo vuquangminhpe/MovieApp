@@ -22,7 +22,6 @@ import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, Command
 import { AccountApi } from '@/Apis/AccountApi'
 import { AccountApi_V4 } from '@/Apis/AccountApi_V4'
 import { ActionListV3Api } from '@/Apis/ActionListV3Api'
-import { listActionV3 } from '@/types/Account.type'
 import Skeleton from '@/Skeleton/Skeleton'
 import { TVSeriesApi } from '@/Apis/TVSeriesApi'
 interface RenderMoviesProps {
@@ -64,7 +63,7 @@ const RenderMovies = ({
   const deletedRatingMutation = useMutation({ mutationFn: () => DetailsMovieApi.deleteRating(movie_id) })
   const deletedRatingMutationTV = useMutation({ mutationFn: () => TVSeriesApi.DeletedRatingTV(movie_id) })
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isFetching } = useQuery({
     queryKey: ['dataList'],
     queryFn: async () => {
       const firstPage = (await AccountApi_V4.getListAll({ page: 1 })) as unknown as any
@@ -181,7 +180,7 @@ const RenderMovies = ({
       }
     })
   }
-  if (isLoading) {
+  if (isLoading || isFetching) {
     return <Skeleton />
   }
   return (

@@ -1,9 +1,9 @@
-import { keepPreviousData, useQuery } from '@tanstack/react-query'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import MovieTrending from './MovieTrending'
 import { ListApi } from '../../Apis/ListApi'
 import MouseAnimate from '../../Components/Custom/MouseAnimate'
 import PopularMovie from './PopularMovie/LeaderBroad'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import MovieTrailer from './MovieTrailer'
 import { Movie, MovieTrendings } from '@/types/Movie'
 import { AccountApi } from '@/Apis/AccountApi'
@@ -11,43 +11,72 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/Components/ui/tabs'
 import { createSearchParams, useNavigate } from 'react-router-dom'
 import path from '@/constants/path'
 import SkeletonLoading from '@/Skeleton'
+import { useLanguage } from '@/Contexts/app.context'
 
 export default function HomeMovies() {
+  const { language } = useLanguage()
+  console.log(language)
+
   const navigate = useNavigate()
   const [movieId, setMovieId] = useState<number>()
+  const queryClient = useQueryClient()
+
   const [trendingMovie, setTrendingMovie] = useState<string>('day')
   const [mouseHoverImages, setMouseHoverImages] = useState(
     'https://media.themoviedb.org/t/p/w1920_and_h600_multi_faces_filter(duotone,00192f,00baff)/SqAZjEqqBAYvyu3KSrWq1d0QLB.jpg'
   )
   const { data: dataRated, refetch } = useQuery({
-    queryKey: ['dataTrending', trendingMovie],
-    queryFn: () => ListApi.TrendingDataMovie(`${trendingMovie}`, { language: 'en' }),
-    placeholderData: keepPreviousData
+    queryKey: ['dataTrending', trendingMovie, language],
+    queryFn: () => ListApi.TrendingDataMovie(`${trendingMovie}`, { language: language as string }),
+    staleTime: 0,
+    refetchOnWindowFocus: false
   })
   const dataTrending = dataRated?.data.results
 
   const { data: dataTrailer } = useQuery({
-    queryKey: ['dataTrailerLatest', []],
+    queryKey: ['dataTrailerLatest', language],
     queryFn: () =>
       ListApi.UpcomingList({
-        language: 'en'
-      })
+        language: language as string
+      }),
+    staleTime: 0,
+    refetchOnWindowFocus: false
   })
 
   const dataTrailerLatest = dataTrailer?.data.results
   const { data: dataPopular } = useQuery({
-    queryKey: ['dataPopularList', []],
+    queryKey: ['dataPopularList', language],
     queryFn: () =>
       ListApi.PopularList({
-        language: 'en'
-      })
+        language: language as string
+      }),
+    staleTime: 0,
+    refetchOnWindowFocus: false
   })
+
   const dataPopulars = dataPopular?.data.results
+  console.log(language)
 
   const { data: dataRatedMovies } = useQuery({
     queryKey: ['dataRatedMovies_popular'],
-    queryFn: AccountApi.getRatedMoviesAccount
+    queryFn: AccountApi.getRatedMoviesAccount,
+    staleTime: 0,
+    refetchOnWindowFocus: false
   })
+  useEffect(() => {
+    const handleLoad = () => {
+      queryClient.invalidateQueries({ queryKey: ['dataTrending'] })
+      queryClient.invalidateQueries({ queryKey: ['dataTrailerLatest'] })
+      queryClient.invalidateQueries({ queryKey: ['dataPopularList'] })
+      queryClient.invalidateQueries({ queryKey: ['dataRatedMovies_popular'] })
+    }
+
+    window.addEventListener('load', handleLoad)
+
+    return () => {
+      window.removeEventListener('load', handleLoad)
+    }
+  }, [language, queryClient])
   const dataRateds = dataRatedMovies?.data.results
   const extendedDataRated = dataRateds?.find((item: MovieTrendings) => (item.id as number | undefined) === movieId)
   if (!dataPopulars && !dataRateds && !extendedDataRated) {

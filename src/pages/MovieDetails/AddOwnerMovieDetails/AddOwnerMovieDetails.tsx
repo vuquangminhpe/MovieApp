@@ -1,15 +1,21 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { AccountApi } from '@/Apis/AccountApi'
 import Popover from '@/Components/Custom/Popover'
+import YouTubePlayer from '@/Components/Custom/YouTubePlayerProps'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTrigger } from '@/Components/ui/dialog'
 import { getYouTubeId } from '@/constants/regex'
 import { movieDetail, videosDetails } from '@/types/Movie'
 import { useMutation } from '@tanstack/react-query'
+import { useState } from 'react'
 import { toast } from 'react-toastify'
 interface Props {
   dataMovieDetails_Videos: videosDetails | undefined
   dataMovie: movieDetail | undefined
 }
 export default function AddOwnerMovieDetails({ dataMovieDetails_Videos, dataMovie }: Props) {
+  const [selectedVideos, setSelectedVideos] = useState<string | null>(null)
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [playerError, setPlayerError] = useState<string | null>(null)
   const addWatchListMutation = useMutation({
     mutationFn: () =>
       AccountApi.addWatchList({
@@ -48,6 +54,11 @@ export default function AddOwnerMovieDetails({ dataMovieDetails_Videos, dataMovi
         toast.error(`${error.message}`)
       }
     })
+  }
+  const closeModal = () => {
+    setIsModalOpen(false)
+    setSelectedVideos(null)
+    setPlayerError(null)
   }
   return (
     <div className='flex gap-6 mt-7'>
@@ -162,18 +173,22 @@ export default function AddOwnerMovieDetails({ dataMovieDetails_Videos, dataMovi
         <DialogContent>
           <DialogHeader>
             <DialogDescription>
-              <div className='fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50'>
-                <div className='bg-white p-4 rounded-lg text-center max-w-4xl w-full'>
+              <div className='fixed inset-0 bg-black bg-opacity-50 flex justify-center  items-center z-50'>
+                <div className='bg-white p-4 rounded-lg text-center max-w-7xl w-full lg:w-[1000px]'>
                   {dataMovieDetails_Videos?.key && (
-                    <div className='relative w-full overflow-hidden'>
-                      <iframe
-                        className='w-full h-[360px] sm:h-[480px] md:h-[640px] lg:h-[720px]'
-                        src={`https://www.youtube.com/embed/${getYouTubeId(dataMovieDetails_Videos?.key as string)}`}
-                        title='YouTube video player'
-                        frameBorder='0'
-                        allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture'
-                        allowFullScreen
-                      ></iframe>
+                    <div className='fixed inset-0 bg-black/50 flex justify-center items-center z-50'>
+                      <div className='bg-black rounded-lg w-[90vw]  max-w-7xl'>
+                        {playerError ? (
+                          <div className='text-red-500'>{playerError}</div>
+                        ) : (
+                          <div className='relative lg:w-[1000px]'>
+                            <YouTubePlayer
+                              key={dataMovieDetails_Videos.key}
+                              videoId={getYouTubeId(dataMovieDetails_Videos.key as string) || ''}
+                            />
+                          </div>
+                        )}
+                      </div>
                     </div>
                   )}
                 </div>

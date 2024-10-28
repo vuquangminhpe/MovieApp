@@ -67,7 +67,7 @@ export default function MovieListView({ colorLiker = '#4CAF50', listData, pathNa
         </div>
       </div>
       <div className='mt-2 p-3'>
-        <div className='font-bold text-sm'>{listData.original_title || listData.original_name}</div>
+        <div className='font-bold text-sm'>{listData.title || listData.name}</div>
         <div className='text-gray-300'>{listData.release_date || listData.first_air_date}</div>
       </div>
     </Link>

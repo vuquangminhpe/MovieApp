@@ -41,6 +41,7 @@ import { toast } from 'react-toastify'
 import AddOwnerMovieDetails from './AddOwnerMovieDetails'
 import { typeSearchKeyWord } from '@/types/Search.type'
 import Skeleton from '@/Skeleton/Skeleton'
+import { useLanguage } from '@/Contexts/app.context'
 
 interface MovieDetailData {
   colorLiker?: string
@@ -48,6 +49,7 @@ interface MovieDetailData {
 
 export default function MovieDetails({ colorLiker = '#4CAF50' }: MovieDetailData) {
   const { movieId } = useParams()
+  const { language } = useLanguage()
   const navigate = useNavigate()
   const randomKey = uuidv4()
   const [mouseHoverImages, setMouseHoverImages] = useState(
@@ -61,16 +63,19 @@ export default function MovieDetails({ colorLiker = '#4CAF50' }: MovieDetailData
     queryFn: () => DetailsMovieApi.getImages(Number(id))
   })
   const { data: dataTrailer } = useQuery({
-    queryKey: ['dataTrailerLatest', []],
+    queryKey: ['dataTrailerLatest', language],
     queryFn: () =>
       ListApi.UpcomingList({
-        language: 'en'
+        language: language
       })
   })
   const dataTrailerLatest = dataTrailer?.data.results
   const { data: dataMovieDetails, isLoading: movieDetailLoading } = useQuery({
-    queryKey: ['movieDetail', id],
-    queryFn: () => DetailsMovieApi.getDetailsMovie(Number(id))
+    queryKey: ['movieDetail', id, language],
+    queryFn: () =>
+      DetailsMovieApi.getDetailsMovie(Number(id), {
+        language: language
+      })
   })
   const { data: dataYoutube_MovieDetails, isLoading: dataYoutube_MovieDetailsLoading } = useQuery({
     queryKey: ['videosDetails_MovieDetail', id],
@@ -82,12 +87,12 @@ export default function MovieDetails({ colorLiker = '#4CAF50' }: MovieDetailData
     queryFn: () => DetailsMovieApi.getCreditMovie(Number(id))
   })
   const { data: dataRecommendationsDetails, isLoading: dataRecommendationsDetailsLoading } = useQuery({
-    queryKey: ['Recommendations_MovieDetails', id],
-    queryFn: () => DetailsMovieApi.getRecommendations(Number(id))
+    queryKey: ['Recommendations_MovieDetails', id, language],
+    queryFn: () => DetailsMovieApi.getRecommendations(Number(id), { language: language })
   })
   const { data: dataKeywords, isLoading } = useQuery({
-    queryKey: ['keyWords_MovieDetails', id],
-    queryFn: () => DetailsMovieApi.getKeywords(Number(id))
+    queryKey: ['keyWords_MovieDetails', id, language],
+    queryFn: () => DetailsMovieApi.getKeywords(Number(id), { language: language })
   })
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -103,6 +108,7 @@ export default function MovieDetails({ colorLiker = '#4CAF50' }: MovieDetailData
   const dataMovieDetails_Videos: videosDetails | undefined = dataYoutube_MovieDetails?.data.results[0]
 
   const dataMovie = dataMovieDetails?.data
+  console.log(dataMovie)
 
   const percentage = Math.round((dataMovie as movieDetail)?.vote_average * 10)
   const radius = 18
@@ -321,7 +327,9 @@ export default function MovieDetails({ colorLiker = '#4CAF50' }: MovieDetailData
                 <div className='opacity-50 mt-6 font-serif'>{dataMovie?.tagline}</div>
                 <div className=' mt-5'>
                   <h2 className='capitalize text-white font-semibold'>overview</h2>
-                  <div className='text-wrap text-gray-300'>{dataMovie?.overview}</div>
+                  <div className='text-wrap text-gray-300'>
+                    {dataMovie?.overview ? dataMovie?.overview : 'không có bản tiếng việt'}
+                  </div>
                 </div>
               </div>
             </div>

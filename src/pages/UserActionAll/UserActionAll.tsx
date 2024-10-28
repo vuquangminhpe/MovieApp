@@ -1,4 +1,4 @@
-import { useInfiniteQuery, useMutation, useQueries, useQuery } from '@tanstack/react-query'
+import { useInfiniteQuery, useMutation, useQuery } from '@tanstack/react-query'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
 import UseFilteredMovies from '../MovieList/UseFilteredMovies'
@@ -6,6 +6,8 @@ import { MovieTrendings } from '@/types/Movie'
 import { AccountApi_V4 } from '@/Apis/AccountApi_V4'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/Components/ui/accordion'
 import { cn } from '@/lib/utils'
+import { CaretSortIcon, CheckIcon } from '@radix-ui/react-icons'
+
 import { Button } from '@/Components/ui/button'
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/Components/ui/command'
 import { Popover, PopoverContent, PopoverTrigger } from '@/Components/ui/popover'
@@ -20,6 +22,8 @@ import { TVSeriesApi } from '@/Apis/TVSeriesApi'
 import { toast } from 'react-toastify'
 import { AccountApi } from '@/Apis/AccountApi'
 import Skeleton from '@/Skeleton/Skeleton'
+import { useLanguage } from '@/Contexts/app.context'
+import { ActionListV3Api } from '@/Apis/ActionListV3Api'
 
 const filterSort = [
   { value: 'popularity.desc', label: 'Popularity Descending' },
@@ -32,9 +36,12 @@ const filterSort = [
 const radius = 18
 const circumference = 2 * Math.PI * radius
 export default function UserActionAll() {
+  const [listsByItem, setListsByItem] = useState({})
+  const { language } = useLanguage()
   const [loading, setLoading] = useState(false)
+
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { setQueryParams, queryConfig } = useQueryConfig()
+  const { setQueryParams } = useQueryConfig()
   const [idRating, setIdRating] = useState<number>()
 
   const [open, setOpen] = useState(false)
@@ -110,13 +117,14 @@ export default function UserActionAll() {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-    isLoading
+    isLoading,
+    refetch
   } = useInfiniteQuery({
     queryKey: [pathname],
     queryFn: async ({ pageParam = 1 }) => {
       const result = await getApiFunction()({
         page: pageParam,
-        language: 'en-US'
+        language: language
       })
       return result
     },
@@ -186,6 +194,10 @@ export default function UserActionAll() {
   const dataRating_ITEM = dataRatingAll?.data
 
   const filteredMovies = UseFilteredMovies(allMovies)
+  console.log(filteredMovies)
+  useEffect(() => {
+    refetch()
+  }, [language])
   const persentPrint = (circumferences: number, percentages: number, colorAdjust: string) => {
     return (
       <div className='w-12 h-12'>
@@ -256,7 +268,56 @@ export default function UserActionAll() {
       }
     })
   }
-  if (dataRatingAllLoading && isLoading) {
+  const handleAddMovieOrTV = useMutation({
+    mutationFn: (list_id: number) => ActionListV3Api.addMovie(Number(list_id), { media_id: idRating as number })
+  })
+  const { data, isLoading: dataListLoading } = useQuery({
+    queryKey: ['dataList'],
+    queryFn: async () => {
+      const firstPage = (await AccountApi_V4.getListAll({ page: 1 })) as unknown as any
+      const totalPages = firstPage.total_pages
+
+      if (totalPages === 1) {
+        return firstPage.data.results
+      }
+
+      const promises = Array.from({ length: totalPages - 1 }, (_, index) =>
+        AccountApi_V4.getListAll({ page: index + 2 })
+      )
+
+      const otherPages = await Promise.all(promises)
+
+      const allData = [...firstPage.data.results, ...otherPages.flatMap((page) => page.data.results)]
+
+      return allData
+    }
+  })
+
+  const dataMyList = data
+  const frameworks = Array.isArray(dataMyList)
+    ? dataMyList.map((item: any) => ({
+        id: item.id,
+        value: `${item.name}-${item.id}`,
+        label: `${item.name} (${item.number_of_items} items)`,
+        displayName: item.name
+      }))
+    : []
+
+  const getSelectedId = () => {
+    const selected = frameworks?.find((framework) => framework.value === value)
+    return selected?.id
+  }
+  const handleAddList = (list_id: number) => {
+    handleAddMovieOrTV.mutate(list_id, {
+      onSuccess: (data) => {
+        toast.success(`${data.data.status_message}`)
+      },
+      onError: (error: Error) => {
+        toast.error(`${error}`)
+      }
+    })
+  }
+  if ((dataRatingAllLoading && isLoading) || dataListLoading) {
     return <Skeleton />
   }
   return (
@@ -353,7 +414,7 @@ export default function UserActionAll() {
                 <div className='mt-3 ml-2 translate-x-1'>{dataPersent(Math.round(itemMovies?.vote_average))}</div>
                 <div className='flex flex-col'>
                   <div className='text-black font-bold my-2'>
-                    {(itemMovies as MovieTrendings)?.original_title || itemMovies?.original_name}
+                    {(itemMovies as MovieTrendings)?.title || itemMovies?.name}
                   </div>
                   <div className='text-gray-400'>
                     {(itemMovies as MovieTrendings)?.release_date || itemMovies?.first_air_date}
@@ -436,24 +497,62 @@ export default function UserActionAll() {
                     )}
                     <Popover>
                       <PopoverTrigger className='flex gap-3 items-center -translate-x-16 mt-4'>
-                        <svg
-                          xmlns='http://www.w3.org/2000/svg'
-                          fill='none'
-                          viewBox='0 0 24 24'
-                          strokeWidth={1.5}
-                          stroke='currentColor'
-                          className='size-6'
+                        <Button
+                          variant='outline'
+                          role='combobox'
+                          aria-expanded={open}
+                          className='justify-between w-full'
                         >
-                          <path
-                            strokeLinecap='round'
-                            strokeLinejoin='round'
-                            d='M3.75 5.25h16.5m-16.5 4.5h16.5m-16.5 4.5h16.5m-16.5 4.5h16.5'
-                          />
-                        </svg>
-
-                        <div>Add to list</div>
+                          <svg
+                            xmlns='http://www.w3.org/2000/svg'
+                            fill='black'
+                            viewBox='0 0 24 24'
+                            strokeWidth={1.5}
+                            stroke='currentColor'
+                            className='size-5 mr-2'
+                          >
+                            <path
+                              strokeLinecap='round'
+                              strokeLinejoin='round'
+                              d='M3.75 5.25h16.5m-16.5 4.5h16.5m-16.5 4.5h16.5m-16.5 4.5h16.5'
+                            />
+                          </svg>
+                          Add List
+                          <CaretSortIcon className='ml-2 h-4 w-4 shrink-0 opacity-50' />
+                        </Button>
                       </PopoverTrigger>
-                      <PopoverContent>Place content for the popover here.</PopoverContent>
+                      <PopoverContent className='w-[200px] p-0'>
+                        <Command>
+                          <CommandInput placeholder='Search List...' className='h-9' />
+                          <CommandList>
+                            <CommandEmpty>No framework found.</CommandEmpty>
+                            <CommandGroup>
+                              {frameworks?.map((framework) => (
+                                <CommandItem
+                                  key={framework.id}
+                                  value={framework.value}
+                                  onSelect={(currentValue) => {
+                                    setValue(currentValue)
+                                    const selectedId = getSelectedId()
+                                    console.log('selectedUD', selectedId)
+
+                                    handleAddList(Number(selectedId))
+                                    setOpen(false)
+                                  }}
+                                >
+                                  {framework.label}
+                                  <CheckIcon
+                                    className={cn(
+                                      'ml-auto h-4 w-4',
+                                      value === framework.value ? 'opacity-100' : 'opacity-0'
+                                    )}
+                                  />
+                                </CommandItem>
+                              ))}
+                            </CommandGroup>
+                          </CommandList>
+                        </Command>
+                      </PopoverContent>{' '}
                     </Popover>
                   </div>
                 </div>

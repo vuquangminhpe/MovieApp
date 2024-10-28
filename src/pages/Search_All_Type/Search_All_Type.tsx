@@ -6,12 +6,13 @@ import { SearchApi } from '@/Apis/SearchApi'
 import configBase from '@/constants/config'
 import { generateNameId } from '@/utils/utils'
 import path from '@/constants/path'
-import Skeleton from '@/Skeleton/Skeleton'
+import { useLanguage } from '@/Contexts/app.context'
 
 interface SearchResult {
   id?: number
   overview?: string
   name?: string
+  title?: string
   original_title?: string
   backdrop_path?: string
   logo_path?: string
@@ -31,6 +32,7 @@ const RANGE = 2
 
 export default function SearchAllType() {
   const [page, setPage] = useState<number>(1)
+  const { language } = useLanguage()
   const navigate = useNavigate()
   const location = useLocation()
   const [suggest, setSuggest] = useState(false)
@@ -42,19 +44,19 @@ export default function SearchAllType() {
       name: 'TV',
       link: 'tv',
       queryKey: 'dataSearchTV',
-      searchFn: (query) => SearchApi.SearchTV({ query, language: 'en', page: page })
+      searchFn: (query) => SearchApi.SearchTV({ query, language: language, page: page })
     },
     {
       name: 'People',
       link: 'person',
       queryKey: 'dataSearchPerson',
-      searchFn: (query) => SearchApi.SearchPerson({ query, language: 'en', page: page })
+      searchFn: (query) => SearchApi.SearchPerson({ query, language: language, page: page })
     },
     {
       name: 'Movies',
       link: 'movie',
       queryKey: 'dataSearchMovie',
-      searchFn: (query) => SearchApi.Search_AllMovie({ query, language: 'en', page: page })
+      searchFn: (query) => SearchApi.Search_AllMovie({ query, language: language, page: page })
     },
     {
       name: 'Companies',
@@ -66,20 +68,22 @@ export default function SearchAllType() {
       name: 'Keywords',
       link: 'keyword',
       queryKey: 'dataSearchKeywords',
-      searchFn: (query) => SearchApi.SearchKeyWord_ALL({ query, language: 'en', page: page })
+      searchFn: (query) => SearchApi.SearchKeyWord_ALL({ query, language: language, page: page })
     }
   ]
 
   const searchResults = searchCategories.map((category) => {
-    const { data, refetch, isLoading } = useQuery({
+    const { data, refetch } = useQuery({
       queryKey: [category.queryKey, querySearch],
       queryFn: () => category.searchFn(querySearch),
       placeholderData: keepPreviousData,
       enabled: !!querySearch
     })
+
     useEffect(() => {
+      refetch()
       if (page >= 1) refetch()
-    }, [page])
+    }, [page, language])
     return {
       ...category,
       data_results: data?.data?.total_results || 0,
@@ -170,7 +174,7 @@ export default function SearchAllType() {
           <div className='text-gray-400'>
             {item.first_air_date ||
               item.release_date ||
-              item.known_for?.map((known, index) => <div key={index}>{known.name}</div>)}
+              item.known_for?.map((known, index) => <div key={index}>{known.name || known.title}</div>)}
           </div>
           <div className='line-clamp-2'>{item.overview}</div>
         </div>
@@ -267,7 +271,7 @@ export default function SearchAllType() {
                   }
                   className='flex text-xl font-semibold mb-2 hover:text-[#00bcd4] flex-col gap-2 border-b-[1px] border-gray-300'
                 >
-                  {item.name}
+                  {item.name || item.title}
                 </Link>
               ))
             : currentResults?.dataAll?.map((item: SearchResult, index: number) => (

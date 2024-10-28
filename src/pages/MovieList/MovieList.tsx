@@ -19,6 +19,7 @@ import InputRange from '@/Components/Custom/InputRange'
 import useQueryConfig from '@/hooks/useQueryConfig'
 import UseFilteredMovies from './UseFilteredMovies'
 import { debounce } from 'lodash'
+import { useLanguage } from '@/Contexts/app.context'
 const filterSort = [
   { value: 'popularity.desc', label: 'Popularity Descending' },
   { value: 'popularity.asc', label: 'Popularity Ascending' },
@@ -28,6 +29,7 @@ const filterSort = [
   { value: 'release_date.asc', label: 'Release Date Ascending' }
 ]
 export default function MovieList() {
+  const { language } = useLanguage()
   const navigate = useNavigate()
   const { setQueryParams, queryConfig } = useQueryConfig()
   const { pathname } = useLocation()
@@ -58,8 +60,8 @@ export default function MovieList() {
   )
 
   const { data: dataGenres } = useQuery({
-    queryKey: ['dataGenresMovies', 'en'],
-    queryFn: () => ListApi.getGenres({ language: 'en' })
+    queryKey: ['dataGenresMovies', language],
+    queryFn: () => ListApi.getGenres({ language: language })
   })
 
   const dataGenres_Movies = dataGenres?.data.genres
@@ -98,7 +100,7 @@ export default function MovieList() {
     queryFn: async ({ pageParam = 1 }) => {
       const result = getApiFunction()({
         page: pageParam,
-        language: 'en-US'
+        language: language
       })
       return result
     },
@@ -146,6 +148,7 @@ export default function MovieList() {
   )
 
   const filteredMovies = UseFilteredMovies(allMovies)
+  console.log(filteredMovies)
 
   const handleClick = useCallback((item: ownerGenres) => {
     setSelectedGenres((prevSelected) => {
