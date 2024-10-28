@@ -10,6 +10,7 @@ import { AccountApi } from '@/Apis/AccountApi'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/Components/ui/tabs'
 import { createSearchParams, useNavigate } from 'react-router-dom'
 import path from '@/constants/path'
+import SkeletonLoading from '@/Skeleton'
 
 export default function HomeMovies() {
   const navigate = useNavigate()
@@ -24,7 +25,6 @@ export default function HomeMovies() {
     placeholderData: keepPreviousData
   })
   const dataTrending = dataRated?.data.results
-  console.log(dataTrending)
 
   const { data: dataTrailer } = useQuery({
     queryKey: ['dataTrailerLatest', []],
@@ -50,7 +50,9 @@ export default function HomeMovies() {
   })
   const dataRateds = dataRatedMovies?.data.results
   const extendedDataRated = dataRateds?.find((item: MovieTrendings) => (item.id as number | undefined) === movieId)
-
+  if (!dataPopulars && !dataRateds && !extendedDataRated) {
+    return <SkeletonLoading />
+  }
   return (
     <div className='flex flex-col'>
       <div className='relative h-[350px] max-sm:h-[600px] overflow-hidden'>

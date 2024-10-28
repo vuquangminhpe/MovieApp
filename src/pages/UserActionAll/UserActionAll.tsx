@@ -19,6 +19,7 @@ import { TVSeriesApi } from '@/Apis/TVSeriesApi'
 
 import { toast } from 'react-toastify'
 import { AccountApi } from '@/Apis/AccountApi'
+import Skeleton from '@/Skeleton/Skeleton'
 
 const filterSort = [
   { value: 'popularity.desc', label: 'Popularity Descending' },
@@ -35,7 +36,6 @@ export default function UserActionAll() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { setQueryParams, queryConfig } = useQueryConfig()
   const [idRating, setIdRating] = useState<number>()
-  console.log(idRating)
 
   const [open, setOpen] = useState(false)
   const [value, setValue] = useState('')
@@ -104,13 +104,13 @@ export default function UserActionAll() {
         watchlist: true
       })
   })
-  console.log(pathname.split('/')[4])
 
   const {
     data: PopularData,
     fetchNextPage,
     hasNextPage,
-    isFetchingNextPage
+    isFetchingNextPage,
+    isLoading
   } = useInfiniteQuery({
     queryKey: [pathname],
     queryFn: async ({ pageParam = 1 }) => {
@@ -179,12 +179,11 @@ export default function UserActionAll() {
       }
     })
   }
-  const { data: dataRatingAll } = useQuery({
+  const { data: dataRatingAll, isLoading: dataRatingAllLoading } = useQuery({
     queryKey: ['dataRatingAll', idRating],
     queryFn: () => getRating()(idRating as number)
   })
   const dataRating_ITEM = dataRatingAll?.data
-  console.log(dataRating_ITEM)
 
   const filteredMovies = UseFilteredMovies(allMovies)
   const persentPrint = (circumferences: number, percentages: number, colorAdjust: string) => {
@@ -256,6 +255,9 @@ export default function UserActionAll() {
         toast.error(`${error.message}`)
       }
     })
+  }
+  if (dataRatingAllLoading && isLoading) {
+    return <Skeleton />
   }
   return (
     <div className='mt-5 flex flex-col'>

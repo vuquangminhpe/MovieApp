@@ -6,6 +6,7 @@ import RenderMovies from '@/Components/RenderMovies/RenderMovie'
 import configBase from '@/constants/config'
 import path from '@/constants/path'
 import { Gender } from '@/constants/person.enum'
+import Skeleton from '@/Skeleton/Skeleton'
 import { Movie, MovieTrendings } from '@/types/Movie'
 import { generateNameId, getIdFromNameId } from '@/utils/utils'
 import { useQuery } from '@tanstack/react-query'
@@ -19,19 +20,19 @@ export default function CastDetails() {
   const [searchParams, setSearchParams] = useSearchParams()
   const mediaType = searchParams.get('credit_media_type')
   const personIdCast = getIdFromNameId(personId as string)
-  const { data: dataPersons } = useQuery({
+  const { data: dataPersons, isLoading: dataPersonsLoading } = useQuery({
     queryKey: ['dataPersons', personIdCast],
     queryFn: () => PersonDetailsApi.getPersonDetails(Number(personIdCast))
   })
-  const { data: dataExternalIds } = useQuery({
+  const { data: dataExternalIds, isLoading: dataExternalIdsLoading } = useQuery({
     queryKey: ['dataExternalIds', personIdCast],
     queryFn: () => PersonDetailsApi.getExternalIds(Number(personIdCast))
   })
-  const { data: dataCreditsPerson } = useQuery({
+  const { data: dataCreditsPerson, isLoading: dataCreditsPersonLoading } = useQuery({
     queryKey: ['dataCreditsPerson', personIdCast],
     queryFn: () => PersonDetailsApi.getMovie_credits(Number(personIdCast))
   })
-  const { data: data_tv_CreditsPerson } = useQuery({
+  const { data: data_tv_CreditsPerson, isLoading } = useQuery({
     queryKey: ['data_tv_CreditsPerson', personIdCast],
     queryFn: () => PersonDetailsApi.getMovie_tv_credits(Number(personIdCast))
   })
@@ -43,6 +44,7 @@ export default function CastDetails() {
     ...item,
     media_type: 'tv'
   }))
+
   const credits_Movie = dataCredits?.map((item: MovieTrendings) => ({ ...item, media_type: 'movie' }))
   const MEDIA_OPTIONS = [
     { value: 'all', label: 'All' },
@@ -91,7 +93,9 @@ export default function CastDetails() {
 
     return filtered
   }, [allActingPerson, filterActing, searchParams])
-
+  if (dataPersonsLoading && dataExternalIdsLoading && dataCreditsPersonLoading && isLoading) {
+    return <Skeleton />
+  }
   return (
     <div className='container my-5'>
       <div className='grid grid-cols-12 max-lg:flex max-lg:flex-col'>

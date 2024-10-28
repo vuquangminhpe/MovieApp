@@ -1,6 +1,7 @@
 import { PersonDetailsApi } from '@/Apis/PersonDetailsApi'
 import configBase from '@/constants/config'
 import path from '@/constants/path'
+import Skeleton from '@/Skeleton/Skeleton'
 import { generateNameId } from '@/utils/utils'
 import { useQuery } from '@tanstack/react-query'
 import { useEffect, useState } from 'react'
@@ -8,13 +9,16 @@ import { Link } from 'react-router-dom'
 const RANGE = 2
 export default function PeopleList() {
   const [page, setPage] = useState<number>(1)
-  const { data, refetch } = useQuery({
-    queryKey: ['dataPersonAll', []],
+  const { data, refetch, isLoading } = useQuery({
+    queryKey: ['dataPersonAll', page],
     queryFn: () => PersonDetailsApi.getPeopleList({ language: 'en-US', page: page })
   })
 
   const dataAllPerson = data?.data.results
   const pageSize = Number(data?.data?.total_pages)
+  useEffect(() => {
+    if (page >= 1) refetch()
+  }, [page, dataAllPerson])
   const renderPagination = () => {
     let dotAfter = false
     let dotBefore = false
@@ -40,9 +44,7 @@ export default function PeopleList() {
       }
       return null
     }
-    useEffect(() => {
-      if (page >= 1) refetch()
-    }, [page, dataAllPerson])
+
     if (pageSize)
       return Array(pageSize)
         .fill(0)
@@ -71,6 +73,9 @@ export default function PeopleList() {
             </div>
           )
         })
+  }
+  if (isLoading) {
+    return <Skeleton />
   }
   return (
     <div className='container py-24 max-md:pr-2'>

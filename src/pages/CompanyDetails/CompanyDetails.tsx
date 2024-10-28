@@ -7,6 +7,7 @@ import { CompaniesApi } from '@/Apis/CompaniesApi'
 import { getIdFromNameId } from '@/utils/utils'
 import { motion } from 'framer-motion'
 import configBase from '@/constants/config'
+import Skeleton from '@/Skeleton/Skeleton'
 
 export default function CompanyDetails() {
   const { company_id } = useParams()
@@ -32,11 +33,7 @@ export default function CompanyDetails() {
   const logos = dataImages?.data
 
   if (isLoadingCompany) {
-    return (
-      <div className='min-h-screen flex items-center justify-center'>
-        <div className='animate-spin w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full' />
-      </div>
-    )
+    return <Skeleton />
   }
 
   if (!company) return null

@@ -53,7 +53,6 @@ export default function UserListDetails() {
     queryFn: () => AccountApi_V4.getListsDetails({ page: 1 }, Number(listIDs))
   })
   const dataDetails = dataListDetails?.data
-  console.log(dataDetails)
 
   const actionTime = (time: number) => {
     if (time >= 60) {

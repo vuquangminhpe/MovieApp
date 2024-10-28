@@ -10,8 +10,6 @@ interface Props {
   dataMovie: movieDetail | undefined
 }
 export default function AddOwnerMovieDetails({ dataMovieDetails_Videos, dataMovie }: Props) {
-  console.log(dataMovie)
-
   const addWatchListMutation = useMutation({
     mutationFn: () =>
       AccountApi.addWatchList({

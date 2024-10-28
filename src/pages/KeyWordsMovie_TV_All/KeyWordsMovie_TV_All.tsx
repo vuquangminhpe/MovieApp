@@ -10,6 +10,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { createSearchParams, Link, NavLink, useLocation, useNavigate, useParams } from 'react-router-dom'
 import { Popover, PopoverContent, PopoverTrigger } from '@/Components/ui/popover'
 import { SortBy, SortBy_TV } from '@/types/Discover.type'
+import Skeleton from '@/Skeleton/Skeleton'
 const SortKeyWords_Movie = [
   {
     name_Parent: 'Popularity',
@@ -66,7 +67,6 @@ export default function KeyWordsMovie_TV_All() {
   const navigate = useNavigate()
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [locationValue, setLocationValue] = useState<string>(location.pathname.split('/')[3])
-  console.log(locationValue)
 
   const { keyword_id } = useParams()
   const KeyWordsID = getIdFromNameId(keyword_id as string)
@@ -90,7 +90,8 @@ export default function KeyWordsMovie_TV_All() {
     data: dataDiscover_Movie,
     fetchNextPage,
     hasNextPage,
-    isFetchingNextPage
+    isFetchingNextPage,
+    isLoading
   } = useInfiniteQuery({
     queryKey: [location.pathname, KeyWordsID, sortBy],
     queryFn: async ({ pageParam = 1 }) => {
@@ -170,6 +171,9 @@ export default function KeyWordsMovie_TV_All() {
     navigate({ pathname: location.pathname, search: createSearchParams('').toString() })
     setSortBy('')
     setLoading(false)
+  }
+  if (isLoading) {
+    return <Skeleton />
   }
   return (
     <div className='flex flex-grow'>

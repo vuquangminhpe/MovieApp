@@ -40,6 +40,7 @@ import {
 import { toast } from 'react-toastify'
 import AddOwnerMovieDetails from './AddOwnerMovieDetails'
 import { typeSearchKeyWord } from '@/types/Search.type'
+import Skeleton from '@/Skeleton/Skeleton'
 
 interface MovieDetailData {
   colorLiker?: string
@@ -65,31 +66,30 @@ export default function MovieDetails({ colorLiker = '#4CAF50' }: MovieDetailData
       })
   })
   const dataTrailerLatest = dataTrailer?.data.results
-  const { data: dataMovieDetails, isLoading } = useQuery({
+  const { data: dataMovieDetails, isLoading: movieDetailLoading } = useQuery({
     queryKey: ['movieDetail', id],
     queryFn: () => DetailsMovieApi.getDetailsMovie(Number(id))
   })
-  const { data: dataYoutube_MovieDetails } = useQuery({
+  const { data: dataYoutube_MovieDetails, isLoading: dataYoutube_MovieDetailsLoading } = useQuery({
     queryKey: ['videosDetails_MovieDetail', id],
     queryFn: () => ListApi.getVideosList(Number(id)),
     staleTime: 0
   })
-  const { data: dataCredits } = useQuery({
+  const { data: dataCredits, isLoading: dataCreditsLoading } = useQuery({
     queryKey: ['credit_MovieDetail', id],
     queryFn: () => DetailsMovieApi.getCreditMovie(Number(id))
   })
-  const { data: dataRecommendationsDetails } = useQuery({
+  const { data: dataRecommendationsDetails, isLoading: dataRecommendationsDetailsLoading } = useQuery({
     queryKey: ['Recommendations_MovieDetails', id],
     queryFn: () => DetailsMovieApi.getRecommendations(Number(id))
   })
-  const { data: dataKeywords } = useQuery({
+  const { data: dataKeywords, isLoading } = useQuery({
     queryKey: ['keyWords_MovieDetails', id],
     queryFn: () => DetailsMovieApi.getKeywords(Number(id))
   })
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const dataKeywordsDetails = dataKeywords?.data.keywords
-  console.log(dataKeywords?.data.keywords)
 
   const dataImg: SuccessResponse<DetailsImages[]> | undefined = dataImages?.data
   const dataCredit = dataCredits?.data.cast
@@ -122,11 +122,6 @@ export default function MovieDetails({ colorLiker = '#4CAF50' }: MovieDetailData
   }
 
   const imageUrl = `${configBase.imageBaseUrl}${dataMovie?.backdrop_path || dataMovie?.poster_path}`
-  useEffect(() => {
-    if (isLoading) {
-      return
-    }
-  }, [dataMovie])
 
   const handleViewCollection = () => {
     navigate(
@@ -141,7 +136,15 @@ export default function MovieDetails({ colorLiker = '#4CAF50' }: MovieDetailData
       }
     )
   }
-
+  if (
+    movieDetailLoading &&
+    dataYoutube_MovieDetailsLoading &&
+    dataCreditsLoading &&
+    dataRecommendationsDetailsLoading &&
+    isLoading
+  ) {
+    return <Skeleton />
+  }
   return (
     <div className='my-8'>
       <div className='relative h-[520px] max-sm:h-[950px]'>
@@ -378,6 +381,7 @@ export default function MovieDetails({ colorLiker = '#4CAF50' }: MovieDetailData
               {dataRecommendations_filter?.map((dataPerformerDetails: MovieTrendings | Movie) => (
                 <div key={dataPerformerDetails.id} className='max-w-full rounded-t-sm bg-white shadow-xl '>
                   <RenderMovies
+                    isActive={true}
                     CustomIMG='object-top'
                     typeText='text-teal-500'
                     key={dataPerformerDetails.id}

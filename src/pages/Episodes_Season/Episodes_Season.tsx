@@ -1,6 +1,7 @@
 import { EpisodesApi } from '@/Apis/EpisodesApi'
 import { TVSeasonsDetailsApi } from '@/Apis/TVSeasonsDetailsApi'
 import configBase from '@/constants/config'
+import Skeleton from '@/Skeleton/Skeleton'
 import { CastMember } from '@/types/Movie'
 import { CrewMember, GuestStar, TVSeason } from '@/types/TVSeason.type'
 import { getIdFromNameId } from '@/utils/utils'
@@ -12,15 +13,15 @@ export default function Episodes_Season() {
   const pathName = location.pathname.slice(0, location.pathname.length - 6)
   const { season_ID, tv_ID, episode_ID } = useParams()
   const tvID = getIdFromNameId(tv_ID as string)
-  const { data: dataDetailsEpisodes_Credits } = useQuery({
+  const { data: dataDetailsEpisodes_Credits, isLoading: loadingDATADETAILS } = useQuery({
     queryKey: ['dataDetailsEpisodes_Credits'],
     queryFn: () => EpisodesApi.getDetailsEpisodes_Credits(Number(tvID), Number(season_ID), Number(episode_ID))
   })
-  const { data: data_Episodes_All } = useQuery({
+  const { data: data_Episodes_All, isLoading: loadingDATA_ALL } = useQuery({
     queryKey: ['dataDetailsEpisodes_All'],
     queryFn: () => EpisodesApi.getDetailsEpisodes(Number(tvID), Number(season_ID), Number(episode_ID))
   })
-  const { data: dataSeason } = useQuery({
+  const { data: dataSeason, isLoading } = useQuery({
     queryKey: ['dataSeason_Detail'],
     queryFn: () => TVSeasonsDetailsApi.getDetailsSeasons(Number(tvID), Number(season_ID))
   })
@@ -28,7 +29,9 @@ export default function Episodes_Season() {
 
   const dataEpisodes_Details = dataDetailsEpisodes_Credits?.data
   const data_EpisodesAll = data_Episodes_All?.data
-
+  if (loadingDATADETAILS && loadingDATA_ALL && isLoading) {
+    return <Skeleton />
+  }
   return (
     <div className='my-1'>
       <div className='bg-blue-950 items-center h-[100px] w-full flex justify-start'>

@@ -35,24 +35,28 @@ export default function CollectionDetail({ collection, dataImg, colorLiker = '#4
     <div className='relative h-[520px] '>
       <DynamicMovieBackdrop imageUrl={imageUrl}>
         <div className='container'>
-          <div className=' grid grid-cols-12 z-20 relative'>
-            <div className='col-span-3 h-[450px]'>
+          <div className=' grid grid-cols-12 z-20 relative max-sm:flex max-sm:flex-col'>
+            <div className='col-span-3 h-[450px] max-sm:h-[650px]'>
               <div className='relative group w-full h-full'>
                 <Dialog>
                   <DialogTrigger className='h-full w-full'>
-                    <img src={imageUrl} alt='' className='object-cover h-full w-full rounded-xl shadow-sm' />
+                    <img
+                      src={imageUrl}
+                      alt=''
+                      className='object-cover h-full w-full max-sm:h-[40%] max-sm:translate-y-[60px] rounded-xl shadow-sm'
+                    />
 
-                    <div className='absolute inset-0 bg-[#001a1a]/80 backdrop-blur-[2px] group-hover:opacity-100 opacity-0 transition-all duration-300 rounded-xl flex items-center justify-center'>
+                    <div className='absolute max-sm:z-50 inset-0 bg-[#001a1a]/80 backdrop-blur-[2px] group-hover:opacity-100 opacity-0 transition-all duration-300 rounded-xl flex items-center justify-center'>
                       <button className='flex items-center gap-2 px-5 py-2.5 bg-[#001a1a]/60 backdrop-blur-sm rounded-lg border border-white/10 text-white/90 hover:text-white'>
                         <Expand size={16} />
                         <span>Expand</span>
                       </button>
                     </div>
                   </DialogTrigger>
-                  <DialogContent className='max-w-[900px] w-[80vw]'>
+                  <DialogContent className='max-w-[900px] max-sm:h-[90vh] w-[80vw] max-sm:overflow-y-auto'>
                     <DialogHeader>
-                      <DialogDescription className='flex'>
-                        <Carousel className='w-[500px] h-[450px] mr-10'>
+                      <DialogDescription className='flex max-sm:flex-col '>
+                        <Carousel className='w-[500px] max-sm:w-[280px] h-[450px] mr-12'>
                           <CarouselContent>
                             {(dataImg?.posters as BackdropImages[])?.map((dataImages_item: BackdropImages) => (
                               <CarouselItem key={dataImages_item.iso_639_1}>
@@ -74,7 +78,7 @@ export default function CollectionDetail({ collection, dataImg, colorLiker = '#4
                           <CarouselNext />
                         </Carousel>
 
-                        <div className='w-[70%] mt-[100px] ml-8'>
+                        <div className='w-[70%] mt-[100px] ml-8 max-sm:ml-5'>
                           <div className='flex w-full justify-between'>
                             <img
                               onClick={handleLikeImg}
@@ -111,7 +115,7 @@ export default function CollectionDetail({ collection, dataImg, colorLiker = '#4
                 </Dialog>
               </div>
             </div>
-            <div className='col-span-9 ml-6 text-white'>
+            <div className='col-span-9 ml-6 text-white max-sm:-translate-y-72 max-sm:z-0'>
               <div className='capitalize font-semibold text-2xl'>{collection?.original_title}</div>
               <div className='w-[310px] h-20 flex mt-3 items-center text-center justify-center'>
                 <svg className='w-auto h-full hover:scale-150 transition-all cursor-pointer' viewBox='0 0 40 40'>

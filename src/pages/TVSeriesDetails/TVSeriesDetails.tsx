@@ -24,6 +24,7 @@ import Cast_CrewTVDetails from './Cast_CrewTVDetails'
 import { TVSeriesApi } from '@/Apis/TVSeriesApi'
 import { Aggregate_Credits, keywordsTVSeries, ReviewTVSeries, Season, TVSeriesTrending } from '@/types/TVSeries.type'
 import RenderTVDetails from '@/Components/RenderMovies/RenderTVDetails'
+import Skeleton from '@/Skeleton/Skeleton'
 
 interface TVDetailData {
   colorLiker?: string
@@ -106,12 +107,6 @@ export default function TVSeriesDetails({ colorLiker = '#4CAF50' }: TVDetailData
   const dataTV = useMemo(() => dataTVDetails?.data, [dataTVDetails])
 
   const percentage = useMemo(() => Math.round((dataTV?.vote_average as number) * 10), [dataTV?.vote_average])
-
-  const radius = 18
-  const circumference = 2 * Math.PI * radius
-
-  const strokeDashoffset = useMemo(() => circumference - (percentage / 100) * circumference, [percentage])
-
   colorLiker = useMemo(() => {
     if (percentage < 70 && percentage >= 30) {
       return '#b9d13f'
@@ -120,6 +115,11 @@ export default function TVSeriesDetails({ colorLiker = '#4CAF50' }: TVDetailData
     }
     return '#00e600'
   }, [percentage])
+
+  const radius = 18
+  const circumference = 2 * Math.PI * radius
+
+  const strokeDashoffset = useMemo(() => circumference - (percentage / 100) * circumference, [percentage])
 
   const formatRuntime = useCallback((runtime: number) => {
     const hours = Math.floor(runtime / 60)
@@ -141,16 +141,9 @@ export default function TVSeriesDetails({ colorLiker = '#4CAF50' }: TVDetailData
     [dataTV?.backdrop_path, dataTV?.poster_path]
   )
 
-  useEffect(() => {
-    if (isLoading) {
-      return
-    }
-  }, [isLoading])
-
-  if (isLoading) {
-    return null
+  if (isLoading && !dataCredit) {
+    return <Skeleton />
   }
-
   return (
     <div className='my-8'>
       <div className='relative h-[520px] max-md:h-[950px]'>

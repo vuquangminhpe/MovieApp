@@ -12,6 +12,7 @@ import { useEffect, useState } from 'react'
 import { SuccessResponse } from '@/types/utils.type'
 import { AxiosResponse } from 'axios'
 import { toast } from 'react-toastify'
+import Skeleton from '@/Skeleton/Skeleton'
 
 export default function SeasonDetails() {
   const location = useLocation()
@@ -22,18 +23,24 @@ export default function SeasonDetails() {
   const { season_ID, tv_ID } = useParams()
   const tvID = getIdFromNameId(tv_ID as string)
 
-  const { data: dataSeason } = useQuery({
+  const { data: dataSeason, isLoading: dataSeasonLoading } = useQuery({
     queryKey: ['dataSeason_Detail'],
     queryFn: () => TVSeasonsDetailsApi.getDetailsSeasons(Number(tvID), Number(season_ID))
   })
 
   const dataSeasonDetail: TVSeason = dataSeason?.data as TVSeason
-  const { data: dataAccountState, refetch } = useQuery({
+  const {
+    data: dataAccountState,
+    refetch,
+    isLoading: dataAccountStateLoading
+  } = useQuery({
     queryKey: ['dataAccountState', episodeID],
     queryFn: () => EpisodesApi.getAccountState(Number(tvID), Number(season_ID), Number(episodeID))
   })
   const dataRated = dataAccountState?.data
-
+  useEffect(() => {
+    refetch()
+  }, [refetch, episodeID])
   const deletedRatingEpisodesMutation = useMutation({
     mutationFn: () => EpisodesApi.DeletedRatingEpisodes(Number(tvID), Number(season_ID), Number(episodeID))
   })
@@ -50,14 +57,14 @@ export default function SeasonDetails() {
         toast.success(`${data.data.status_message}`)
         refetch()
       },
-      onError: (error: AxiosResponse<SuccessResponse<{ status_message: string }>>) => {
-        toast.error(`${error.data.status_message}`)
+      onError: (error: Error) => {
+        toast.error(`${error}`)
       }
     })
   }
-  useEffect(() => {
-    refetch()
-  }, [refetch, episodeID])
+  if (dataSeasonLoading && dataAccountStateLoading) {
+    return <Skeleton />
+  }
   return (
     <div className='flex flex-col w-full'>
       <div className='bg-gray-600 w-full'>

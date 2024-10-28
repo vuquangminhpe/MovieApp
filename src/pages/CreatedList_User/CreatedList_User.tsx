@@ -33,8 +33,6 @@ export default function CreatedList_User() {
   const handleCreatedList = async () => {
     createdListMutation.mutateAsync(undefined, {
       onSuccess: (data) => {
-        console.log(data)
-
         toast.success(`Created List success`)
 
         navigate({

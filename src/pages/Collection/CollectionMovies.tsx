@@ -9,13 +9,14 @@ import { SuccessResponse } from '@/types/utils.type'
 import DetailsMovieApi from '@/Apis/DetailsMovieApi'
 import configBase from '@/constants/config'
 import path from '@/constants/path'
+import Skeleton from '@/Skeleton/Skeleton'
 
 export default function CollectionMovies() {
   const location = useLocation()
 
   const { collection_id } = useParams()
   const id = getIdFromNameId(collection_id as string)
-  const { data: dataCollectionDetails } = useQuery({
+  const { data: dataCollectionDetails, isLoading: dataCLDetails } = useQuery({
     queryKey: ['collectionData', id],
     queryFn: () => CollectionApi.getDetailsCollection(Number(id))
   })
@@ -26,7 +27,7 @@ export default function CollectionMovies() {
     queryFn: () => CollectionApi.getImagesCollection(Number(id))
   })
   const dataImg: SuccessResponse<DetailsImages[]> | undefined = dataCollectionIMG?.data
-  const { data: dataCredits } = useQuery({
+  const { data: dataCredits, isLoading } = useQuery({
     queryKey: ['credit_MovieDetail', location.state.collectionId],
     queryFn: () => DetailsMovieApi.getCreditMovie(Number(location.state.collectionId))
   })
@@ -59,7 +60,9 @@ export default function CollectionMovies() {
       return 0
     })
   }
-
+  if (dataCLDetails && isLoading) {
+    return <Skeleton />
+  }
   return (
     <div>
       <CollectionDetail dataImg={dataImg} collection={dataCollection} />

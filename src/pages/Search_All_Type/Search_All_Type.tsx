@@ -6,6 +6,7 @@ import { SearchApi } from '@/Apis/SearchApi'
 import configBase from '@/constants/config'
 import { generateNameId } from '@/utils/utils'
 import path from '@/constants/path'
+import Skeleton from '@/Skeleton/Skeleton'
 
 interface SearchResult {
   id?: number
@@ -70,7 +71,7 @@ export default function SearchAllType() {
   ]
 
   const searchResults = searchCategories.map((category) => {
-    const { data, refetch } = useQuery({
+    const { data, refetch, isLoading } = useQuery({
       queryKey: [category.queryKey, querySearch],
       queryFn: () => category.searchFn(querySearch),
       placeholderData: keepPreviousData,

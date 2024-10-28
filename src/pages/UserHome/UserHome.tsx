@@ -12,6 +12,7 @@ import {
   ChartTooltipContent
 } from '@/Components/ui/chart'
 import { AccountRating, AccountTVRating } from '@/types/Account.type'
+import Skeleton from '@/Skeleton/Skeleton'
 
 const chartConfig = {
   Movie: {
@@ -40,11 +41,11 @@ const months = [
 ]
 
 export default function UserHome() {
-  const { data: dataRated_Movie } = useQuery({
+  const { data: dataRated_Movie, isLoading: dataRated_MovieLoading } = useQuery({
     queryKey: ['dataRated_Movie'],
     queryFn: () => AccountApi_V4.getRatedMovie({ page: 1 })
   })
-  const { data: dataRated_TVShows } = useQuery({
+  const { data: dataRated_TVShows, isLoading: dataRated_TVShowsLoading } = useQuery({
     queryKey: ['dataRated_TVShows'],
     queryFn: () => AccountApi_V4.getRatedTV({ page: 1 })
   })
@@ -79,6 +80,9 @@ export default function UserHome() {
       TV_Shows: tvData
     }
   })
+  if (dataRated_MovieLoading && dataRated_TVShowsLoading) {
+    return <Skeleton />
+  }
   return (
     <div className='mt-5 container flex flex-col'>
       <div className='mb-5'>

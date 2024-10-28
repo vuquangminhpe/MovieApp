@@ -13,7 +13,6 @@ export default function UserList() {
     queryFn: () => AccountApi_V4.getListAll({ page: 1 })
   })
   const dataMyList = data?.data.results
-  console.log(dataMyList)
   useEffect(() => {
     refetch()
   }, [refetch, dataMyList])

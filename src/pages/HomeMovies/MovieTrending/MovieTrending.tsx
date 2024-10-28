@@ -11,8 +11,6 @@ interface MovieTrendingProps {
 }
 
 const MovieTrending = ({ dataMoviesTrending, setMovieId, rating }: MovieTrendingProps) => {
-  console.log(dataMoviesTrending)
-
   return (
     <div className='pl-7 py-7 w-full'>
       <div className='text-xl font-bold mb-4'>Trending</div>

@@ -20,7 +20,6 @@ export default function AddItem() {
   const addItemsMutation = useMutation({
     mutationFn: () => ActionListV3Api.addMovie(Number(search.split('=')[1]), { media_id: items as number })
   })
-  console.log(items)
 
   const [suggest, setSuggest] = useState(false)
 
