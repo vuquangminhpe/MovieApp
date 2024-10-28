@@ -1,5 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import DetailsMovieApi from '@/Apis/DetailsMovieApi'
 import { PersonDetailsApi } from '@/Apis/PersonDetailsApi'
+import { TVSeriesApi } from '@/Apis/TVSeriesApi'
 import CustomScrollContainer from '@/Components/Custom/CustomScrollContainer'
 import Popover from '@/Components/Custom/Popover/Popover'
 import RenderMovies from '@/Components/RenderMovies/RenderMovie'
@@ -15,6 +17,7 @@ import { Link, useParams, useSearchParams } from 'react-router-dom'
 
 export default function CastDetails() {
   const [filterActing, setFilterActing] = useState<string>('desc')
+  const [movie_TV_ID, setMovie_TV_ID] = useState<number>()
   const { personId } = useParams()
   const [readMore, setReadMore] = useState<boolean>(true)
   const [searchParams, setSearchParams] = useSearchParams()
@@ -36,6 +39,16 @@ export default function CastDetails() {
     queryKey: ['data_tv_CreditsPerson', personIdCast],
     queryFn: () => PersonDetailsApi.getMovie_tv_credits(Number(personIdCast))
   })
+  const { data: dataVoteRatedMovie } = useQuery({
+    queryKey: ['dataVoteRated', movie_TV_ID],
+    queryFn: () => DetailsMovieApi.getAccount_States(movie_TV_ID as number)
+  })
+  const { data: dataVoteRatedTV } = useQuery({
+    queryKey: ['dataVoteRatedTV', movie_TV_ID],
+    queryFn: () => TVSeriesApi.GetAccountStates(movie_TV_ID as number)
+  })
+  const voteMV = dataVoteRatedMovie?.data?.rated?.value
+  const voteTV = dataVoteRatedTV?.data?.rated?.value
   const dataCredits = dataCreditsPerson?.data.cast
   const dataPerson = dataPersons?.data
   const dataExternal = dataExternalIds?.data
@@ -96,6 +109,8 @@ export default function CastDetails() {
   if (dataPersonsLoading && dataExternalIdsLoading && dataCreditsPersonLoading && isLoading) {
     return <Skeleton />
   }
+  console.log(dataCredits)
+
   return (
     <div className='container my-5'>
       <div className='grid grid-cols-12 max-lg:flex max-lg:flex-col'>
@@ -201,16 +216,16 @@ export default function CastDetails() {
                 {dataCredits?.map((dataPerformerDetails: Movie) => (
                   <div key={dataPerformerDetails.id} className='max-w-full rounded-t-sm bg-white shadow-xl '>
                     <RenderMovies
+                      media_type={`${dataPerformerDetails?.release_date ? 'movie' : 'tv'}`}
+                      isActive={true}
                       CustomIMG='object-top'
                       typeText='text-teal-500'
                       key={dataPerformerDetails.id}
                       configWidth_Height='w-[150px] h-[250px]'
                       dataTrending={dataPerformerDetails}
-                      movie_id={0}
-                      setMovieId={function (): void {
-                        throw new Error('Function not implemented.')
-                      }}
-                      voteRate={0}
+                      movie_id={dataPerformerDetails?.id}
+                      setMovieId={setMovie_TV_ID}
+                      voteRate={dataPerformerDetails?.release_date ? (voteMV as number) : (voteTV as number)}
                     />
                     <div className='p-2 font-semibold line-clamp-3 max-w-[100px]'>
                       {(dataPerformerDetails as Movie).title || dataPerformerDetails.original_name}

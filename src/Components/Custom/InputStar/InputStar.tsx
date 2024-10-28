@@ -12,15 +12,17 @@ interface StarRatingProps {
   pathName: string
 }
 
-export default function InputStar({ id, initialRating, onChange, pathName = 'movie' }: StarRatingProps) {
+export default function InputStar({ id, initialRating, onChange, pathName }: StarRatingProps) {
+  console.log(pathName)
+
   const [rating, setRating] = useState<number>((initialRating as number) / 2 || 0)
   const [hover, setHover] = useState<number>(0)
   const ratingContainerRef = useRef<HTMLDivElement>(null)
   const getAPIRating = useCallback(() => {
     switch (true) {
-      case pathName.includes('/movie'):
+      case pathName.includes('movie'):
         return DetailsMovieApi.addRatingMovieDetails
-      case pathName.includes('/tv'):
+      case pathName.includes('tv'):
         return TVSeriesApi.AddRatingTV
       default:
         return DetailsMovieApi.addRatingMovieDetails

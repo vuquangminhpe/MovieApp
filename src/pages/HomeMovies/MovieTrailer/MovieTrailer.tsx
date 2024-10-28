@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-useless-escape */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from 'react'
@@ -73,7 +74,17 @@ export default function MovieTrailer({ dataPopulars, setMouseHoverImages }: Prop
                 key={dataTrending.id}
                 className='max-w-full relative hover:transition-all hover:scale-110 hover:rounded-xl'
               >
-                <RenderMovies isActive={false} isShow={false} key={dataTrending.id} dataTrending={dataTrending} />
+                <RenderMovies
+                  isActive={false}
+                  isShow={false}
+                  key={dataTrending.id}
+                  dataTrending={dataTrending}
+                  movie_id={0}
+                  setMovieId={function (value: React.SetStateAction<number | undefined>): void {
+                    throw new Error('Function not implemented.')
+                  }}
+                  voteRate={0}
+                />
                 <div className='text-sm text-white font-semibold max-w-[220px] truncate'>
                   {dataTrending.original_name || dataTrending.original_title}
                 </div>

@@ -53,6 +53,8 @@ export default function MovieDetails({ colorLiker = '#4CAF50' }: MovieDetailData
   const [mouseHoverImages, setMouseHoverImages] = useState(
     'https://media.themoviedb.org/t/p/w1920_and_h600_multi_faces_filter(duotone,00192f,00baff)/SqAZjEqqBAYvyu3KSrWq1d0QLB.jpg'
   )
+  const [movieIds, setmovieIds] = useState<number>()
+
   const id = getIdFromNameId(movieId as string)
   const { data: dataImages } = useQuery({
     queryKey: ['IMGMovieDetail', id],
@@ -120,7 +122,11 @@ export default function MovieDetails({ colorLiker = '#4CAF50' }: MovieDetailData
   const handleLikeImg = () => {
     toast.success('You have successfully rated the image.')
   }
-
+  const { data: dataVoteRate } = useQuery({
+    queryKey: ['dataVoteRate', movieIds],
+    queryFn: () => DetailsMovieApi.getAccount_States(movieIds as number)
+  })
+  const dataVoteMV = dataVoteRate?.data?.rated?.value
   const imageUrl = `${configBase.imageBaseUrl}${dataMovie?.backdrop_path || dataMovie?.poster_path}`
 
   const handleViewCollection = () => {
@@ -381,7 +387,10 @@ export default function MovieDetails({ colorLiker = '#4CAF50' }: MovieDetailData
               {dataRecommendations_filter?.map((dataPerformerDetails: MovieTrendings | Movie) => (
                 <div key={dataPerformerDetails.id} className='max-w-full rounded-t-sm bg-white shadow-xl '>
                   <RenderMovies
-                    isActive={true}
+                    voteRate={dataVoteMV as number}
+                    movie_id={dataPerformerDetails.id}
+                    setMovieId={setmovieIds}
+                    media_type='movie'
                     CustomIMG='object-top'
                     typeText='text-teal-500'
                     key={dataPerformerDetails.id}

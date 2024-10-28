@@ -99,7 +99,16 @@ export default function KeyWordsMovie_TV_All() {
         page: pageParam,
         language: 'en-US',
         with_keywords: KeyWordsID,
-        sort_by: sortBy || 'popularity.desc'
+        sort_by:
+          (sortBy as
+            | ''
+            | 'popularity.desc'
+            | 'popularity.asc'
+            | 'vote_average.desc'
+            | 'vote_average.asc'
+            | 'vote_count.asc'
+            | 'vote_count.desc'
+            | undefined) || 'popularity.desc'
       })
       return result
     },

@@ -23,6 +23,8 @@ import { AccountApi } from '@/Apis/AccountApi'
 import { AccountApi_V4 } from '@/Apis/AccountApi_V4'
 import { ActionListV3Api } from '@/Apis/ActionListV3Api'
 import { listActionV3 } from '@/types/Account.type'
+import Skeleton from '@/Skeleton/Skeleton'
+import { TVSeriesApi } from '@/Apis/TVSeriesApi'
 interface RenderMoviesProps {
   dataTrending: MovieTrendings | Movie
   colorLiker?: string
@@ -50,7 +52,7 @@ const RenderMovies = ({
   media_type,
   isActive = true
 }: RenderMoviesProps) => {
-  const [mediaType, setMediaType] = useState<string>(media_type || 'movie')
+  const [mediaType, setMediaType] = useState<string>(media_type as string)
   const [open, setOpen] = React.useState(false)
   const [value, setValue] = React.useState('')
   const [selectedId, setSelectedId] = useState<string | number>('')
@@ -60,11 +62,14 @@ const RenderMovies = ({
   const circumference = 2 * Math.PI * radius
   const strokeDashoffset = circumference - (percentage / 100) * circumference
   const deletedRatingMutation = useMutation({ mutationFn: () => DetailsMovieApi.deleteRating(movie_id) })
-  const { data } = useQuery({
+  const deletedRatingMutationTV = useMutation({ mutationFn: () => TVSeriesApi.DeletedRatingTV(movie_id) })
+
+  const { data, isLoading } = useQuery({
     queryKey: ['dataList'],
     queryFn: async () => {
-      const firstPage = await AccountApi_V4.getListAll({ page: 1 })
+      const firstPage = (await AccountApi_V4.getListAll({ page: 1 })) as unknown as any
       const totalPages = firstPage.total_pages
+
       if (totalPages === 1) {
         return firstPage.data.results
       }
@@ -106,22 +111,34 @@ const RenderMovies = ({
   })
   const date = new Date().toLocaleDateString('en-US')
   const handleDeletedRatingMovies = () => {
-    deletedRatingMutation.mutate(undefined, {
-      onSuccess: (data: AxiosResponse<SuccessResponse<{ status_message: string }>>) => {
-        toast.success(`${data.data.status_message}`)
-      },
-      onError: (error: Error) => {
-        toast.error(`${error.message}`)
-      }
-    })
+    if (mediaType === 'movie') {
+      deletedRatingMutation.mutate(undefined, {
+        onSuccess: (data: AxiosResponse<SuccessResponse<{ status_message: string }>>) => {
+          toast.success(`${data.data.status_message}`)
+        },
+        onError: (error: Error) => {
+          toast.error(`${error.message}`)
+        }
+      })
+    } else if (mediaType === 'tv') {
+      deletedRatingMutationTV.mutate(undefined, {
+        onSuccess: (data: AxiosResponse<SuccessResponse<{ status_message: string }>>) => {
+          toast.success(`${data.data.status_message}`)
+        },
+        onError: (error: Error) => {
+          toast.error(`${error.message}`)
+        }
+      })
+    }
   }
-
-  const frameworks = dataMyList?.map((item: any) => ({
-    id: item.id,
-    value: `${item.name}-${item.id}`,
-    label: `${item.name} (${item.number_of_items} items)`,
-    displayName: item.name
-  }))
+  const frameworks = Array.isArray(dataMyList)
+    ? dataMyList.map((item: any) => ({
+        id: item.id,
+        value: `${item.name}-${item.id}`,
+        label: `${item.name} (${item.number_of_items} items)`,
+        displayName: item.name
+      }))
+    : []
 
   const getSelectedId = () => {
     const selected = frameworks?.find((framework) => framework.value === value)
@@ -163,6 +180,9 @@ const RenderMovies = ({
         toast.error(`${error}`)
       }
     })
+  }
+  if (isLoading) {
+    return <Skeleton />
   }
   return (
     <div
@@ -213,11 +233,11 @@ const RenderMovies = ({
 
                         {value && frameworks
                           ? frameworks.find((framework) => framework.value === value)?.label
-                          : 'Select List...'}
+                          : 'Add List...'}
                         <CaretSortIcon className='ml-2 h-4 w-4 shrink-0 opacity-50' />
                       </Button>
                     </PopoverTrigger>
-                    <PopoverContent className='w-[200px] p-0'>
+                    <PopoverContent className='w-[200px] translate-x-[220px] -translate-y-[36px] p-0'>
                       <Command>
                         <CommandInput placeholder='Search List...' className='h-9' />
                         <CommandList>
@@ -335,7 +355,7 @@ const RenderMovies = ({
                               d='m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z'
                             />
                           </svg>
-                          <InputStar pathName='movie' initialRating={voteRate} id={movie_id as number} />
+                          <InputStar pathName={`${mediaType}`} initialRating={voteRate} id={movie_id as number} />
                         </div>
                       </div>
                     </PopoverContent>

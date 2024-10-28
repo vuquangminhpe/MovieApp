@@ -12,7 +12,7 @@ export default function UserList() {
     queryKey: ['dataList'],
     queryFn: () => AccountApi_V4.getListAll({ page: 1 })
   })
-  const dataMyList = data?.data.results
+  const dataMyList = data?.data?.results
   useEffect(() => {
     refetch()
   }, [refetch, dataMyList])

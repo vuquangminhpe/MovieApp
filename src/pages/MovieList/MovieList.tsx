@@ -171,7 +171,10 @@ export default function MovieList() {
       setQueryParams({ selectedGenres: undefined })
     }
   }, [selectedGenres, debouncedSetQueryParams, queryConfig.selectedGenres, setQueryParams])
-  useEffect(() => setLoading(false), [pathname])
+  useEffect(() => {
+    setLoading(false)
+    setQueryParams({})
+  }, [pathname])
   if (status === 'pending') {
     return (
       <div className='flex  w-full container'>

@@ -21,6 +21,7 @@ const MovieTrending = ({ dataPopulars, rating, setMovieId }: MovieTrendingProps)
             {dataPopulars?.map((dataTrending) => (
               <Link key={dataTrending.id} to={path.home} className='max-w-full'>
                 <RenderMovies
+                  media_type='movie'
                   voteRate={rating}
                   setMovieId={setMovieId}
                   movie_id={dataTrending.id}

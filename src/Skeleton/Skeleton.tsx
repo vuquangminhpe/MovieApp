@@ -49,44 +49,6 @@ const Skeleton = () => {
           </div>
         </div>
 
-        <div
-          className={`absolute inset-0 transition-opacity duration-500 ${currentAnimation === 3 ? 'opacity-100' : 'opacity-0'}`}
-        >
-          <div className='flex justify-center space-x-2'>
-            {[...Array(5)].map((_, i) => (
-              <div
-                key={i}
-                className={`text-3xl text-yellow-400 animate-star`}
-                style={{ animationDelay: `${i * 0.2}s` }}
-              >
-                ★
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div
-          className={`absolute inset-0 transition-opacity duration-500 ${currentAnimation === 4 ? 'opacity-100' : 'opacity-0'}`}
-        >
-          <div className='relative w-32 h-32 mx-auto'>
-            <div className='absolute inset-0 border-8 border-gray-300 rounded-full'>
-              <div className='absolute inset-2 animate-shutter'>
-                {[...Array(6)].map((_, i) => (
-                  <div
-                    key={i}
-                    className='absolute w-full h-full origin-center'
-                    style={{
-                      transform: `rotate(${i * 60}deg)`,
-                      clipPath: 'polygon(50% 50%, 45% 0%, 55% 0%)',
-                      background: '#FB6E93'
-                    }}
-                  />
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-
         <div className='absolute -bottom-8 left-0 right-0 text-center font-bold' style={{ color: '#FB6E93' }}>
           <div className='flex items-center justify-center h-screen'>
             <div className='text-2xl font-bold' style={{ color: '#FB6E93' }}>

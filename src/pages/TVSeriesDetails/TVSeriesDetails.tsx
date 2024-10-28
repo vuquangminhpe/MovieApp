@@ -84,6 +84,14 @@ export default function TVSeriesDetails({ colorLiker = '#4CAF50' }: TVDetailData
     queryKey: ['ReviewsTV_TVDetails', id],
     queryFn: () => TVSeriesApi.getReviews(Number(id))
   })
+  const { data: dataVoteRate, refetch } = useQuery({
+    queryKey: ['dataVoteRatedTV', tvIds],
+    queryFn: () => TVSeriesApi.GetAccountStates(tvIds as number)
+  })
+  const dataVoteTV = dataVoteRate?.data?.rated?.value
+  useEffect(() => {
+    refetch()
+  }, [dataVoteTV])
 
   const dataKeywordsDetails = useMemo(() => dataKeywords?.data.results, [dataKeywords])
 
@@ -444,7 +452,7 @@ export default function TVSeriesDetails({ colorLiker = '#4CAF50' }: TVDetailData
                     <RenderMovies
                       media_type='tv'
                       setMovieId={setTVIds}
-                      voteRate={dataPerformerDetails?.vote_average}
+                      voteRate={dataVoteTV as number}
                       movie_id={dataPerformerDetails?.id}
                       CustomIMG='object-top'
                       typeText='text-teal-500'

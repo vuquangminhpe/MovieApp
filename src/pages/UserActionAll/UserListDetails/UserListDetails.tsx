@@ -46,7 +46,7 @@ export default function UserListDetails() {
     })
   }
 
-  const dataMyList = data?.data.results
+  const dataMyList = data?.data?.results
 
   const { data: dataListDetails } = useQuery({
     queryKey: ['dataLists'],
@@ -103,7 +103,7 @@ export default function UserListDetails() {
   }
   useEffect(() => {
     if (dataListDetails?.data?.results) {
-      const movieIds = dataListDetails.data.results.map((item) => item.id)
+      const movieIds = dataListDetails?.data?.results.map((item) => item.id)
       setIdMV(movieIds)
     }
   }, [dataListDetails])

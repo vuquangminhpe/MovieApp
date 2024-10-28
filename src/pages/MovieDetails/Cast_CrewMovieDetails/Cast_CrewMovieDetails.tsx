@@ -1,7 +1,6 @@
 import CustomScrollContainer from '@/Components/Custom/CustomScrollContainer'
 import TabsSet from '@/Components/Custom/TabsEnable/TabsSet'
 import RenderDetailsMovie from '@/Components/RenderMovies/RenderDetailsMovie'
-import MovieTrailer from '@/pages/HomeMovies/MovieTrailer'
 import { DetailsImages, MovieTrendings } from '@/types/Movie'
 import { SuccessResponse } from '@/types/utils.type'
 interface Props {
@@ -9,6 +8,7 @@ interface Props {
   setMouseHoverImages: React.Dispatch<React.SetStateAction<string>>
   dataTrailerLatest: MovieTrendings[] | undefined
 }
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export default function Cast_CrewMovieDetails({ dataImages, setMouseHoverImages, dataTrailerLatest }: Props) {
   const addDataRender = (dataRenders: DetailsImages[], isShow?: boolean) => {
     isShow = false
