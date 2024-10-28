@@ -1,5 +1,6 @@
 import { EpisodesApi } from '@/Apis/EpisodesApi'
 import { TVSeasonsDetailsApi } from '@/Apis/TVSeasonsDetailsApi'
+import HelMet from '@/Components/Custom/HelMet'
 import configBase from '@/constants/config'
 import Skeleton from '@/Skeleton/Skeleton'
 import { CastMember } from '@/types/Movie'
@@ -34,6 +35,7 @@ export default function Episodes_Season() {
   }
   return (
     <div className='my-1'>
+      <HelMet title='Episodes Season' />
       <div className='bg-blue-950 items-center h-[100px] w-full flex justify-start'>
         <img
           src={

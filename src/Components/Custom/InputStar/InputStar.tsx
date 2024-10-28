@@ -13,8 +13,6 @@ interface StarRatingProps {
 }
 
 export default function InputStar({ id, initialRating, onChange, pathName }: StarRatingProps) {
-  console.log(pathName)
-
   const [rating, setRating] = useState<number>((initialRating as number) / 2 || 0)
   const [hover, setHover] = useState<number>(0)
   const ratingContainerRef = useRef<HTMLDivElement>(null)

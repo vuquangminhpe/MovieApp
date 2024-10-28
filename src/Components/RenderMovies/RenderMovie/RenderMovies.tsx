@@ -249,7 +249,6 @@ const RenderMovies = ({
                                 onSelect={(currentValue) => {
                                   setValue(currentValue)
                                   const selectedId = getSelectedId()
-                                  console.log('selectedUD', selectedId)
 
                                   handleAddList(Number(selectedId))
                                   setOpen(false)

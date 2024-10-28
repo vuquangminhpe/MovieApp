@@ -12,10 +12,10 @@ import { createSearchParams, useNavigate } from 'react-router-dom'
 import path from '@/constants/path'
 import SkeletonLoading from '@/Skeleton'
 import { useLanguage } from '@/Contexts/app.context'
+import HelMet from '@/Components/Custom/HelMet'
 
 export default function HomeMovies() {
   const { language } = useLanguage()
-  console.log(language)
 
   const navigate = useNavigate()
   const [movieId, setMovieId] = useState<number>()
@@ -55,7 +55,6 @@ export default function HomeMovies() {
   })
 
   const dataPopulars = dataPopular?.data.results
-  console.log(language)
 
   const { data: dataRatedMovies } = useQuery({
     queryKey: ['dataRatedMovies_popular'],
@@ -84,6 +83,7 @@ export default function HomeMovies() {
   }
   return (
     <div className='flex flex-col'>
+      <HelMet title='Home Movie' />
       <div className='relative h-[350px] max-sm:h-[600px] overflow-hidden'>
         <MouseAnimate className='h-full object-contain z-10' />
 

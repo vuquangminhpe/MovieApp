@@ -10,6 +10,7 @@ import DetailsMovieApi from '@/Apis/DetailsMovieApi'
 import configBase from '@/constants/config'
 import path from '@/constants/path'
 import Skeleton from '@/Skeleton/Skeleton'
+import HelMet from '@/Components/Custom/HelMet'
 
 export default function CollectionMovies() {
   const location = useLocation()
@@ -65,6 +66,7 @@ export default function CollectionMovies() {
   }
   return (
     <div>
+      <HelMet title='Collection' />
       <CollectionDetail dataImg={dataImg} collection={dataCollection} />
       <div className='mt-12'>
         <div className='container p-3'>

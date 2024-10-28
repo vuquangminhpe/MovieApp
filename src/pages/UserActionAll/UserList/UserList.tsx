@@ -1,4 +1,5 @@
 import { AccountApi_V4 } from '@/Apis/AccountApi_V4'
+import HelMet from '@/Components/Custom/HelMet'
 import configBase from '@/constants/config'
 import path from '@/constants/path'
 import { MovieInfo } from '@/types/Movie'
@@ -33,6 +34,7 @@ export default function UserList() {
 
   return (
     <div className='flex flex-col my-5 container'>
+      <HelMet title='User list' />
       <div className='flex justify-between '>
         <div className='capitalize text-xl font-bold text-black dark:text-white'>my lists</div>
         <Link to={`${path.ListCreated}`} className='bg-emerald-400 text-white p-4 rounded-sm capitalize cursor-pointer'>

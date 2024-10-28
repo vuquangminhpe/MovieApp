@@ -3,6 +3,7 @@ import DetailsMovieApi from '@/Apis/DetailsMovieApi'
 import { PersonDetailsApi } from '@/Apis/PersonDetailsApi'
 import { TVSeriesApi } from '@/Apis/TVSeriesApi'
 import CustomScrollContainer from '@/Components/Custom/CustomScrollContainer'
+import HelMet from '@/Components/Custom/HelMet'
 import Popover from '@/Components/Custom/Popover/Popover'
 import RenderMovies from '@/Components/RenderMovies/RenderMovie'
 import configBase from '@/constants/config'
@@ -109,10 +110,10 @@ export default function CastDetails() {
   if (dataPersonsLoading && dataExternalIdsLoading && dataCreditsPersonLoading && isLoading) {
     return <Skeleton />
   }
-  console.log(dataCredits)
 
   return (
     <div className='container my-5'>
+      <HelMet title='Cast detail' />
       <div className='grid grid-cols-12 max-lg:flex max-lg:flex-col'>
         <div className='col-span-3 flex lg:flex-col max-lg:flex max-lg:ml-2'>
           <div className='max-lg:mr-4'>

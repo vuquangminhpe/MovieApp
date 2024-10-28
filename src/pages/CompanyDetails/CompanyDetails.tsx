@@ -8,6 +8,7 @@ import { getIdFromNameId } from '@/utils/utils'
 import { motion } from 'framer-motion'
 import configBase from '@/constants/config'
 import Skeleton from '@/Skeleton/Skeleton'
+import { Helmet } from 'react-helmet-async'
 
 export default function CompanyDetails() {
   const { company_id } = useParams()
@@ -40,6 +41,7 @@ export default function CompanyDetails() {
 
   return (
     <div className='min-h-screen bg-white'>
+      <Helmet title='Company details' />
       <div className='relative h-[60vh] overflow-hidden'>
         <div className='absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 mix-blend-multiply' />
         {company.logo_path && (

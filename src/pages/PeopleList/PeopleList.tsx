@@ -1,4 +1,5 @@
 import { PersonDetailsApi } from '@/Apis/PersonDetailsApi'
+import HelMet from '@/Components/Custom/HelMet'
 import configBase from '@/constants/config'
 import path from '@/constants/path'
 import Skeleton from '@/Skeleton/Skeleton'
@@ -79,6 +80,7 @@ export default function PeopleList() {
   }
   return (
     <div className='container py-24 max-md:pr-2'>
+      <HelMet title='All People' />
       <div className='grid grid-cols-4 h-auto w-auto'>
         {dataAllPerson?.map((itemPerson) => (
           <Link

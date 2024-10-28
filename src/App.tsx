@@ -5,16 +5,20 @@ import { ThemeProvider } from './Components/ModeToggle/ThemeProvider/theme-provi
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { LanguageProvider } from './Contexts/app.context'
+import { HelmetProvider } from 'react-helmet-async'
+
 function App() {
   const useRouterElement = useRouteElement()
 
   return (
-    <LanguageProvider>
-      <ThemeProvider defaultTheme='light' storageKey='vite-ui-theme'>
-        {useRouterElement}
-        <ToastContainer />
-      </ThemeProvider>
-    </LanguageProvider>
+    <HelmetProvider>
+      <LanguageProvider>
+        <ThemeProvider defaultTheme='light' storageKey='vite-ui-theme'>
+          {useRouterElement}
+          <ToastContainer />
+        </ThemeProvider>
+      </LanguageProvider>
+    </HelmetProvider>
   )
 }
 

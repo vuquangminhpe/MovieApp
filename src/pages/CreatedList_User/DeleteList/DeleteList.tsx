@@ -19,6 +19,7 @@ import {
   AlertDialogTrigger
 } from '@/Components/ui/alert-dialog'
 import { ActionListV3Api } from '@/Apis/ActionListV3Api'
+import HelMet from '@/Components/Custom/HelMet'
 
 export default function DeleteList() {
   const { pathname, search } = useLocation()
@@ -80,6 +81,7 @@ export default function DeleteList() {
 
   return (
     <div className='container my-5 flex justify-around max-sm:flex-col'>
+      <HelMet title='Created list' />
       <div className='rounded-xl flex max-h-[350px]  max-sm:w-full flex-col mr-10 w-[200px] bg-white border border-gray-300 shadow-xl max-sm:flex-row max-sm:overflow-x-auto'>
         <div className='bg-[#06b6d4] p-7 rounded-t-xl text-white font-semibold'>Edit</div>
         <div className={`p-7`}>Created details</div>

@@ -13,6 +13,7 @@ import { SuccessResponse } from '@/types/utils.type'
 import { AxiosResponse } from 'axios'
 import { toast } from 'react-toastify'
 import Skeleton from '@/Skeleton/Skeleton'
+import HelMet from '@/Components/Custom/HelMet'
 
 export default function SeasonDetails() {
   const location = useLocation()
@@ -67,6 +68,7 @@ export default function SeasonDetails() {
   }
   return (
     <div className='flex flex-col w-full'>
+      <HelMet title='Season details' />
       <div className='bg-gray-600 w-full'>
         <div className='container my-2 flex '>
           <img

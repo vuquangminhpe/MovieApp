@@ -20,6 +20,7 @@ import useQueryConfig from '@/hooks/useQueryConfig'
 import UseFilteredMovies from './UseFilteredMovies'
 import { debounce } from 'lodash'
 import { useLanguage } from '@/Contexts/app.context'
+import HelMet from '@/Components/Custom/HelMet'
 const filterSort = [
   { value: 'popularity.desc', label: 'Popularity Descending' },
   { value: 'popularity.asc', label: 'Popularity Ascending' },
@@ -148,7 +149,6 @@ export default function MovieList() {
   )
 
   const filteredMovies = UseFilteredMovies(allMovies)
-  console.log(filteredMovies)
 
   const handleClick = useCallback((item: ownerGenres) => {
     setSelectedGenres((prevSelected) => {
@@ -181,6 +181,7 @@ export default function MovieList() {
   if (status === 'pending') {
     return (
       <div className='flex  w-full container'>
+        <HelMet title={`${pathname.includes('/movie') ? 'List Movie' : 'List TV Series'}`} />
         <div
           role='status'
           className='max-w-md p-4 space-y-4 border border-gray-200 divide-y divide-gray-200 rounded shadow animate-pulse dark:divide-gray-700 md:p-6 dark:border-gray-700'

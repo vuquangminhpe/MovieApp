@@ -12,6 +12,7 @@ import icon_profile2 from '../../Imgs/profile_2.jpg'
 import icon_profile3 from '../../Imgs/profile_3.jpg'
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/Components/ui/carousel'
 import SocialLinks from '@/Components/Custom/SocialLinks'
+import HelMet from '@/Components/Custom/HelMet'
 
 const All_ICONS = [
   { icon: icon_css },
@@ -62,6 +63,7 @@ export default function ContactDeveloper() {
 
   return (
     <div className='bg-slate-900'>
+      <HelMet title='Developer: Vũ Quang Minh' />
       <div className='w-full min-h-screen relative pt-24'>
         <MouseAnimate className='h-full' />
         <div className='container mx-auto px-6 lg:px-12'>

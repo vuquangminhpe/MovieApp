@@ -24,6 +24,7 @@ import { AccountApi } from '@/Apis/AccountApi'
 import Skeleton from '@/Skeleton/Skeleton'
 import { useLanguage } from '@/Contexts/app.context'
 import { ActionListV3Api } from '@/Apis/ActionListV3Api'
+import HelMet from '@/Components/Custom/HelMet'
 
 const filterSort = [
   { value: 'popularity.desc', label: 'Popularity Descending' },
@@ -194,7 +195,7 @@ export default function UserActionAll() {
   const dataRating_ITEM = dataRatingAll?.data
 
   const filteredMovies = UseFilteredMovies(allMovies)
-  console.log(filteredMovies)
+
   useEffect(() => {
     refetch()
   }, [language])
@@ -322,6 +323,7 @@ export default function UserActionAll() {
   }
   return (
     <div className='mt-5 flex flex-col'>
+      <HelMet title='All list in User' />
       <div className='flex justify-around'>
         <div className='flex gap-4 max-sm:flex-col items-center'>
           <div className='mb-12  -translate-x-10 capitalize font-bold text-xl'>my {pathname.split('/')[3]}</div>
@@ -534,8 +536,6 @@ export default function UserActionAll() {
                                   onSelect={(currentValue) => {
                                     setValue(currentValue)
                                     const selectedId = getSelectedId()
-                                    console.log('selectedUD', selectedId)
-
                                     handleAddList(Number(selectedId))
                                     setOpen(false)
                                   }}

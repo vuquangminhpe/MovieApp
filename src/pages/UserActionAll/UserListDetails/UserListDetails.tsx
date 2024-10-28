@@ -19,6 +19,7 @@ import {
 } from '@/Components/ui/alert-dialog'
 import { useEffect, useState } from 'react'
 import DetailsMovieApi from '@/Apis/DetailsMovieApi'
+import HelMet from '@/Components/Custom/HelMet'
 const radius = 18
 const circumference = 2 * Math.PI * radius
 
@@ -133,6 +134,7 @@ export default function UserListDetails() {
   }
   return (
     <div className='flex flex-col'>
+      <HelMet title='User list details' />
       <div className='relative w-full h-[350px]'>
         <div className='bg-[#0D2C3F]/80 w-full h-full absolute'></div>
         <div className='absolute'>

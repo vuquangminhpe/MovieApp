@@ -42,6 +42,7 @@ import AddOwnerMovieDetails from './AddOwnerMovieDetails'
 import { typeSearchKeyWord } from '@/types/Search.type'
 import Skeleton from '@/Skeleton/Skeleton'
 import { useLanguage } from '@/Contexts/app.context'
+import HelMet from '@/Components/Custom/HelMet'
 
 interface MovieDetailData {
   colorLiker?: string
@@ -108,7 +109,6 @@ export default function MovieDetails({ colorLiker = '#4CAF50' }: MovieDetailData
   const dataMovieDetails_Videos: videosDetails | undefined = dataYoutube_MovieDetails?.data.results[0]
 
   const dataMovie = dataMovieDetails?.data
-  console.log(dataMovie)
 
   const percentage = Math.round((dataMovie as movieDetail)?.vote_average * 10)
   const radius = 18
@@ -159,6 +159,7 @@ export default function MovieDetails({ colorLiker = '#4CAF50' }: MovieDetailData
   }
   return (
     <div className='my-8'>
+      <HelMet title='Movie Details' />
       <div className='relative h-[520px] max-sm:h-[950px]'>
         <DynamicMovieBackdrop imageUrl={imageUrl}>
           <div className='container'>

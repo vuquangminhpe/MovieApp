@@ -25,6 +25,7 @@ import { TVSeriesApi } from '@/Apis/TVSeriesApi'
 import { Aggregate_Credits, keywordsTVSeries, ReviewTVSeries, Season, TVSeriesTrending } from '@/types/TVSeries.type'
 import RenderTVDetails from '@/Components/RenderMovies/RenderTVDetails'
 import Skeleton from '@/Skeleton/Skeleton'
+import HelMet from '@/Components/Custom/HelMet'
 
 interface TVDetailData {
   colorLiker?: string
@@ -154,6 +155,7 @@ export default function TVSeriesDetails({ colorLiker = '#4CAF50' }: TVDetailData
   }
   return (
     <div className='my-8'>
+      <HelMet title='TV Series' />
       <div className='relative h-[520px] max-md:h-[950px]'>
         <DynamicMovieBackdrop imageUrl={imageUrl}>
           <div className='container'>

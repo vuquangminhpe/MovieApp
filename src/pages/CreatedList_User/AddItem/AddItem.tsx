@@ -9,6 +9,7 @@ import { toast } from 'react-toastify'
 import path from '@/constants/path'
 import { generateNameId } from '@/utils/utils'
 import { ActionListV3Api } from '@/Apis/ActionListV3Api'
+import HelMet from '@/Components/Custom/HelMet'
 
 export default function AddItem() {
   const { pathname, search } = useLocation()
@@ -76,6 +77,7 @@ export default function AddItem() {
   }
   return (
     <div>
+      <HelMet title='Created list' />
       <div className='container my-5 flex max-sm:flex-col'>
         <div className='rounded-xl max-h-[350px] flex flex-col mr-10 w-[200px] max-sm:w-full bg-white border border-gray-300 shadow-xl max-sm:flex-row max-sm:overflow-x-auto'>
           <div className='bg-[#06b6d4] p-7 rounded-t-xl text-white font-semibold'>Edit</div>

@@ -13,6 +13,7 @@ import {
 } from '@/Components/ui/chart'
 import { AccountRating, AccountTVRating } from '@/types/Account.type'
 import Skeleton from '@/Skeleton/Skeleton'
+import HelMet from '@/Components/Custom/HelMet'
 
 const chartConfig = {
   Movie: {
@@ -85,6 +86,7 @@ export default function UserHome() {
   }
   return (
     <div className='mt-5 container flex flex-col'>
+      <HelMet title='Home User' />
       <div className='mb-5'>
         <div className='text-black font-bold text-sm dark:text-white'>Start</div>
         <div className='flex justify-between mx-3'>

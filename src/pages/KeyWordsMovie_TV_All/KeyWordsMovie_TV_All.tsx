@@ -11,6 +11,7 @@ import { createSearchParams, Link, NavLink, useLocation, useNavigate, useParams 
 import { Popover, PopoverContent, PopoverTrigger } from '@/Components/ui/popover'
 import { SortBy, SortBy_TV } from '@/types/Discover.type'
 import Skeleton from '@/Skeleton/Skeleton'
+import HelMet from '@/Components/Custom/HelMet'
 const SortKeyWords_Movie = [
   {
     name_Parent: 'Popularity',
@@ -186,6 +187,7 @@ export default function KeyWordsMovie_TV_All() {
   }
   return (
     <div className='flex flex-grow'>
+      <HelMet title='Keywords details' />
       <div className='w-full'>
         <img
           src={`https://www.themoviedb.org/assets/2/v4/account_pipes/light_blue-a230b623827400e967c6eb7241d88086f2eb9264c0789d0dab15ae6f1df1421a.svg`}

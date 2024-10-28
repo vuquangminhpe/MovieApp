@@ -5,6 +5,7 @@ import { createSearchParams, useLocation, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import path from '@/constants/path'
 import { ActionListV3Api } from '@/Apis/ActionListV3Api'
+import HelMet from '@/Components/Custom/HelMet'
 
 export default function CreatedList_User() {
   const navigate = useNavigate()
@@ -49,6 +50,7 @@ export default function CreatedList_User() {
   }
   return (
     <div className='container my-5 flex max-sm:flex-col'>
+      <HelMet title='Created list' />
       <div className='rounded-xl flex  max-sm:w-full flex-col mr-10 w-[200px] bg-white border border-gray-300 shadow-xl max-sm:flex-row max-sm:overflow-x-auto'>
         <div className='bg-[#06b6d4] p-7 rounded-t-xl text-white font-semibold'>Edit</div>
         <div className={`p-7 ${pathname.includes('created') ? 'text-[#06b6d4]' : ''}`}>Created details</div>

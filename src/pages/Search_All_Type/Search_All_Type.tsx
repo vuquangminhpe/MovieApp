@@ -7,6 +7,7 @@ import configBase from '@/constants/config'
 import { generateNameId } from '@/utils/utils'
 import path from '@/constants/path'
 import { useLanguage } from '@/Contexts/app.context'
+import HelMet from '@/Components/Custom/HelMet'
 
 interface SearchResult {
   id?: number
@@ -184,6 +185,7 @@ export default function SearchAllType() {
 
   return (
     <div className='flex flex-col'>
+      <HelMet title='Search list' />
       <Popover>
         <div className='w-full'>
           <PopoverTrigger className='w-full'>
