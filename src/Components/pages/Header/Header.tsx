@@ -39,7 +39,7 @@ export default function Header() {
   }
   const customMenuRight = (customClassName: string) => {
     return (
-      <div className={`${customClassName} items-center flex ml-7 mt-1`}>
+      <div className={`${customClassName} items-center flex ml-7 mt-1 z-40`}>
         <Popover
           children={`${language === 'vi' ? 'VI' : 'EN'}`}
           className='border border-white w-7 text-center text-white font-bold mx-6 hover:text-black hover:bg-white cursor-pointer'
@@ -106,7 +106,7 @@ export default function Header() {
           />
         </div>
         <Popover
-          className='ml-6 -translate-x-5'
+          className='ml-6 -translate-x-5 z-50'
           fullWidth={true}
           children={
             <svg
@@ -124,8 +124,7 @@ export default function Header() {
               />
             </svg>
           }
-          onEvent='onClick'
-          leaveEvent='onMouseLeave'
+          onEvent='onMouseEnter'
           renderPopover={
             <div className='w-full bg-white p-4'>
               <div className='flex items-center w-full'>
