@@ -16,11 +16,12 @@ export default function InputStar({ id, initialRating, onChange, pathName }: Sta
   const [rating, setRating] = useState<number>((initialRating as number) / 2 || 0)
   const [hover, setHover] = useState<number>(0)
   const ratingContainerRef = useRef<HTMLDivElement>(null)
+
   const getAPIRating = useCallback(() => {
     switch (true) {
       case pathName.includes('movie'):
         return DetailsMovieApi.addRatingMovieDetails
-      case pathName.includes('tv'):
+      case pathName.includes('tv') || pathName === undefined:
         return TVSeriesApi.AddRatingTV
       default:
         return DetailsMovieApi.addRatingMovieDetails
@@ -50,8 +51,14 @@ export default function InputStar({ id, initialRating, onChange, pathName }: Sta
     const newRating = hover
     setRating(newRating)
     ratingMoviesMutation.mutate(undefined, {
-      onSuccess: () => {
-        toast.success('Add rating successfully')
+      onSuccess: (res) => {
+        console.log(res)
+
+        toast.success(`${res.data.status_message}`)
+      },
+      onError: (error) => {
+        console.log(error)
+        toast.error('Add rating failed')
       }
     })
     if (onChange) {

@@ -54,7 +54,6 @@ const RenderMovies = ({
   const [mediaType, setMediaType] = useState<string>(media_type as string)
   const [open, setOpen] = React.useState(false)
   const [value, setValue] = React.useState('')
-  const [selectedId, setSelectedId] = useState<string | number>('')
 
   const percentage = Math.round((dataTrending as MovieTrendings).vote_average * 10)
   const radius = 18
@@ -154,7 +153,7 @@ const RenderMovies = ({
         })
       },
       onError: (error: Error) => {
-        toast.error(`${error}`)
+        toast.error(`${error.message}`)
       }
     })
   }
@@ -166,20 +165,21 @@ const RenderMovies = ({
         })
       },
       onError: (error: Error) => {
-        toast.error(`${error}`)
+        toast.error(`${error.message}`)
       }
     })
   }
-  const handleAddList = (list_id: number) => {
-    handleAddMovieOrTV.mutate(list_id, {
+  const handleAddList = async (list_id: number) => {
+    handleAddMovieOrTV.mutateAsync(list_id, {
       onSuccess: (data) => {
         toast.success(`${data.data.status_message}`)
       },
-      onError: (error: Error) => {
-        toast.error(`${error}`)
+      onError: () => {
+        toast.error(`Can't rate the ${mediaType} at this point.`)
       }
     })
   }
+
   if (isLoading || isFetching) {
     return <Skeleton />
   }
@@ -240,7 +240,7 @@ const RenderMovies = ({
                       <Command>
                         <CommandInput placeholder='Search List...' className='h-9' />
                         <CommandList>
-                          <CommandEmpty>No framework found.</CommandEmpty>
+                          <CommandEmpty>No list found.</CommandEmpty>
                           <CommandGroup>
                             {frameworks?.map((framework) => (
                               <CommandItem
@@ -249,8 +249,12 @@ const RenderMovies = ({
                                 onSelect={(currentValue) => {
                                   setValue(currentValue)
                                   const selectedId = getSelectedId()
+                                  console.log(selectedId)
+                                  console.log(currentValue)
+                                  const selectedIDs = currentValue.split('-')[1]
+                                  console.log(selectedIDs)
 
-                                  handleAddList(Number(selectedId))
+                                  handleAddList(Number(selectedIDs))
                                   setOpen(false)
                                 }}
                               >
