@@ -80,33 +80,33 @@ export default function DeleteList() {
   }
 
   return (
-    <div className='container my-5 flex justify-around max-sm:flex-col'>
+    <div className='container my-5 max-lg:mx-2 flex justify-around max-sm:flex-col'>
       <HelMet title='Created list' />
-      <div className='rounded-xl flex max-h-[350px]  max-sm:w-full flex-col mr-10 w-[200px] bg-white border border-gray-300 shadow-xl max-sm:flex-row max-sm:overflow-x-auto'>
+      <div className='rounded-xl flex max-h-[400px] max-md:ml-0 max-sm:mb-3 max-sm:w-full flex-col mr-10 w-[200px] bg-white border border-gray-300 shadow-xl max-sm:flex-row max-sm:overflow-x-auto'>
         <div className='bg-[#06b6d4] p-7 rounded-t-xl text-white font-semibold'>Edit</div>
         <div className={`p-7`}>Created details</div>
         <div className={`p-7 `}>Add/Edit items</div>
         <div className={`p-7  ${pathname.includes('DeletedItems') ? 'text-[#06b6d4]' : ''}`}>Delete List</div>
       </div>
       <div className='flex w-full mr-4 flex-col'>
-        {listDetails?.map((itemdetails: MovieTrendings | TVSeries) => (
-          <div className='flex border border-gray-200  gap-4 mb-4 rounded-xl max-sm:flex-col' key={itemdetails?.id}>
+        {listDetails?.map((itemDetails: MovieTrendings | TVSeries) => (
+          <div className='flex border border-gray-200 gap-4 mb-4 rounded-xl' key={itemDetails?.id}>
             <img
-              className='w-[100px] h-44 object-cover rounded-l-xl'
-              src={`${configBase.imageBaseUrl}${itemdetails?.poster_path || itemdetails?.backdrop_path}`}
+              className='w-[100px] object-cover rounded-l-xl'
+              src={`${configBase.imageBaseUrl}${itemDetails?.poster_path || itemDetails?.backdrop_path}`}
               alt=''
             />
             <div className='flex flex-col mt-5'>
               <Link
-                to={`/${itemdetails?.media_type}/${generateNameId({ name: (itemdetails?.original_name || (itemdetails as MovieTrendings)?.original_title) as string, id: itemdetails?.id as number })}`}
+                to={`/${itemDetails?.media_type}/${generateNameId({ name: (itemDetails?.original_name || (itemDetails as MovieTrendings)?.original_title) as string, id: itemDetails?.id as number })}`}
                 className='font-bold text-xl mb-3'
               >
-                {(itemdetails as MovieTrendings)?.original_title || itemdetails?.original_name}
+                {(itemDetails as MovieTrendings)?.original_title || itemDetails?.original_name}
               </Link>
               <div className='text-gray-500'>
-                {itemdetails?.first_air_date || (itemdetails as MovieTrendings).release_date}
+                {itemDetails?.first_air_date || (itemDetails as MovieTrendings).release_date}
               </div>
-              <div onClick={() => handleRemoveItem(itemdetails?.id as number)} className='flex mt-16'>
+              <div onClick={() => handleRemoveItem(itemDetails?.id as number)} className='flex mt-16'>
                 <svg
                   xmlns='http://www.w3.org/2000/svg'
                   fill='none'
@@ -114,7 +114,7 @@ export default function DeleteList() {
                   strokeWidth={1.5}
                   stroke='currentColor'
                   className='size-5 cursor-pointer'
-                  onClick={() => handleRemoveItem(itemdetails?.id as number)}
+                  onClick={() => handleRemoveItem(itemDetails?.id as number)}
                 >
                   <path
                     strokeLinecap='round'
@@ -129,21 +129,6 @@ export default function DeleteList() {
         ))}
       </div>
       <div className='flex flex-col max-md:text-center max-md:items-center'>
-        {/* <AlertDialog>
-          <AlertDialogTrigger className='text-center my-4 cursor-pointer hover:bg-blue-950 bg-[#06b6d4] text-white font-bold p-4 text-xl rounded-sm shadow-sm'>
-            Clear All Item in the List
-          </AlertDialogTrigger>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>Are you sure clear movie in the list?</AlertDialogTitle>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel onClick={() => SetActionClear(false)}>Cancel</AlertDialogCancel>
-              <AlertDialogAction onClick={() => SetActionClear(true)}>Clear</AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog> */}
-
         <AlertDialog>
           <AlertDialogTrigger className='text-center  w-[140px] my-4 cursor-pointer hover:bg-blue-950 bg-[#06b6d4] text-white font-bold p-2 text-xl rounded-sm shadow-sm'>
             Deleted list
