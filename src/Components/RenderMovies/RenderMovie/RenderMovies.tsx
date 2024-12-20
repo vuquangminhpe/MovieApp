@@ -149,7 +149,7 @@ const RenderMovies = ({
     addFavoriteMutation.mutate(undefined, {
       onSuccess: (data) => {
         toast.success(`${data.data.status_message}`, {
-          delay: 8000
+          delay: 100
         })
       },
       onError: (error: Error) => {
@@ -160,8 +160,10 @@ const RenderMovies = ({
   const handleWatchList = () => {
     addWatchListMutation.mutate(undefined, {
       onSuccess: (data) => {
+        console.log(data)
+
         toast.success(`${data.data.status_message}`, {
-          delay: 8000
+          delay: 100
         })
       },
       onError: (error: Error) => {

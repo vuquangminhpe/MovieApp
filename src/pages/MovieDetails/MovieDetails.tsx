@@ -43,7 +43,6 @@ import { typeSearchKeyWord } from '@/types/Search.type'
 import Skeleton from '@/Skeleton/Skeleton'
 import { useLanguage } from '@/Contexts/app.context'
 import HelMet from '@/Components/Custom/HelMet'
-
 interface MovieDetailData {
   colorLiker?: string
 }
