@@ -86,7 +86,7 @@ export default function DeleteList() {
         <div className='bg-[#06b6d4] p-7 rounded-t-xl text-white font-semibold'>Edit</div>
         <div className={`p-7`}>Created details</div>
         <div className={`p-7 `}>Add/Edit items</div>
-        <div className={`p-7 ${pathname.includes('DeletedItems') ? 'text-[#06b6d4]' : ''}`}>Delete List</div>
+        <div className={`p-7  ${pathname.includes('DeletedItems') ? 'text-[#06b6d4]' : ''}`}>Delete List</div>
       </div>
       <div className='flex w-full mr-4 flex-col'>
         {listDetails?.map((itemdetails: MovieTrendings | TVSeries) => (
@@ -128,7 +128,7 @@ export default function DeleteList() {
           </div>
         ))}
       </div>
-      <div className='flex flex-col'>
+      <div className='flex flex-col max-md:text-center max-md:items-center'>
         {/* <AlertDialog>
           <AlertDialogTrigger className='text-center my-4 cursor-pointer hover:bg-blue-950 bg-[#06b6d4] text-white font-bold p-4 text-xl rounded-sm shadow-sm'>
             Clear All Item in the List
@@ -145,7 +145,7 @@ export default function DeleteList() {
         </AlertDialog> */}
 
         <AlertDialog>
-          <AlertDialogTrigger className='text-center w-[140px] my-4 cursor-pointer hover:bg-blue-950 bg-[#06b6d4] text-white font-bold p-2 text-xl rounded-sm shadow-sm'>
+          <AlertDialogTrigger className='text-center  w-[140px] my-4 cursor-pointer hover:bg-blue-950 bg-[#06b6d4] text-white font-bold p-2 text-xl rounded-sm shadow-sm'>
             Deleted list
           </AlertDialogTrigger>
           <AlertDialogContent>

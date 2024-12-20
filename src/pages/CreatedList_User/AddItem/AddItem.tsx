@@ -14,13 +14,15 @@ import HelMet from '@/Components/Custom/HelMet'
 export default function AddItem() {
   const { pathname, search } = useLocation()
   const navigate = useNavigate()
-  const [items, setItems] = useState<number>()
   const [items_Active, setItems_Active] = useState<
     { media_id: number; media_name: string; media_backdrop: string; media_date: string; media_type: string }[]
   >([])
   const addItemsMutation = useMutation({
-    mutationFn: () => ActionListV3Api.addMovie(Number(search.split('=')[1]), { media_id: items as number })
+    mutationFn: (media_id: number) =>
+      ActionListV3Api.addMovie(Number(search.split('=')[1]), { media_id: media_id as number })
   })
+
+  console.log('items_Active', items_Active)
 
   const [suggest, setSuggest] = useState(false)
 
@@ -59,20 +61,23 @@ export default function AddItem() {
   }) => {
     setItems_Active((prevItems) => [...prevItems, selectedItem])
   }
+
   const handleAddItemsMutation = () => {
-    addItemsMutation.mutate(undefined, {
-      onSuccess: (data) => {
-        toast.success(`${data.data.status_message}`, { delay: 8000 })
-        navigate({
-          pathname: path.deletedItemList,
-          search: createSearchParams({
-            list_id: search.split('=')[1]
-          }).toString()
-        })
-      },
-      onError: () => {
-        toast.error(`Add Items failed`)
-      }
+    items_Active.forEach((items) => {
+      addItemsMutation.mutate(items.media_id as number, {
+        onSuccess: (data) => {
+          toast.success(`${data.data.status_message}`, { delay: 200 })
+          navigate({
+            pathname: path.deletedItemList,
+            search: createSearchParams({
+              list_id: search.split('=')[1]
+            }).toString()
+          })
+        },
+        onError: () => {
+          toast.error(`Add Items failed`)
+        }
+      })
     })
   }
   return (
@@ -109,7 +114,6 @@ export default function AddItem() {
                       dataS_MV?.map((item: ListMovieSearch, index: number) => (
                         <div
                           onClick={() => {
-                            setItems(item?.id)
                             handleSelectItem_Active({
                               media_name: item?.original_title,
                               media_backdrop: item?.poster_path as string,

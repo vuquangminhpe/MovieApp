@@ -83,7 +83,6 @@ export default function CreatedList_User() {
           className='bg-gray-300 p-1 rounded-sm items-center'
         >
           <option value='en'>English</option>
-          <option value='vi'>Việt Nam</option>
         </select>
 
         <div
