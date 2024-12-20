@@ -1,30 +1,39 @@
-// import { Navigate, Outlet, useRoutes } from 'react-router-dom'
-
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { Suspense, lazy } from 'react'
 import { useRoutes } from 'react-router-dom'
 import path from './constants/path'
 import MainLayout from './Layouts/MainLayout'
-import HomeMovies from './pages/HomeMovies'
-import MovieDetails from './pages/MovieDetails'
-import CastDetails from './pages/CastDetails'
-import CollectionMovies from './pages/Collection'
-import MovieList from './pages/MovieList'
-import PeopleList from './pages/PeopleList'
-import TVSeriesDetails from './pages/TVSeriesDetails'
-import SeasonDetails from './pages/SeasonDetails'
-import Episodes_Season from './pages/Episodes_Season/Episodes_Season'
-import KeyWordsMovie_TV_All from './pages/KeyWordsMovie_TV_All'
-import Search_All_Type from './pages/Search_All_Type'
-import CompanyDetails from './pages/CompanyDetails'
-import ContactDeveloper from './pages/ContactDeveloper'
-import UserHome from './pages/UserHome'
 import UserLayout from './Layouts/UserLayout'
-import UserList from './pages/UserActionAll/UserList'
-import UserActionAll from './pages/UserActionAll'
-import UserListDetails from './pages/UserActionAll/UserListDetails'
-import NotFound from './pages/404NotFound'
-import CreatedList_User from './pages/CreatedList_User'
-import AddItem from './pages/CreatedList_User/AddItem'
-import DeleteList from './pages/CreatedList_User/DeleteList'
+
+const HomeMovies = lazy(() => import('./pages/HomeMovies'))
+const MovieDetails = lazy(() => import('./pages/MovieDetails'))
+const CastDetails = lazy(() => import('./pages/CastDetails'))
+const CollectionMovies = lazy(() => import('./pages/Collection'))
+const MovieList = lazy(() => import('./pages/MovieList'))
+const PeopleList = lazy(() => import('./pages/PeopleList'))
+const TVSeriesDetails = lazy(() => import('./pages/TVSeriesDetails'))
+const SeasonDetails = lazy(() => import('./pages/SeasonDetails'))
+const Episodes_Season = lazy(() => import('./pages/Episodes_Season/Episodes_Season'))
+const KeyWordsMovie_TV_All = lazy(() => import('./pages/KeyWordsMovie_TV_All'))
+const Search_All_Type = lazy(() => import('./pages/Search_All_Type'))
+const CompanyDetails = lazy(() => import('./pages/CompanyDetails'))
+const ContactDeveloper = lazy(() => import('./pages/ContactDeveloper'))
+const UserHome = lazy(() => import('./pages/UserHome'))
+const UserList = lazy(() => import('./pages/UserActionAll/UserList'))
+const UserActionAll = lazy(() => import('./pages/UserActionAll'))
+const UserListDetails = lazy(() => import('./pages/UserActionAll/UserListDetails'))
+const NotFound = lazy(() => import('./pages/404NotFound'))
+const CreatedList_User = lazy(() => import('./pages/CreatedList_User'))
+const AddItem = lazy(() => import('./pages/CreatedList_User/AddItem'))
+const DeleteList = lazy(() => import('./pages/CreatedList_User/DeleteList'))
+
+const LoadingFallback = () => (
+  <div className='flex items-center justify-center min-h-screen'>
+    <div className='animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500'></div>
+  </div>
+)
+
+const SuspenseWrapper = ({ children }: any) => <Suspense fallback={<LoadingFallback />}>{children}</Suspense>
 
 const fixSearch = [
   { name: 'tv' },
@@ -42,339 +51,376 @@ export default function useRouteElement() {
       path: path.home,
       element: (
         <MainLayout>
-          <HomeMovies />
+          <SuspenseWrapper>
+            <HomeMovies />
+          </SuspenseWrapper>
         </MainLayout>
       )
     },
     {
       path: path.movieDetails,
-      index: true,
       element: (
         <MainLayout>
-          <MovieDetails />
+          <SuspenseWrapper>
+            <MovieDetails />
+          </SuspenseWrapper>
         </MainLayout>
       )
     },
     {
       path: path.tvDetails,
-      index: true,
       element: (
         <MainLayout>
-          <TVSeriesDetails />
+          <SuspenseWrapper>
+            <TVSeriesDetails />
+          </SuspenseWrapper>
         </MainLayout>
       )
     },
     {
       path: path.castDetails,
-      index: true,
       element: (
         <MainLayout>
-          <CastDetails />
+          <SuspenseWrapper>
+            <CastDetails />
+          </SuspenseWrapper>
         </MainLayout>
       )
     },
     {
       path: path.collectionDetails,
-      index: true,
       element: (
         <MainLayout>
-          <CollectionMovies />
+          <SuspenseWrapper>
+            <CollectionMovies />
+          </SuspenseWrapper>
         </MainLayout>
       )
     },
     {
       path: path.movie_popular,
-      index: true,
       element: (
         <MainLayout>
-          <MovieList />
+          <SuspenseWrapper>
+            <MovieList />
+          </SuspenseWrapper>
         </MainLayout>
       )
     },
     {
       path: path.movie_now_playing,
-      index: true,
       element: (
         <MainLayout>
-          <MovieList />
+          <SuspenseWrapper>
+            <MovieList />
+          </SuspenseWrapper>
         </MainLayout>
       )
     },
     {
       path: path.movie_upcoming,
-      index: true,
       element: (
         <MainLayout>
-          <MovieList />
+          <SuspenseWrapper>
+            <MovieList />
+          </SuspenseWrapper>
         </MainLayout>
       )
     },
     {
       path: path.movie_top_rated,
-      index: true,
       element: (
         <MainLayout>
-          <MovieList />
+          <SuspenseWrapper>
+            <MovieList />
+          </SuspenseWrapper>
         </MainLayout>
       )
     },
     {
       path: path.tv_popular,
-      index: true,
       element: (
         <MainLayout>
-          <MovieList />
+          <SuspenseWrapper>
+            <MovieList />
+          </SuspenseWrapper>
         </MainLayout>
       )
     },
     {
       path: path.tv_airing_today,
-      index: true,
       element: (
         <MainLayout>
-          <MovieList />
+          <SuspenseWrapper>
+            <MovieList />
+          </SuspenseWrapper>
         </MainLayout>
       )
     },
     {
       path: path.tv_top_rated,
-      index: true,
       element: (
         <MainLayout>
-          <MovieList />
+          <SuspenseWrapper>
+            <MovieList />
+          </SuspenseWrapper>
         </MainLayout>
       )
     },
     {
       path: path.on_tv,
-      index: true,
       element: (
         <MainLayout>
-          <MovieList />
+          <SuspenseWrapper>
+            <MovieList />
+          </SuspenseWrapper>
         </MainLayout>
       )
     },
     {
       path: path.peopleList,
-      index: true,
       element: (
         <MainLayout>
-          <PeopleList />
+          <SuspenseWrapper>
+            <PeopleList />
+          </SuspenseWrapper>
         </MainLayout>
       )
     },
     {
       path: path.seasonDetails,
-      index: true,
       element: (
         <MainLayout>
-          <SeasonDetails />
+          <SuspenseWrapper>
+            <SeasonDetails />
+          </SuspenseWrapper>
         </MainLayout>
       )
     },
     {
       path: path.episodeDetails,
-      index: true,
       element: (
         <MainLayout>
-          <Episodes_Season />
+          <SuspenseWrapper>
+            <Episodes_Season />
+          </SuspenseWrapper>
         </MainLayout>
       )
     },
     {
       path: path.searchKeywords_Movie,
-      index: true,
       element: (
         <MainLayout>
-          <KeyWordsMovie_TV_All />
+          <SuspenseWrapper>
+            <KeyWordsMovie_TV_All />
+          </SuspenseWrapper>
         </MainLayout>
       )
     },
     {
       path: path.searchKeywords_TV,
-      index: true,
       element: (
         <MainLayout>
-          <KeyWordsMovie_TV_All />
+          <SuspenseWrapper>
+            <KeyWordsMovie_TV_All />
+          </SuspenseWrapper>
         </MainLayout>
       )
     },
     {
       path: path.searchAll,
-      index: true,
       element: (
         <MainLayout>
-          <Search_All_Type />
+          <SuspenseWrapper>
+            <Search_All_Type />
+          </SuspenseWrapper>
         </MainLayout>
       )
     },
     {
       path: path.companyDetail,
-      index: true,
       element: (
         <MainLayout>
-          <CompanyDetails />
+          <SuspenseWrapper>
+            <CompanyDetails />
+          </SuspenseWrapper>
         </MainLayout>
       )
     },
     {
       path: path.contactDeveloper,
-      index: true,
       element: (
         <MainLayout>
-          <ContactDeveloper />
+          <SuspenseWrapper>
+            <ContactDeveloper />
+          </SuspenseWrapper>
         </MainLayout>
       )
     },
     {
       path: path.userHome,
-      index: true,
       element: (
         <UserLayout>
-          <UserHome />
+          <SuspenseWrapper>
+            <UserHome />
+          </SuspenseWrapper>
         </UserLayout>
       )
     },
     {
       path: path.userLists,
-      index: true,
       element: (
         <UserLayout>
-          <UserList />
+          <SuspenseWrapper>
+            <UserList />
+          </SuspenseWrapper>
         </UserLayout>
       )
     },
     {
       path: path.userHome_Rating_movie,
-      index: true,
       element: (
         <UserLayout>
-          <UserActionAll />
+          <SuspenseWrapper>
+            <UserActionAll />
+          </SuspenseWrapper>
         </UserLayout>
       )
     },
     {
       path: path.userHome_Rating_tv,
-      index: true,
       element: (
         <UserLayout>
-          <UserActionAll />
+          <SuspenseWrapper>
+            <UserActionAll />
+          </SuspenseWrapper>
         </UserLayout>
       )
     },
     {
       path: path.userHome_favoriteMovie,
-      index: true,
       element: (
         <UserLayout>
-          <UserActionAll />
+          <SuspenseWrapper>
+            <UserActionAll />
+          </SuspenseWrapper>
         </UserLayout>
       )
     },
     {
       path: path.userHome_favoriteTV,
-      index: true,
       element: (
         <UserLayout>
-          <UserActionAll />
+          <SuspenseWrapper>
+            <UserActionAll />
+          </SuspenseWrapper>
         </UserLayout>
       )
     },
     {
       path: path.userHome_watchListMovie,
-      index: true,
       element: (
         <UserLayout>
-          <UserActionAll />
+          <SuspenseWrapper>
+            <UserActionAll />
+          </SuspenseWrapper>
         </UserLayout>
       )
     },
     {
       path: path.userHome_watchListTV,
-      index: true,
       element: (
         <UserLayout>
-          <UserActionAll />
+          <SuspenseWrapper>
+            <UserActionAll />
+          </SuspenseWrapper>
         </UserLayout>
       )
     },
     {
       path: path.userHome_recommendationsMovie,
-      index: true,
       element: (
         <UserLayout>
-          <UserActionAll />
+          <SuspenseWrapper>
+            <UserActionAll />
+          </SuspenseWrapper>
         </UserLayout>
       )
     },
     {
       path: path.userHome_recommendationsTV,
-      index: true,
       element: (
         <UserLayout>
-          <UserActionAll />
+          <SuspenseWrapper>
+            <UserActionAll />
+          </SuspenseWrapper>
         </UserLayout>
       )
     },
     {
       path: path.userListsDetails,
-      index: true,
       element: (
         <MainLayout>
-          <UserListDetails />
-        </MainLayout>
-      )
-    },
-    {
-      path: '*',
-      index: true,
-      element: (
-        <MainLayout>
-          <NotFound />
+          <SuspenseWrapper>
+            <UserListDetails />
+          </SuspenseWrapper>
         </MainLayout>
       )
     },
     {
       path: path.ListCreated,
-      index: true,
       element: (
         <UserLayout>
-          <CreatedList_User />
+          <SuspenseWrapper>
+            <CreatedList_User />
+          </SuspenseWrapper>
         </UserLayout>
       )
     },
     {
       path: path.addItemList,
-      index: true,
       element: (
         <UserLayout>
-          <AddItem />
+          <SuspenseWrapper>
+            <AddItem />
+          </SuspenseWrapper>
         </UserLayout>
       )
     },
     {
       path: path.deletedItemList,
-      index: true,
       element: (
         <UserLayout>
-          <DeleteList />
+          <SuspenseWrapper>
+            <DeleteList />
+          </SuspenseWrapper>
         </UserLayout>
+      )
+    },
+    {
+      path: '*',
+      element: (
+        <MainLayout>
+          <SuspenseWrapper>
+            <NotFound />
+          </SuspenseWrapper>
+        </MainLayout>
       )
     }
   ]
 
   const searchRoutes = fixSearch.map(({ name }) => ({
     path: `${path.searchAll}/${name}`,
-    index: true,
     element: (
       <MainLayout>
-        <Search_All_Type />
+        <SuspenseWrapper>
+          <Search_All_Type />
+        </SuspenseWrapper>
       </MainLayout>
     )
   }))
 
   const allRoutes = [...baseRoutes, ...searchRoutes]
-
   const routeElements = useRoutes(allRoutes)
 
   return routeElements
